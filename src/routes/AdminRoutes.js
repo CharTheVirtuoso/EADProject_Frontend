@@ -20,8 +20,8 @@ var routes = [
   },
   {
     path: "/tables",
-    name: "Table List",
-    icon: "tim-icons icon-puzzle-10",
+    name: "User Management",
+    icon: "tim-icons icon-single-02",
     component: <TableList />,
     layout: "/admin",
   },
