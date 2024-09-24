@@ -11,6 +11,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import AdminLayout from "./layouts/Admin/Admin.js";
+import Login from "./layouts/Login.js";
+import Register from "./layouts/Register.js";
 import "./assets/scss/black-dashboard-react.scss";
 import "./assets/demo/demo.css";
 import "./assets/css/nucleo-icons.css";
@@ -26,11 +28,9 @@ root.render(
     <BackgroundColorWrapper>
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Register />} />
           <Route path="/admin/*" element={<AdminLayout />} />
-          <Route
-            path="*"
-            element={<Navigate to="/admin/dashboard" replace />}
-          />
         </Routes>
       </BrowserRouter>
     </BackgroundColorWrapper>
