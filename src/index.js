@@ -10,7 +10,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import AdminLayout from "./pages/Admin.js";
+import AdminDashboard from "./pages/Admin.js";
+import CSRDashboard from "./pages/CSR.js";
+import VendorDashboard from "./pages/Vendor.js";
 import Login from "./pages/Login.js";
 import Register from "./pages/Register.js";
 import "./assets/scss/black-dashboard-react.scss";
@@ -28,9 +30,11 @@ root.render(
     <BackgroundColorWrapper>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Register />} />
-          <Route path="/admin/*" element={<AdminLayout />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
+          <Route path="/csr/*" element={<CSRDashboard />} />
+          <Route path="/vendor/*" element={<VendorDashboard />} />
         </Routes>
       </BrowserRouter>
     </BackgroundColorWrapper>

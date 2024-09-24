@@ -14,7 +14,7 @@ import { BackgroundColorContext } from "../contexts/BackgroundColorContext.js";
 
 var ps;
 
-function Admin(props) {
+function CSR(props) {
   const location = useLocation();
   const mainPanelRef = React.useRef(null);
   const [sidebarOpened, setsidebarOpened] = React.useState(
@@ -117,4 +117,4 @@ function Admin(props) {
   );
 }
 
-export default Admin;
+export default CSR;
