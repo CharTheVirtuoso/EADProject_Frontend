@@ -10,9 +10,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import AdminLayout from "./layouts/Admin/Admin.js";
-import Login from "./layouts/Login.js";
-import Register from "./layouts/Register.js";
+import AdminLayout from "./pages/Admin.js";
+import Login from "./pages/Login.js";
+import Register from "./pages/Register.js";
 import "./assets/scss/black-dashboard-react.scss";
 import "./assets/demo/demo.css";
 import "./assets/css/nucleo-icons.css";
