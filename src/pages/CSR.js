@@ -61,7 +61,7 @@ function CSR(props) {
   };
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/csr") {
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
         );
@@ -101,12 +101,12 @@ function CSR(props) {
                 {getRoutes(routes)}
                 <Route
                   path="/"
-                  element={<Navigate to="/admin/dashboard" replace />}
+                  element={<Navigate to="/csr/dashboard" replace />}
                 />
               </Routes>
               {
                 // we don't want the Footer to be rendered on map page
-                location.pathname === "/admin/maps" ? null : <Footer fluid />
+                location.pathname === "" ? null : <Footer fluid />
               }
             </div>
           </div>

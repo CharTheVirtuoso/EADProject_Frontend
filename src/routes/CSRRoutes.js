@@ -1,29 +1,21 @@
-import Dashboard from "../views/AdminDashboard.js";
-import Notifications from "../views/Notifications.js";
-import TableList from "../views/TableList.js";
-import UserProfile from "../views/UserProfile.js";
+import Dashboard from "../views/CSR/CSRDashboard.js";
+import UserTable from "../views/CSR/CSRUserTable.js";
+// import UserProfile from "../views/UserProfile.js";
 
 var routes = [
   {
     path: "/dashboard",
-    name: "Admin Dashboard",
+    name: "CSR Dashboard",
     icon: "tim-icons icon-chart-pie-36",
     component: <Dashboard />,
-    layout: "/admin",
+    layout: "/csr",
   },
   {
-    path: "/user-profile",
-    name: "User Profile",
+    path: "/UserTable",
+    name: "User Management",
     icon: "tim-icons icon-single-02",
-    component: <UserProfile />,
-    layout: "/admin",
-  },
-  {
-    path: "/tables",
-    name: "Table List",
-    icon: "tim-icons icon-puzzle-10",
-    component: <TableList />,
-    layout: "/admin",
+    component: <UserTable />,
+    layout: "/csr",
   },
 ];
 export default routes;
