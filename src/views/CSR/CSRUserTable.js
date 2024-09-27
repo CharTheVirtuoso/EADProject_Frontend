@@ -39,10 +39,33 @@ function CSRUserTable() {
   );
 
   // Function to handle reactivation of users
-  const handleReactivate = (id) => {
-    console.log(`User with ID ${id} reactivated`);
-    // Add logic to call your API to reactivate the user
-    // You can send a PATCH or PUT request to your API to update the user's active status
+  const handleReactivate = async (id) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:15240/api/user/${id}/reactivateUser`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log(`User with ID ${id} reactivated successfully.`);
+        // Optionally update the UI or refresh the user list after reactivation
+        const updatedUsers = users.map((user) =>
+          user.id === id ? { ...user, isActive: true } : user
+        );
+        setUsers(updatedUsers);
+      } else if (response.status === 403) {
+        console.error("Only CSR can reactivate deactivated accounts.");
+      } else {
+        console.error("Failed to reactivate the user.");
+      }
+    } catch (error) {
+      console.error("Error reactivating user:", error);
+    }
   };
 
   return (

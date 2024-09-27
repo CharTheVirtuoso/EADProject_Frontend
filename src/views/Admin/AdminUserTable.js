@@ -37,14 +37,60 @@ function UserTables() {
   const filteredUsers = users.filter((user) => user.role === "Customer");
 
   // Function to handle approve/reject actions
-  const handleApprove = (id) => {
-    console.log(`User with ID ${id} approved`);
-    // Add logic to call your API to approve the user
+  // Function to approve a user
+  const handleApprove = async (id) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:15240/api/user/admin/approve-user/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log(`User with ID ${id} approved successfully`);
+        // Optionally update the UI or refresh the user list after approval
+        const updatedUsers = users.map((user) =>
+          user.id === id ? { ...user, userStatus: "Approved" } : user
+        );
+        setUsers(updatedUsers);
+      } else {
+        console.error("Failed to approve the user.");
+      }
+    } catch (error) {
+      console.error("Error approving user:", error);
+    }
   };
 
-  const handleReject = (id) => {
-    console.log(`User with ID ${id} rejected`);
-    // Add logic to call your API to reject the user
+  // Function to reject a user
+  const handleReject = async (id) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:15240/api/user/admin/reject-user/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log(`User with ID ${id} rejected successfully`);
+        // Optionally update the UI or refresh the user list after rejection
+        const updatedUsers = users.map((user) =>
+          user.id === id ? { ...user, userStatus: "Rejected" } : user
+        );
+        setUsers(updatedUsers);
+      } else {
+        console.error("Failed to reject the user.");
+      }
+    } catch (error) {
+      console.error("Error rejecting user:", error);
+    }
   };
 
   return (
