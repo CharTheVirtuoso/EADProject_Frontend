@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios for API calls
 import {
   Button,
   Form,
@@ -22,7 +23,7 @@ function LoginPage() {
   const [error, setError] = useState("");
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Simple validation
@@ -31,12 +32,34 @@ function LoginPage() {
       return;
     }
 
-    // Replace with actual authentication logic
-    if (email === "admin@vendora.com" && password === "admin123") {
-      // Successful login: Redirect to the admin dashboard
-      navigate("/admin/dashboard");
-    } else {
-      setError("Invalid email or password");
+    try {
+      // Make an API request to your backend
+      const response = await axios.post(
+        "http://127.0.0.1:15240/api/User/login",
+        {
+          email: email,
+          password: password,
+        }
+      );
+
+      // Handle successful login response
+      if (response.status === 200) {
+        const user = response.data; // Get user data from the response
+
+        if (user.role === "Admin") {
+          // Redirect to the admin dashboard
+          navigate("/admin/dashboard");
+        } else {
+          // Handle customer login
+          navigate("/user/dashboard");
+        }
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setError("Invalid email or password");
+      } else {
+        setError("An error occurred. Please try again.");
+      }
     }
   };
 

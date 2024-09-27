@@ -1,7 +1,8 @@
-import Dashboard from "../views/AdminDashboard.js";
+import Dashboard from "../views/Admin/AdminDashboard.js";
 import Notifications from "../views/Notifications.js";
-import TableList from "../views/TableList.js";
-import UserProfile from "../views/UserProfile.js";
+import UserTable from "../views/Admin/AdminUserTable.js";
+import Vendors from "../views/Admin/VendorManagement.js";
+import AddUser from "../views/Admin/AddUser.js";
 
 var routes = [
   {
@@ -12,17 +13,17 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/user-profile",
-    name: "User Profile",
+    path: "/UserTable",
+    name: "User Management",
     icon: "tim-icons icon-single-02",
-    component: <UserProfile />,
+    component: <UserTable />,
     layout: "/admin",
   },
   {
-    path: "/tables",
-    name: "User Management",
+    path: "/Vendors",
+    name: "Vendor Management",
     icon: "tim-icons icon-single-02",
-    component: <TableList />,
+    component: <Vendors />,
     layout: "/admin",
   },
 ];
