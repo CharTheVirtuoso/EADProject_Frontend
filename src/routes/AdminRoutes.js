@@ -1,8 +1,6 @@
 import Dashboard from "../views/Admin/AdminDashboard.js";
-import Notifications from "../views/Notifications.js";
 import UserTable from "../views/Admin/AdminUserTable.js";
 import Vendors from "../views/Admin/VendorManagement.js";
-import AddUser from "../views/Admin/AddUser.js";
 
 var routes = [
   {
@@ -13,14 +11,14 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/UserTable",
+    path: "/users",
     name: "User Management",
     icon: "tim-icons icon-single-02",
     component: <UserTable />,
     layout: "/admin",
   },
   {
-    path: "/Vendors",
+    path: "/vendors",
     name: "Vendor Management",
     icon: "tim-icons icon-single-02",
     component: <Vendors />,
