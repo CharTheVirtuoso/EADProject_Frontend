@@ -9,7 +9,7 @@ import Footer from "../components/Footer/Footer.js";
 import Sidebar from "../components/Sidebar/Sidebar.js";
 import FixedPlugin from "../components/FixedPlugin/FixedPlugin.js";
 import routes from "../routes/AdminRoutes.js";
-import logo from "../assets/img/react-logo.png";
+import logo from "../assets/img/letter-v2.png";
 import { BackgroundColorContext } from "../contexts/BackgroundColorContext.js";
 
 var ps;
