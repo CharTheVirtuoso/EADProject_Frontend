@@ -9,7 +9,7 @@ import Footer from "../components/Footer/Footer.js";
 import Sidebar from "../components/Sidebar/Sidebar.js";
 import FixedPlugin from "../components/FixedPlugin/FixedPlugin.js";
 import routes from "../routes/VendorRoutes.js";
-import logo from "../assets/img/react-logo.png";
+import logo from "../assets/img/letter-v2.png";
 import { BackgroundColorContext } from "../contexts/BackgroundColorContext.js";
 
 var ps;
@@ -61,7 +61,7 @@ function Vendor(props) {
   };
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/vendor") {
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
         );
@@ -101,12 +101,12 @@ function Vendor(props) {
                 {getRoutes(routes)}
                 <Route
                   path="/"
-                  element={<Navigate to="/admin/dashboard" replace />}
+                  element={<Navigate to="/vendor/dashboard" replace />}
                 />
               </Routes>
               {
                 // we don't want the Footer to be rendered on map page
-                location.pathname === "/admin/maps" ? null : <Footer fluid />
+                location.pathname === "" ? null : <Footer fluid />
               }
             </div>
           </div>

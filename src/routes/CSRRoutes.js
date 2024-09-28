@@ -1,6 +1,5 @@
 import Dashboard from "../views/CSR/CSRDashboard.js";
 import UserTable from "../views/CSR/CSRUserTable.js";
-// import UserProfile from "../views/UserProfile.js";
 
 var routes = [
   {
@@ -11,7 +10,7 @@ var routes = [
     layout: "/csr",
   },
   {
-    path: "/UserTable",
+    path: "/users",
     name: "User Management",
     icon: "tim-icons icon-single-02",
     component: <UserTable />,
