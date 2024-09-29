@@ -76,7 +76,7 @@ function Vendor(props) {
         return routes[i].name;
       }
     }
-    return "Brand";
+    return "Vendor Mangement";
   };
   return (
     <BackgroundColorContext.Consumer>
