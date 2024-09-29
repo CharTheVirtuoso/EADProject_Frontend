@@ -1,7 +1,8 @@
 import Dashboard from "../views/Admin/AdminDashboard.js";
 import UserTable from "../views/Admin/AdminUserTable.js";
 import Vendors from "../views/Admin/VendorManagement.js";
-import ProductCategories from "../views/Notifications.js";
+import Notificatoions from "../views/Notifications.js";
+import ProductCategories from "../views/Admin/ProductManagement.js";
 
 var routes = [
   {
@@ -36,14 +37,14 @@ var routes = [
     path: "/inventory-management",
     name: "Inventory Management",
     icon: "tim-icons icon-basket-simple", // Basket icon for managing inventory
-    component: <ProductCategories />,
+    component: <Notificatoions />,
     layout: "/admin",
   },
   {
     path: "/order-management",
     name: "Order Management",
     icon: "tim-icons icon-delivery-fast", // Delivery truck icon for order management
-    component: <ProductCategories />,
+    component: <Notificatoions />,
     layout: "/admin",
   },
 ];
