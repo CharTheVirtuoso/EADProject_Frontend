@@ -4,90 +4,104 @@ import {
   CardHeader,
   CardBody,
   CardTitle,
-  Table,
   Row,
   Col,
   Button,
 } from "reactstrap";
+import { FaFolder } from "react-icons/fa"; // Example icon from react-icons
+import { BiCategory } from "react-icons/bi";
+import { BiSolidCategory } from "react-icons/bi";
 
-function UserTables() {
-  const [users, setUsers] = useState([]);
+function CategoryCards() {
+  const [categories, setCategories] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
-  // Fetch the user data from the backend API
+  // Fetch the category data from the backend API
   useEffect(() => {
-    fetch("http://127.0.0.1:15240/api/user/getAllUsers")
+    fetch("http://127.0.0.1:15240/api/category/getAllCategories")
       .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error("Error fetching user data:", error));
+      .then((data) => setCategories(data))
+      .catch((error) => console.error("Error fetching category data:", error));
   }, []);
 
-  // Filter only customers
-  const filteredUsers = users.filter((user) => user.role === "Customer");
-
-  // Function to handle approve/reject actions
-  const handleApprove = (id) => {
-    console.log(`User with ID ${id} approved`);
-    // Add logic to call your API to approve the user
+  // Function to fetch products by category
+  const fetchProductsByCategory = (categoryName) => {
+    fetch(
+      `http://127.0.0.1:15240/api/product/getProductByCategory/${categoryName}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setSelectedProducts(data);
+        console.log(`Products for ${categoryName}:`, data);
+      })
+      .catch((error) => console.error("Error fetching products:", error));
   };
 
-  const handleReject = (id) => {
-    console.log(`User with ID ${id} rejected`);
-    // Add logic to call your API to reject the user
+  // Function to handle activate/deactivate actions
+  const handleActivate = (categoryName) => {
+    console.log(`Category ${categoryName} activated`);
+    // Add logic to call your API to activate the category
+  };
+
+  const handleDeactivate = (categoryName) => {
+    console.log(`Category ${categoryName} deactivated`);
+    // Add logic to call your API to deactivate the category
   };
 
   return (
     <div className="content">
       <Row>
-        <Col md="12">
-          <Card>
-            <CardHeader>
-              <CardTitle tag="h4">Customer Table</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <Table className="tablesorter" responsive>
-                <thead className="text-primary">
-                  <tr>
-                    <th>#</th>
-                    <th>Email Address</th>
-                    <th>Acccount Approval Status</th>
-                    <th>Account Active Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredUsers.map((user, index) => (
-                    <tr key={user.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>{" "}
-                      {/* Auto-incrementing ID with padding */}
-                      <td>{user.email}</td>
-                      <td>{user.userStatus}</td>
-                      <td>{user.isActive ? "Active" : "Inactive"}</td>
-                      <td>
-                        <Button
-                          color="success"
-                          size="sm"
-                          onClick={() => handleApprove(user.id)}
-                        >
-                          Approve
-                        </Button>{" "}
-                        <Button
-                          color="danger"
-                          size="sm"
-                          onClick={() => handleReject(user.id)}
-                        >
-                          Reject
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </CardBody>
-          </Card>
-        </Col>
+        {categories.map((category) => (
+          <Col md="4" key={category.categoryName}>
+            <Card className="mb-3">
+              <CardHeader>
+                <CardTitle tag="h3">
+                  {/* Adding an icon next to the category name */}
+                  <BiCategory className="me-2" />
+                  {" " + category.categoryName}
+                </CardTitle>
+              </CardHeader>
+              <CardBody>
+                <Button
+                  color="primary"
+                  onClick={() => fetchProductsByCategory(category.categoryName)}
+                >
+                  View Products
+                </Button>{" "}
+                {category.isActive ? (
+                  <Button
+                    color="danger"
+                    onClick={() => handleDeactivate(category.categoryName)}
+                  >
+                    Deactivate
+                  </Button>
+                ) : (
+                  <Button
+                    color="success"
+                    onClick={() => handleActivate(category.categoryName)}
+                  >
+                    Activate
+                  </Button>
+                )}
+              </CardBody>
+            </Card>
+          </Col>
+        ))}
       </Row>
+
+      {/* Display the selected products */}
+      {selectedProducts.length > 0 && (
+        <div>
+          <h4>Products in Selected Category</h4>
+          <ul>
+            {selectedProducts.map((product) => (
+              <li key={product.id}>{product.name}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
 
-export default UserTables;
+export default CategoryCards;

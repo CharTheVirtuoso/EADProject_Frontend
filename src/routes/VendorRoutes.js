@@ -1,4 +1,5 @@
 import Dashboard from "../views/Vendor/VendorDashboard.js";
+import ProductList from "../views/Vendor/ProductManagemnt.js";
 import TableList from "../views/TableList.js";
 // import UserProfile from "../views/UserProfile.js";
 
@@ -21,7 +22,7 @@ var routes = [
     path: "/products/:vendorId",
     name: "Product Management",
     icon: "tim-icons icon-components",
-    component: <TableList />,
+    component: <ProductList />,
     layout: "/vendor",
   },
   {
