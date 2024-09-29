@@ -4,7 +4,7 @@ import TableList from "../views/TableList.js";
 
 var routes = [
   {
-    path: "/dashboard",
+    path: "/dashboard/:vendorId",
     name: "Vendor Dashboard",
     icon: "tim-icons icon-chart-pie-36",
     component: <Dashboard />,
@@ -18,11 +18,12 @@ var routes = [
   //   layout: "/admin",
   // },
   {
-    path: "/products",
-    name: "Product Managemnt",
+    path: "/products/:vendorId",
+    name: "Product Management",
     icon: "tim-icons icon-puzzle-10",
     component: <TableList />,
     layout: "/vendor",
   },
 ];
+
 export default routes;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Import axios for API calls
+import axios from "axios";
 import {
   Button,
   Form,
@@ -33,7 +33,7 @@ function LoginPage() {
     }
 
     try {
-      // Make an API request to your backend
+      // Make an API request to your backend for login
       const response = await axios.post(
         "http://127.0.0.1:15240/api/User/login",
         {
@@ -44,14 +44,20 @@ function LoginPage() {
 
       // Handle successful login response
       if (response.status === 200) {
-        const user = response.data; // Get user data from the response
+        const user = response.data; // Get user data from the response, including vendorId
 
+        // Store vendorId and role in localStorage for future use
+        localStorage.setItem("vendorId", user.id);
+        localStorage.setItem("role", user.role);
+
+        // Redirect based on user role
         if (user.role === "Admin") {
-          // Redirect to the admin dashboard
           navigate("/admin/dashboard");
-        } else {
-          // Handle customer login
-          navigate("/user/dashboard");
+        } else if (user.role === "CSR") {
+          navigate("/csr/dashboard");
+        } else if (user.role === "Vendor") {
+          // Redirect vendor to their dashboard using vendorId
+          navigate(`/vendor/dashboard/${user.id}`);
         }
       }
     } catch (error) {

@@ -30,7 +30,7 @@ root.render(
     <BackgroundColorWrapper>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Register />} />
+          {/* <Route path="/" element={<Register />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/admin/*" element={<AdminDashboard />} />
           <Route path="/csr/*" element={<CSRDashboard />} />
