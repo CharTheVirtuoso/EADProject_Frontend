@@ -20,7 +20,21 @@ var routes = [
   {
     path: "/products/:vendorId",
     name: "Product Management",
-    icon: "tim-icons icon-puzzle-10",
+    icon: "tim-icons icon-components",
+    component: <TableList />,
+    layout: "/vendor",
+  },
+  {
+    path: "/products/:vendorId",
+    name: "Inventory Management",
+    icon: "tim-icons icon-basket-simple",
+    component: <TableList />,
+    layout: "/vendor",
+  },
+  {
+    path: "/products/:vendorId",
+    name: "Order Management",
+    icon: "tim-icons icon-delivery-fast",
     component: <TableList />,
     layout: "/vendor",
   },
