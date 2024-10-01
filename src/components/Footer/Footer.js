@@ -7,14 +7,14 @@ function Footer() {
   return (
     <footer className="footer">
       <Container fluid>
-        <Nav>
+        {/* <Nav>
           <NavItem>
             <NavLink href="">About Us</NavLink>
           </NavItem>
           <NavItem>
             <NavLink href="">Blog</NavLink>
           </NavItem>
-        </Nav>
+        </Nav> */}
         <div className="copyright">
           © {new Date().getFullYear()} made with{" "}
           <i className="tim-icons icon-heart-2" /> by{" "}
