@@ -25,13 +25,13 @@ var routes = [
     component: <ProductList />,
     layout: "/vendor",
   },
-  {
-    path: "/products/:vendorId",
-    name: "Inventory Management",
-    icon: "tim-icons icon-basket-simple",
-    component: <TableList />,
-    layout: "/vendor",
-  },
+  // {
+  //   path: "/products/:vendorId",
+  //   name: "Inventory Management",
+  //   icon: "tim-icons icon-basket-simple",
+  //   component: <TableList />,
+  //   layout: "/vendor",
+  // },
   {
     path: "/products/:vendorId",
     name: "Order Management",

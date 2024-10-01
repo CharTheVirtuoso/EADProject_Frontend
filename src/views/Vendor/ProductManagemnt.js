@@ -117,6 +117,7 @@ function ProductTables() {
                 <thead className="text-primary">
                   <tr>
                     <th>#</th>
+                    <th>Image</th> {/* New Image Column */}
                     <th>Product Name</th>
                     <th>Description</th>
                     <th>Price</th>
@@ -129,6 +130,17 @@ function ProductTables() {
                     <tr key={product.id}>
                       <td>{String(index + 1).padStart(3, "0")}</td>{" "}
                       {/* Auto-incrementing ID with padding */}
+                      <td>
+                        {product.image ? (
+                          <img
+                            src={product.Imgurl} // Display the image from Firebase URL
+                            alt={product.name}
+                            style={{ width: "50px", height: "50px" }} // Adjust the size as needed
+                          />
+                        ) : (
+                          "No Image" // Fallback text if no image is available
+                        )}
+                      </td>
                       <td>{product.name}</td>
                       <td>{product.description}</td>
                       <td>${product.price.toFixed(2)}</td>
