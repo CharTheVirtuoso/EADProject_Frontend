@@ -60,6 +60,8 @@ function UserTables() {
                 <thead className="text-primary">
                   <tr>
                     <th>#</th>
+                    {/* <th>ID</th> */}
+                    <th>Name</th>
                     <th>Email Address</th>
                     <th>Account Approval Status</th>
                     <th>Account Active Status</th>
@@ -71,6 +73,8 @@ function UserTables() {
                     <tr key={user.id}>
                       <td>{String(index + 1).padStart(3, "0")}</td>{" "}
                       {/* Auto-incrementing ID with padding */}
+                      {/* <td>{"Vendor-" + user.id}</td> */}
+                      <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td>{user.userStatus}</td>
                       <td>{user.isActive ? "Active" : "Inactive"}</td>

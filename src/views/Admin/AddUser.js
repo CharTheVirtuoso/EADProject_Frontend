@@ -13,6 +13,7 @@ import {
 } from "reactstrap";
 
 function AddUser() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
@@ -22,6 +23,7 @@ function AddUser() {
     e.preventDefault();
 
     const newUser = {
+      name,
       email,
       password,
       role,
@@ -68,6 +70,20 @@ function AddUser() {
             </CardHeader>
             <CardBody>
               <Form onSubmit={handleSubmit}>
+                <Row>
+                  <Col md="12">
+                    <FormGroup>
+                      <label>Name</label>
+                      <Input
+                        type="name"
+                        placeholder="Enter name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
                 <Row>
                   <Col md="12">
                     <FormGroup>
