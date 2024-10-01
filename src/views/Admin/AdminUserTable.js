@@ -13,18 +13,20 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
+import { FaSort } from "react-icons/fa"; // Import the sort icon
 import { useNavigate } from "react-router-dom";
 import AddUser from "./AddUser"; // Import the AddUser component
 
 function UserTables() {
   const [users, setUsers] = useState([]);
   const [modal, setModal] = useState(false); // State to handle modal visibility
+  const [sortOrder, setSortOrder] = useState({ approvalStatus: null, activeStatus: null }); // Track the sort order
 
   const navigate = useNavigate();
 
   // Fetch the user data from the backend API
   useEffect(() => {
-    fetch("http://127.0.0.1:15240/api/user/getAllUsers")
+    fetch("http://localhost:5069/api/user/getAllUsers")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching user data:", error));
@@ -37,11 +39,10 @@ function UserTables() {
   const filteredUsers = users.filter((user) => user.role === "Customer");
 
   // Function to handle approve/reject actions
-  // Function to approve a user
   const handleApprove = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:15240/api/user/admin/approve-user/${id}`,
+        `http://localhost:5069/api/user/admin/approve-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -52,7 +53,6 @@ function UserTables() {
 
       if (response.ok) {
         console.log(`User with ID ${id} approved successfully`);
-        // Optionally update the UI or refresh the user list after approval
         const updatedUsers = users.map((user) =>
           user.id === id ? { ...user, userStatus: "Approved" } : user
         );
@@ -65,11 +65,10 @@ function UserTables() {
     }
   };
 
-  // Function to reject a user
   const handleReject = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:15240/api/user/admin/reject-user/${id}`,
+        `http://localhost:5069/api/user/admin/reject-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -80,7 +79,6 @@ function UserTables() {
 
       if (response.ok) {
         console.log(`User with ID ${id} rejected successfully`);
-        // Optionally update the UI or refresh the user list after rejection
         const updatedUsers = users.map((user) =>
           user.id === id ? { ...user, userStatus: "Rejected" } : user
         );
@@ -91,6 +89,37 @@ function UserTables() {
     } catch (error) {
       console.error("Error rejecting user:", error);
     }
+  };
+
+  // Sorting functions
+  const sortUsersByApprovalStatus = () => {
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
+      if (sortOrder.approvalStatus === "asc") {
+        return a.userStatus.localeCompare(b.userStatus);
+      }
+      return b.userStatus.localeCompare(a.userStatus);
+    });
+    setSortOrder((prevOrder) => ({
+      ...prevOrder,
+      approvalStatus: prevOrder.approvalStatus === "asc" ? "desc" : "asc",
+    }));
+    setUsers(sortedUsers);
+  };
+
+  const sortUsersByActiveStatus = () => {
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
+      const aStatus = a.isActive ? "Active" : "Inactive";
+      const bStatus = b.isActive ? "Active" : "Inactive";
+      if (sortOrder.activeStatus === "asc") {
+        return aStatus.localeCompare(bStatus);
+      }
+      return bStatus.localeCompare(aStatus);
+    });
+    setSortOrder((prevOrder) => ({
+      ...prevOrder,
+      activeStatus: prevOrder.activeStatus === "asc" ? "desc" : "asc",
+    }));
+    setUsers(sortedUsers);
   };
 
   return (
@@ -111,8 +140,12 @@ function UserTables() {
                   <tr>
                     <th>#</th>
                     <th>Email Address</th>
-                    <th>Account Approval Status</th>
-                    <th>Account Active Status</th>
+                    <th onClick={sortUsersByApprovalStatus} style={{ cursor: "pointer" }}>
+                      Account Approval Status <FaSort /> {/* Sort icon added here */}
+                    </th>
+                    <th onClick={sortUsersByActiveStatus} style={{ cursor: "pointer" }}>
+                      Account Active Status <FaSort /> {/* Sort icon added here */}
+                    </th>
                     <th>Actions</th>
                   </tr>
                 </thead>
