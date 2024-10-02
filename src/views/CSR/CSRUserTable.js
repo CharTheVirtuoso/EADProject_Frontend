@@ -11,14 +11,16 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
+  Input,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import AddUser from "../Admin/AddUser"; // Import the AddUser component
+import { FaSort, FaUserPlus } from "react-icons/fa";
 
 function CSRUserTable() {
   const [users, setUsers] = useState([]);
   const [modal, setModal] = useState(false); // State to handle modal visibility
+  const [searchTerm, setSearchTerm] = useState(""); // State for the search term
 
   const navigate = useNavigate();
 
@@ -34,9 +36,11 @@ function CSRUserTable() {
   const toggleModal = () => setModal(!modal);
 
   // Filter users whose account is not activated
-  const filteredUsers = users.filter(
-    (user) => !user.isActive && user.userStatus != "Pending"
-  );
+  const filteredUsers = users
+    .filter((user) => !user.isActive && user.userStatus !== "Pending")
+    .filter(
+      (user) => user.email.toLowerCase().includes(searchTerm.toLowerCase()) // Filter by email
+    );
 
   // Function to handle reactivation of users
   const handleReactivate = async (id) => {
@@ -75,16 +79,30 @@ function CSRUserTable() {
           <Card>
             <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Users with Inactive Accounts</CardTitle>
-              {/* +Add Users Button */}
-              <Button color="primary" onClick={toggleModal}>
-                + Add User
-              </Button>
+              <div className="d-flex align-items-center">
+                {/* Search input box */}
+
+                <Input
+                  type="text"
+                  placeholder="Search Users"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{ width: "230px", marginRight: "30px" }}
+                />
+                {/* Add User Icon (Clickable) */}
+                <FaUserPlus
+                  size={28}
+                  onClick={toggleModal}
+                  style={{ cursor: "pointer", marginRight: "30px" }}
+                />
+              </div>
             </CardHeader>
-            <CardBody>
+            <CardBody style={{ paddingTop: "30px" }}>
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
                     <th>#</th>
+                    <th>ID</th>
                     <th>Email Address</th>
                     <th>Account Approval Status</th>
                     <th>Account Active Status</th>
@@ -96,6 +114,7 @@ function CSRUserTable() {
                     <tr key={user.id}>
                       <td>{String(index + 1).padStart(3, "0")}</td>{" "}
                       {/* Auto-incrementing ID with padding */}
+                      <td>{user.id}</td>
                       <td>{user.email}</td>
                       <td>{user.userStatus}</td>
                       <td>{user.isActive ? "Active" : "Inactive"}</td>
@@ -120,7 +139,9 @@ function CSRUserTable() {
       {/* Modal for adding a user */}
       <Modal isOpen={modal} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}></ModalHeader>
-        <AddUser /> {/* AddUser form inside the modal */}
+        <ModalBody>
+          <AddUser /> {/* AddUser form inside the modal */}
+        </ModalBody>
       </Modal>
     </div>
   );

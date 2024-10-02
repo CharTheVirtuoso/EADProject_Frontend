@@ -10,39 +10,42 @@ import {
   Button,
   Modal,
   ModalHeader,
-  ModalBody,
-  ModalFooter,
+  Input,
 } from "reactstrap";
-import { FaSort } from "react-icons/fa"; // Import the sort icon
+import { FaSort, FaUserPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import AddUser from "./AddUser"; // Import the AddUser component
+import AddUser from "./AddUser";
 
 function UserTables() {
   const [users, setUsers] = useState([]);
-  const [modal, setModal] = useState(false); // State to handle modal visibility
-  const [sortOrder, setSortOrder] = useState({ approvalStatus: null, activeStatus: null }); // Track the sort order
+  const [modal, setModal] = useState(false);
+  const [sortOrder, setSortOrder] = useState({
+    approvalStatus: null,
+    activeStatus: null,
+  });
+  const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
 
-  // Fetch the user data from the backend API
   useEffect(() => {
-    fetch("http://localhost:5069/api/user/getAllUsers")
+    fetch("http://127.0.0.1:15240/api/User/getAllUsers")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching user data:", error));
   }, []);
 
-  // Toggle modal visibility
   const toggleModal = () => setModal(!modal);
 
-  // Filter only customers
-  const filteredUsers = users.filter((user) => user.role === "Customer");
+  const filteredUsers = users.filter(
+    (user) =>
+      user.role === "Customer" &&
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  // Function to handle approve/reject actions
   const handleApprove = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/user/admin/approve-user/${id}`,
+        `http://127.0.0.1:15240/api/user/admin/approve-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -68,7 +71,7 @@ function UserTables() {
   const handleReject = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/user/admin/reject-user/${id}`,
+        `http://127.0.0.1:15240/api/user/admin/reject-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -91,7 +94,6 @@ function UserTables() {
     }
   };
 
-  // Sorting functions
   const sortUsersByApprovalStatus = () => {
     const sortedUsers = [...filteredUsers].sort((a, b) => {
       if (sortOrder.approvalStatus === "asc") {
@@ -127,24 +129,48 @@ function UserTables() {
       <Row>
         <Col md="12">
           <Card>
-            <CardHeader className="d-flex justify-content-between align-items-center">
-              <CardTitle tag="h4">Customer Details</CardTitle>
-              {/* +Add Users Button */}
-              <Button color="primary" onClick={toggleModal}>
-                + Add User
-              </Button>
+            <CardHeader>
+              <div className="d-flex justify-content-between align-items-center">
+                <CardTitle tag="h4">Customer Details</CardTitle>
+                {/* Container for Add User and Search input */}
+                <div className="d-flex align-items-center">
+                  {/* Search input box */}
+
+                  <Input
+                    type="text"
+                    placeholder="Search Users"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ width: "230px", marginRight: "30px" }}
+                  />
+                  {/* Add User Icon (Clickable) */}
+                  <FaUserPlus
+                    size={28}
+                    onClick={toggleModal}
+                    style={{ cursor: "pointer", marginRight: "30px" }}
+                  />
+                </div>
+              </div>
             </CardHeader>
-            <CardBody>
+
+            <CardBody style={{ paddingTop: "30px" }}>
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
                     <th>#</th>
+                    <th>ID</th>
                     <th>Email Address</th>
-                    <th onClick={sortUsersByApprovalStatus} style={{ cursor: "pointer" }}>
-                      Account Approval Status <FaSort /> {/* Sort icon added here */}
+                    <th
+                      onClick={sortUsersByApprovalStatus}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Account Approval Status <FaSort />
                     </th>
-                    <th onClick={sortUsersByActiveStatus} style={{ cursor: "pointer" }}>
-                      Account Active Status <FaSort /> {/* Sort icon added here */}
+                    <th
+                      onClick={sortUsersByActiveStatus}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Account Active Status <FaSort />
                     </th>
                     <th>Actions</th>
                   </tr>
@@ -152,8 +178,8 @@ function UserTables() {
                 <tbody>
                   {filteredUsers.map((user, index) => (
                     <tr key={user.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>{" "}
-                      {/* Auto-incrementing ID with padding */}
+                      <td>{String(index + 1).padStart(3, "0")}</td>
+                      <td>{"CST" + user.id}</td>
                       <td>{user.email}</td>
                       <td>{user.userStatus}</td>
                       <td>{user.isActive ? "Active" : "Inactive"}</td>
@@ -162,9 +188,10 @@ function UserTables() {
                           color="success"
                           size="sm"
                           onClick={() => handleApprove(user.id)}
+                          style={{ marginRight: "15px" }}
                         >
                           Approve
-                        </Button>{" "}
+                        </Button>
                         <Button
                           color="danger"
                           size="sm"
@@ -182,10 +209,9 @@ function UserTables() {
         </Col>
       </Row>
 
-      {/* Modal for adding a user */}
       <Modal isOpen={modal} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}></ModalHeader>
-        <AddUser /> {/* AddUser form inside the modal */}
+        <AddUser />
       </Modal>
     </div>
   );
