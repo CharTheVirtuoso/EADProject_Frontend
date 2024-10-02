@@ -18,7 +18,7 @@ function CategoryCards() {
   // Fetch the category data from the backend API
   useEffect(() => {
     fetch(
-      "http://127.0.0.1:15240/api/category/getAllCategoriesWithProductCount"
+      "http://localhost:5069/api/category/getAllCategoriesWithProductCount"
     )
       .then((response) => response.json())
       .then((data) => setCategories(data))
@@ -28,7 +28,7 @@ function CategoryCards() {
   // Function to activate a category
   const handleActivate = (categoryId) => {
     fetch(
-      `http://127.0.0.1:15240/api/category/${categoryId}/activateCategory`,
+      `http://localhost:5069/api/category/${categoryId}/activateCategory`,
       {
         method: "PUT",
       }
@@ -53,7 +53,7 @@ function CategoryCards() {
   // Function to deactivate a category
   const handleDeactivate = (categoryId) => {
     fetch(
-      `http://127.0.0.1:15240/api/category/${categoryId}/deactivateCategory`,
+      `http://localhost:5069/api/category/${categoryId}/deactivateCategory`,
       {
         method: "PUT",
       }

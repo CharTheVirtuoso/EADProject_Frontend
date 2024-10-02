@@ -33,7 +33,7 @@ function AddUser() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:15240/api/user/admin/createUser",
+        "http://localhpst:5069/api/user/admin/createUser",
         {
           method: "POST",
           headers: {

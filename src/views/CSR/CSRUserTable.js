@@ -24,7 +24,7 @@ function CSRUserTable() {
 
   // Fetch the user data from the backend API
   useEffect(() => {
-    fetch("http://127.0.0.1:15240/api/user/getAllUsers")
+    fetch("http://localhost:5069/api/user/getAllUsers")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching user data:", error));
@@ -42,7 +42,7 @@ function CSRUserTable() {
   const handleReactivate = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:15240/api/user/${id}/reactivateUser`,
+        `http://localhost:5069/api/user/${id}/reactivateUser`,
         {
           method: "PUT",
           headers: {
