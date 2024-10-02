@@ -8,11 +8,13 @@ import {
   Row,
   Col,
   Button,
+  Input,
 } from "reactstrap";
 import { useParams } from "react-router-dom"; // Import useParams to get category name from URL
 
 function Products() {
   const [products, setProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const { categoryName } = useParams(); // Get category name from URL parameters
 
   // Fetch products by category from the backend API
@@ -37,9 +39,24 @@ function Products() {
   }, [categoryName]);
 
   // Function to handle removing a product
-  const handleRemoveProduct = (productId) => {
-    console.log(`Removing product with ID: ${productId}`);
-    // Add functionality to remove the product (e.g., API call to delete)
+
+  const handleRemoveProduct = async (id) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:15240/api/product/deleteProduct/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setProducts(products.filter((product) => product.id !== id));
+      } else {
+        console.error("Failed to delete product.");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
 
   // Function to notify the vendor about low stock
@@ -50,15 +67,30 @@ function Products() {
     // Add functionality to notify vendor (e.g., API call or email notification)
   };
 
+  // Filtered products based on search query
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.vendorId.toString().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="content">
       <Row>
         <Col md="12">
           <Card>
-            <CardHeader>
+            <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Product List - {categoryName}</CardTitle>
+
+              <Input
+                type="text"
+                placeholder="Search Products"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} // Update search query state
+                style={{ width: "250px", marginRight: "30px" }}
+              />
             </CardHeader>
-            <CardBody>
+            <CardBody style={{ paddingTop: "30px" }}>
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
@@ -68,12 +100,12 @@ function Products() {
                     <th>Price</th>
                     <th>Stock Quantity</th>
                     <th>Stock Status</th>
-                    <th>Vendor ID</th> {/* New Vendor ID Column */}
+                    <th>Vendor ID</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((product, index) => {
+                  {filteredProducts.map((product, index) => {
                     let stockStatus;
                     if (product.stockQuantity === 0) {
                       stockStatus = (
@@ -106,13 +138,14 @@ function Products() {
                         <td>{product.name}</td>
                         <td>${product.price.toFixed(2)}</td>
                         <td>{product.stockQuantity}</td>
-                        <td>{stockStatus}</td> {/* Display Stock Status */}
-                        <td>{product.vendorId}</td> {/* Display Vendor ID */}
+                        <td>{stockStatus}</td>
+                        <td>{product.vendorId}</td>
                         <td>
                           <Button
                             color="danger"
                             size="sm"
                             onClick={() => handleRemoveProduct(product.id)}
+                            style={{ marginRight: "15px" }} // Add margin to the right
                           >
                             Remove Product
                           </Button>{" "}
