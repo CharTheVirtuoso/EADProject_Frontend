@@ -20,7 +20,7 @@ import {
 } from "reactstrap";
 import axios from "axios"; // For fetching notifications
 
-function AdminNavbar(props) {
+function VendorNavbar(props) {
   const [collapseOpen, setcollapseOpen] = useState(false);
   const [modalSearch, setmodalSearch] = useState(false);
   const [color, setcolor] = useState("navbar-transparent");
@@ -40,7 +40,7 @@ function AdminNavbar(props) {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:15240/api/admin-notifications/unread"
+        "http://127.0.0.1:15240/api/vendor-notifications/unread"
       );
       setNotifications(response.data);
     } catch (error) {
@@ -191,4 +191,4 @@ function AdminNavbar(props) {
   );
 }
 
-export default AdminNavbar;
+export default VendorNavbar;
