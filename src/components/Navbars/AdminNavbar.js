@@ -1,6 +1,7 @@
 import React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
 
 // reactstrap components
 import {
@@ -26,6 +27,9 @@ function AdminNavbar(props) {
   const [collapseOpen, setcollapseOpen] = React.useState(false);
   const [modalSearch, setmodalSearch] = React.useState(false);
   const [color, setcolor] = React.useState("navbar-transparent");
+  
+  const navigate = useNavigate(); // Initialize the navigate function from react-router-dom
+
   React.useEffect(() => {
     window.addEventListener("resize", updateColor);
     // Specify how to clean up after this effect:
@@ -33,6 +37,7 @@ function AdminNavbar(props) {
       window.removeEventListener("resize", updateColor);
     };
   });
+
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)
   const updateColor = () => {
     if (window.innerWidth < 993 && collapseOpen) {
@@ -41,6 +46,7 @@ function AdminNavbar(props) {
       setcolor("navbar-transparent");
     }
   };
+
   // this function opens and closes the collapse on small devices
   const toggleCollapse = () => {
     if (collapseOpen) {
@@ -50,13 +56,28 @@ function AdminNavbar(props) {
     }
     setcollapseOpen(!collapseOpen);
   };
+
   // this function is to open the Search modal
   const toggleModalSearch = () => {
     setmodalSearch(!modalSearch);
   };
+
+  // function to handle logout and redirect to login
+  const handleLogout = () => {
+    // Clear any session or authentication data here if necessary
+    // e.g., localStorage.removeItem("authToken");
+    
+    // Navigate to the login page
+    navigate("/login");
+  };
+
   return (
     <>
-      <Navbar className={classNames("navbar-absolute", color)} expand="lg">
+      <Navbar
+        className={classNames("navbar-absolute", color)}
+        expand="lg"
+        style={{ position: "fixed", top: 0, width: "100%", zIndex: 1000 }}
+      >
         <Container fluid>
           <div className="navbar-wrapper">
             <div
@@ -120,9 +141,7 @@ function AdminNavbar(props) {
                     </DropdownItem>
                   </NavLink>
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item">
-                      Another one
-                    </DropdownItem>
+                    <DropdownItem className="nav-item">Another one</DropdownItem>
                   </NavLink>
                 </DropdownMenu>
               </UncontrolledDropdown>
@@ -151,7 +170,12 @@ function AdminNavbar(props) {
                   </NavLink>
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item">Log out</DropdownItem>
+                    <DropdownItem
+                      className="nav-item"
+                      onClick={handleLogout} // Attach the logout handler here
+                    >
+                      Log out
+                    </DropdownItem>
                   </NavLink>
                 </DropdownMenu>
               </UncontrolledDropdown>
