@@ -10,14 +10,13 @@ import {
   Button,
   Input,
 } from "reactstrap";
-import { useParams } from "react-router-dom"; // Import useParams to get category name from URL
+import { useParams } from "react-router-dom";
 
 function Products() {
   const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
-  const { categoryName } = useParams(); // Get category name from URL parameters
+  const [searchQuery, setSearchQuery] = useState("");
+  const { categoryName } = useParams();
 
-  // Fetch products by category from the backend API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -37,8 +36,6 @@ function Products() {
 
     fetchProducts();
   }, [categoryName]);
-
-  // Function to handle removing a product
 
   const handleRemoveProduct = async (id) => {
     try {
@@ -60,14 +57,31 @@ function Products() {
   };
 
   // Function to notify the vendor about low stock
-  const handleNotifyVendor = (vendorId, productName) => {
-    console.log(
-      `Notifying vendor with ID: ${vendorId} for product: ${productName}`
-    );
-    // Add functionality to notify vendor (e.g., API call or email notification)
+  const handleNotifyVendor = async (vendorId, productName) => {
+    const message = `Low stock alert for ${productName}. Please restock.`;
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:15240/api/notification/unread/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message }),
+        }
+      );
+
+      if (response.ok) {
+        console.log(`Notification sent to vendor with ID: ${vendorId}`);
+      } else {
+        console.error("Failed to send notification.");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+    }
   };
 
-  // Filtered products based on search query
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -81,12 +95,11 @@ function Products() {
           <Card>
             <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Product List - {categoryName}</CardTitle>
-
               <Input
                 type="text"
                 placeholder="Search Products"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)} // Update search query state
+                onChange={(e) => setSearchQuery(e.target.value)}
                 style={{ width: "250px", marginRight: "30px" }}
               />
             </CardHeader>
@@ -127,12 +140,12 @@ function Products() {
                         <td>
                           {product.image ? (
                             <img
-                              src={product.Imgurl} // Display the image from Firebase URL
+                              src={product.Imgurl}
                               alt={product.name}
-                              style={{ width: "50px", height: "50px" }} // Adjust the size as needed
+                              style={{ width: "50px", height: "50px" }}
                             />
                           ) : (
-                            "No Image" // Fallback text if no image is available
+                            "No Image"
                           )}
                         </td>
                         <td>{product.name}</td>
@@ -145,7 +158,7 @@ function Products() {
                             color="danger"
                             size="sm"
                             onClick={() => handleRemoveProduct(product.id)}
-                            style={{ marginRight: "15px" }} // Add margin to the right
+                            style={{ marginRight: "15px" }}
                           >
                             Remove Product
                           </Button>{" "}
