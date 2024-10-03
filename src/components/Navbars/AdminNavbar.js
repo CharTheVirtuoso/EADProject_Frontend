@@ -48,6 +48,13 @@ function AdminNavbar(props) {
     }
   };
 
+  // Remove a specific notification
+  const removeNotification = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((notification) => notification._id !== id)
+    );
+  };
+
   // Function to update navbar color on resize
   const updateColor = () => {
     if (window.innerWidth < 993 && collapseOpen) {
@@ -122,8 +129,15 @@ function AdminNavbar(props) {
                   {notifications.length > 0 ? (
                     notifications.map((notification) => (
                       <NavLink key={notification._id} tag="li">
-                        <DropdownItem className="nav-item">
-                          {notification.message}
+                        <DropdownItem className="nav-item d-flex justify-content-between">
+                          <span>{notification.message}</span>
+                          {/* Close icon for each notification */}
+                          <button
+                            className="btn btn-link p-0 ml-2"
+                            onClick={() => removeNotification(notification._id)}
+                          >
+                            <i className="tim-icons icon-simple-remove" />
+                          </button>
                         </DropdownItem>
                       </NavLink>
                     ))
