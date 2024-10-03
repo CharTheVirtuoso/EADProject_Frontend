@@ -72,6 +72,13 @@ function VendorNavbar(props) {
     setmodalSearch(!modalSearch);
   };
 
+  // Function to remove a notification by its ID
+  const removeNotification = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((notification) => notification._id !== id)
+    );
+  };
+
   return (
     <>
       <Navbar className={classNames("navbar-absolute", color)} expand="lg">
@@ -124,6 +131,11 @@ function VendorNavbar(props) {
                       <NavLink key={notification._id} tag="li">
                         <DropdownItem className="nav-item">
                           {notification.message}
+                          <Button
+                            close
+                            className="notification-close"
+                            onClick={() => removeNotification(notification._id)}
+                          />
                         </DropdownItem>
                       </NavLink>
                     ))

@@ -11,6 +11,7 @@ import {
   Input,
 } from "reactstrap";
 import { useParams } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -48,6 +49,11 @@ function Products() {
 
       if (response.ok) {
         setProducts(products.filter((product) => product.id !== id));
+        Swal.fire({
+          icon: "success",
+          title: "Product Removed",
+          text: "The product has been successfully removed.",
+        });
       } else {
         console.error("Failed to delete product.");
       }
@@ -56,30 +62,29 @@ function Products() {
     }
   };
 
-  // Function to notify the vendor about low stock
-  const handleNotifyVendor = async (vendorId, productName) => {
-    const message = `Low stock alert for ${productName}. Please restock.`;
-
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:15240/api/notification/unread/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ message }),
-        }
-      );
-
-      if (response.ok) {
-        console.log(`Notification sent to vendor with ID: ${vendorId}`);
-      } else {
-        console.error("Failed to send notification.");
+  // SweetAlert confirmation for removing a product
+  const confirmRemoveProduct = (productId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, remove it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleRemoveProduct(productId);
       }
-    } catch (error) {
-      console.error("Error sending notification:", error);
-    }
+    });
+  };
+
+  const handleNotifyVendor = async (vendorId, productName) => {
+    Swal.fire({
+      icon: "info",
+      title: "Vendor Notified",
+      text: `Notification sent to the vendor about low stock for ${productName}.`,
+    });
   };
 
   const filteredProducts = products.filter(
@@ -157,7 +162,7 @@ function Products() {
                           <Button
                             color="danger"
                             size="sm"
-                            onClick={() => handleRemoveProduct(product.id)}
+                            onClick={() => confirmRemoveProduct(product.id)} // Use confirmRemoveProduct for SweetAlert confirmation
                             style={{ marginRight: "15px" }}
                           >
                             Remove Product

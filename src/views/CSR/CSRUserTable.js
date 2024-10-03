@@ -15,7 +15,11 @@ import {
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import AddUser from "../Admin/AddUser"; // Import the AddUser component
-import { FaSort, FaUserPlus } from "react-icons/fa";
+import { FaUserPlus } from "react-icons/fa";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 function CSRUserTable() {
   const [users, setUsers] = useState([]);
@@ -38,37 +42,51 @@ function CSRUserTable() {
   // Filter users whose account is not activated
   const filteredUsers = users
     .filter((user) => !user.isActive && user.userStatus !== "Pending")
-    .filter(
-      (user) => user.email.toLowerCase().includes(searchTerm.toLowerCase()) // Filter by email
+    .filter((user) =>
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
   // Function to handle reactivation of users
   const handleReactivate = async (id) => {
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:15240/api/user/${id}/reactivateUser`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    const confirmed = await MySwal.fire({
+      title: "Are you sure?",
+      text: "Do you want to reactivate this user account?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, reactivate!",
+      cancelButtonText: "No, cancel",
+    });
 
-      if (response.ok) {
-        console.log(`User with ID ${id} reactivated successfully.`);
-        // Optionally update the UI or refresh the user list after reactivation
-        const updatedUsers = users.map((user) =>
-          user.id === id ? { ...user, isActive: true } : user
+    if (confirmed.isConfirmed) {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:15240/api/user/${id}/reactivateUser`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
-        setUsers(updatedUsers);
-      } else if (response.status === 403) {
-        console.error("Only CSR can reactivate deactivated accounts.");
-      } else {
-        console.error("Failed to reactivate the user.");
+
+        if (response.ok) {
+          MySwal.fire(
+            "Success",
+            "User account has been reactivated.",
+            "success"
+          );
+          const updatedUsers = users.map((user) =>
+            user.id === id ? { ...user, isActive: true } : user
+          );
+          setUsers(updatedUsers);
+        } else if (response.status === 403) {
+          MySwal.fire("Error", "Only CSR can reactivate accounts.", "error");
+        } else {
+          MySwal.fire("Error", "Failed to reactivate the user.", "error");
+        }
+      } catch (error) {
+        MySwal.fire("Error", "Error reactivating user.", "error");
       }
-    } catch (error) {
-      console.error("Error reactivating user:", error);
     }
   };
 
@@ -80,8 +98,6 @@ function CSRUserTable() {
             <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Users with Inactive Accounts</CardTitle>
               <div className="d-flex align-items-center">
-                {/* Search input box */}
-
                 <Input
                   type="text"
                   placeholder="Search Users"
@@ -89,7 +105,6 @@ function CSRUserTable() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   style={{ width: "230px", marginRight: "30px" }}
                 />
-                {/* Add User Icon (Clickable) */}
                 <FaUserPlus
                   size={28}
                   onClick={toggleModal}
@@ -112,8 +127,7 @@ function CSRUserTable() {
                 <tbody>
                   {filteredUsers.map((user, index) => (
                     <tr key={user.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>{" "}
-                      {/* Auto-incrementing ID with padding */}
+                      <td>{String(index + 1).padStart(3, "0")}</td>
                       <td>{user.id}</td>
                       <td>{user.email}</td>
                       <td>{user.userStatus}</td>

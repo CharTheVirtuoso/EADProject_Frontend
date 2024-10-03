@@ -10,6 +10,7 @@ import {
 } from "reactstrap";
 import { BiCategory } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 function CategoryCards() {
   const [categories, setCategories] = useState([]);
@@ -42,6 +43,11 @@ function CategoryCards() {
                 : category
             )
           );
+          Swal.fire(
+            "Activated!",
+            "The category has been Activated.",
+            "success"
+          );
           console.log(`Category ${categoryId} activated`);
         } else {
           console.error("Failed to activate category");
@@ -50,29 +56,47 @@ function CategoryCards() {
       .catch((error) => console.error("Error activating category:", error));
   };
 
-  // Function to deactivate a category
+  // Function to deactivate a category with confirmation
   const handleDeactivate = (categoryId) => {
-    fetch(
-      `http://127.0.0.1:15240/api/category/${categoryId}/deactivateCategory`,
-      {
-        method: "PUT",
-      }
-    )
-      .then((response) => {
-        if (response.ok) {
-          setCategories((prevCategories) =>
-            prevCategories.map((category) =>
-              category.id === categoryId
-                ? { ...category, isActive: false }
-                : category
-            )
+    Swal.fire({
+      title: "Are you sure?",
+      text: "All the prodducts will be deactivated under this category.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, deactivate it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(
+          `http://127.0.0.1:15240/api/category/${categoryId}/deactivateCategory`,
+          {
+            method: "PUT",
+          }
+        )
+          .then((response) => {
+            if (response.ok) {
+              setCategories((prevCategories) =>
+                prevCategories.map((category) =>
+                  category.id === categoryId
+                    ? { ...category, isActive: false }
+                    : category
+                )
+              );
+              Swal.fire(
+                "Deactivated!",
+                "The category has been deactivated.",
+                "success"
+              );
+            } else {
+              console.error("Failed to deactivate category");
+            }
+          })
+          .catch((error) =>
+            console.error("Error deactivating category:", error)
           );
-          console.log(`Category ${categoryId} deactivated`);
-        } else {
-          console.error("Failed to deactivate category");
-        }
-      })
-      .catch((error) => console.error("Error deactivating category:", error));
+      }
+    });
   };
 
   return (
