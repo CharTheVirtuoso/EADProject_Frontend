@@ -7,6 +7,7 @@ import {
   Table,
   Row,
   Col,
+  Input, // Import Input component for the search box
   Button,
 } from "reactstrap";
 import { FaSort } from "react-icons/fa"; // Import the sort icon
@@ -16,6 +17,10 @@ function Products() {
   const [products, setProducts] = useState([]);
   const { categoryName } = useParams(); // Get category name from URL parameters
   const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track sorting
+  const [searchQuery, setSearchQuery] = useState(""); // State to track search query
+
+  // State to keep track of expanded descriptions
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
 
   // Fetch products by category from the backend API
   useEffect(() => {
@@ -57,15 +62,39 @@ function Products() {
     setSortOrder({ field, order: newOrder });
   };
 
+  // Function to toggle the description view
+  const toggleDescription = (productId) => {
+    setExpandedDescriptions((prevState) => ({
+      ...prevState,
+      [productId]: !prevState[productId],
+    }));
+  };
+
+  // Filter products based on the search query
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.price.toString().includes(searchQuery) // Convert price to string for comparison
+  );
+
   return (
     <div className="content">
       <Row>
         <Col md="12">
           <Card>
-            <CardHeader>
+            <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Product List - {categoryName}</CardTitle>
+              {/* Search input box on the right */}
+              <Input
+                type="text"
+                placeholder="Search Products"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ width: "250px", marginRight: "30px" }} // Adjust width as needed
+              />
             </CardHeader>
-            <CardBody>
+            <CardBody style={{ paddingTop: "30px" }}>
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
@@ -73,7 +102,7 @@ function Products() {
                       #
                       <FaSort />
                     </th>
-                    <th>Image</th> {/* New Image Column */}
+                    <th>Image</th>
                     <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
                       Product Name
                       <FaSort />
@@ -90,10 +119,9 @@ function Products() {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((product, index) => (
+                  {filteredProducts.map((product, index) => (
                     <tr key={product.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>{" "}
-                      {/* Auto-incrementing ID with padding */}
+                      <td>{String(index + 1).padStart(3, "0")}</td>
                       <td>
                         {product.image ? (
                           <img
@@ -106,7 +134,31 @@ function Products() {
                         )}
                       </td>
                       <td>{product.name}</td>
-                      <td>{product.description}</td>
+                      <td>
+                        {expandedDescriptions[product.id] ? (
+                          <span>
+                            {product.description}{" "}
+                            <Button
+                              color="link"
+                              onClick={() => toggleDescription(product.id)}
+                            >
+                              See less
+                            </Button>
+                          </span>
+                        ) : (
+                          <span>
+                            {product.description.length > 50
+                              ? `${product.description.substring(0, 100)}...`
+                              : product.description}{" "}
+                            <Button
+                              color="link"
+                              onClick={() => toggleDescription(product.id)}
+                            >
+                              See more
+                            </Button>
+                          </span>
+                        )}
+                      </td>
                       <td>${product.price.toFixed(2)}</td>
                       <td>{product.stockQuantity}</td>
                     </tr>

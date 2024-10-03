@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
 import {
   Button,
   Collapse,
@@ -22,15 +21,15 @@ import {
 import axios from "axios"; // For fetching notifications
 
 function AdminNavbar(props) {
-  const [collapseOpen, setcollapseOpen] = React.useState(false);
-  const [modalSearch, setmodalSearch] = React.useState(false);
-  const [color, setcolor] = React.useState("navbar-transparent");
-  const [notifications, setNotifications] = React.useState([]);
-  
-  const navigate = useNavigate(); // Initialize the navigate function from react-router-dom
+  const [collapseOpen, setcollapseOpen] = useState(false);
+  const [modalSearch, setmodalSearch] = useState(false);
+  const [color, setcolor] = useState("navbar-transparent");
+  const [notifications, setNotifications] = useState([]); // Holds notifications
 
-  React.useEffect(() => {
+  // Fetch notifications from API when the component mounts
+  useEffect(() => {
     fetchNotifications();
+
     window.addEventListener("resize", updateColor);
     return function cleanup() {
       window.removeEventListener("resize", updateColor);
@@ -65,6 +64,7 @@ function AdminNavbar(props) {
     }
   };
 
+  // Function to toggle collapse
   const toggleCollapse = () => {
     if (collapseOpen) {
       setcolor("navbar-transparent");
@@ -74,26 +74,14 @@ function AdminNavbar(props) {
     setcollapseOpen(!collapseOpen);
   };
 
+  // Function to toggle search modal
   const toggleModalSearch = () => {
     setmodalSearch(!modalSearch);
   };
 
-  // function to handle logout and redirect to login
-  const handleLogout = () => {
-    // Clear any session or authentication data here if necessary
-    // e.g., localStorage.removeItem("authToken");
-    
-    // Navigate to the login page
-    navigate("/login");
-  };
-
   return (
     <>
-      <Navbar
-        className={classNames("navbar-absolute", color)}
-        expand="lg"
-        style={{ position: "fixed", top: 0, width: "100%", zIndex: 1000 }}
-      >
+      <Navbar className={classNames("navbar-absolute", color)} expand="lg">
         <Container fluid>
           <div className="navbar-wrapper">
             <div
@@ -183,14 +171,12 @@ function AdminNavbar(props) {
                   <NavLink tag="li">
                     <DropdownItem className="nav-item">Profile</DropdownItem>
                   </NavLink>
+                  <NavLink tag="li">
+                    <DropdownItem className="nav-item">Settings</DropdownItem>
+                  </NavLink>
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li">
-                    <DropdownItem
-                      className="nav-item"
-                      onClick={handleLogout}
-                    >
-                      Log out
-                    </DropdownItem>
+                    <DropdownItem className="nav-item">Log out</DropdownItem>
                   </NavLink>
                 </DropdownMenu>
               </UncontrolledDropdown>

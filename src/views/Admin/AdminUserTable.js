@@ -14,10 +14,12 @@ import {
   FormGroup,
   Label,
   Input,
+  ModalHeader,
   Alert
 } from "reactstrap";
-import { FaSort } from "react-icons/fa";
+import { FaSort, FaUserPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import AddUser from "./AddUser";
 
 function UserTables() {
   const [users, setUsers] = useState([]);
@@ -26,18 +28,17 @@ function UserTables() {
   const [sortOrder, setSortOrder] = useState({ approvalStatus: null, activeStatus: null });
   const [alertMessage, setAlertMessage] = useState(null); // State for success or error message
   const [alertType, setAlertType] = useState(""); // State for alert type (success or danger)
+  const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
 
-  // Fetch the user data from the backend API
   useEffect(() => {
-    fetch("http://localhost:5069/api/user/getAllUsers")
+    fetch("http://127.0.0.1:15240/api/User/getAllUsers")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching user data:", error));
   }, []);
 
-  // Toggle modal visibility
   const toggleModal = () => setModal(!modal);
 
   // Handle input changes for new user
@@ -83,10 +84,11 @@ function UserTables() {
   };
 
   // Approve user action
+
   const handleApprove = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/user/admin/approve-user/${id}`,
+        `http://127.0.0.1:15240/api/user/admin/approve-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -113,7 +115,7 @@ function UserTables() {
   const handleReject = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/user/admin/reject-user/${id}`,
+        `http://127.0.0.1:15240/api/user/admin/reject-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -175,12 +177,28 @@ function UserTables() {
       <Row>
         <Col md="12">
           <Card>
-            <CardHeader className="d-flex justify-content-between align-items-center">
-              <CardTitle tag="h4">Customer Details</CardTitle>
-              {/* +Add Users Button */}
-              <Button color="primary" onClick={toggleModal}>
-                + Add User
-              </Button>
+            <CardHeader>
+              <div className="d-flex justify-content-between align-items-center">
+                <CardTitle tag="h4">Customer Details</CardTitle>
+                {/* Container for Add User and Search input */}
+                <div className="d-flex align-items-center">
+                  {/* Search input box */}
+
+                  <Input
+                    type="text"
+                    placeholder="Search Users"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ width: "230px", marginRight: "30px" }}
+                  />
+                  {/* Add User Icon (Clickable) */}
+                  <FaUserPlus
+                    size={28}
+                    onClick={toggleModal}
+                    style={{ cursor: "pointer", marginRight: "30px" }}
+                  />
+                </div>
+              </div>
             </CardHeader>
             <CardBody>
               {/* Display alert for success or error */}
@@ -193,6 +211,7 @@ function UserTables() {
                 <thead className="text-primary">
                   <tr>
                     <th>#</th>
+                    <th>ID</th>
                     <th>Email Address</th>
                     <th onClick={sortUsersByApprovalStatus} style={{ cursor: "pointer" }}>
                       Account Approval Status <FaSort />
@@ -206,7 +225,8 @@ function UserTables() {
                 <tbody>
                   {filteredUsers.map((user, index) => (
                     <tr key={user.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td> {/* Auto-incrementing ID with padding */}
+                      <td>{String(index + 1).padStart(3, "0")}</td>
+                      <td>{"CST" + user.id}</td>
                       <td>{user.email}</td>
                       <td>{user.userStatus}</td>
                       <td>{user.isActive ? "Active" : "Inactive"}</td>
@@ -215,9 +235,10 @@ function UserTables() {
                           color="success"
                           size="sm"
                           onClick={() => handleApprove(user.id)}
+                          style={{ marginRight: "15px" }}
                         >
                           Approve
-                        </Button>{" "}
+                        </Button>
                         <Button
                           color="danger"
                           size="sm"
@@ -235,7 +256,6 @@ function UserTables() {
         </Col>
       </Row>
 
-      {/* Modal for adding a user */}
       <Modal isOpen={modal} toggle={toggleModal}>
         <ModalBody style={{ backgroundColor: '#2C3E50', color: '#ECF0F1' }}> {/* Modal body inline background and text color */}
           <Form>

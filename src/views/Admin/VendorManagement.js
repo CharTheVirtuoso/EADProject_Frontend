@@ -7,6 +7,7 @@ import {
   Table,
   Row,
   Col,
+  Input, // Import Input component for the search box
   Button,
 } from "reactstrap";
 import { FaSort } from "react-icons/fa"; // Import the sort icon
@@ -16,6 +17,7 @@ function UserTables() {
   const [users, setUsers] = useState([]);
   const [modal, setModal] = useState(false); // State to handle modal visibility
   const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track sorting
+  const [searchQuery, setSearchQuery] = useState(""); // State to track search query
 
   const navigate = useNavigate();
 
@@ -30,8 +32,13 @@ function UserTables() {
   // Toggle modal visibility
   const toggleModal = () => setModal(!modal);
 
-  // Filter only vendors
-  const filteredUsers = users.filter((user) => user.role === "Vendor");
+  // Filter only vendors and apply search filter
+  const filteredUsers = users.filter(
+    (user) =>
+      user.role === "Vendor" &&
+      (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || // Filter by name
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())) // Filter by email
+  );
 
   // Function to handle sorting
   const handleSort = (field) => {
@@ -64,6 +71,14 @@ function UserTables() {
           <Card>
             <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Vendor Details</CardTitle>
+              {/* Search input box */}
+              <Input
+                type="text"
+                placeholder="Search by name or email"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ width: "250px", marginRight: "50px" }} // Adjust width as needed
+              />
             </CardHeader>
             <CardBody>
               <Table className="tablesorter" responsive>
@@ -73,6 +88,7 @@ function UserTables() {
                       #
                       <FaSort />
                     </th>
+                    <th>ID</th>
                     <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
                       Name
                       <FaSort />
@@ -101,12 +117,13 @@ function UserTables() {
                 <tbody>
                   {filteredUsers.map((user, index) => (
                     <tr key={user.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td> {/* Auto-incrementing ID with padding */}
+                      <td>{String(index + 1).padStart(3, "0")}</td>
+                      <td>{"VND" + user.id}</td>
                       <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td>{user.userStatus}</td>
                       <td>{user.isActive ? "Active" : "Inactive"}</td>
-                      <td>{user.rankings}</td>
+                      <td>{4.0}</td>
                     </tr>
                   ))}
                 </tbody>

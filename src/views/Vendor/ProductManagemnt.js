@@ -10,9 +10,14 @@ import {
   Button,
   Modal,
   ModalBody,
+  ModalFooter,
+  Input,
+
 } from "reactstrap";
 import { FaSort } from "react-icons/fa"; // Import the sort icon
 import { useNavigate } from "react-router-dom";
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; // Importing edit and delete icons
+import Swal from "sweetalert2"; // Import SweetAlert
 import AddEditProduct from "./AddEditProduct"; // Import Add/Edit Product Component
 
 function ProductTables() {
@@ -21,6 +26,8 @@ function ProductTables() {
   const [selectedProduct, setSelectedProduct] = useState(null); // Selected product for editing
   const [vendorId, setVendorId] = useState(""); // State to store vendor ID from localStorage
   const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track the current sort field and order
+  const [expandedProducts, setExpandedProducts] = useState({}); // State to track expanded product descriptions
+  const [searchTerm, setSearchTerm] = useState(""); // State to handle search input
 
   const navigate = useNavigate();
 
@@ -80,6 +87,23 @@ function ProductTables() {
     }
   };
 
+  // SweetAlert for delete confirmation
+  const confirmDeleteProduct = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDeleteProduct(id); // Call delete function if confirmed
+      }
+    });
+  };
+
   // Function to delete a product
   const handleDeleteProduct = async (id) => {
     try {
@@ -92,6 +116,7 @@ function ProductTables() {
 
       if (response.ok) {
         setProducts(products.filter((product) => product.id !== id));
+        Swal.fire("Deleted!", "Your product has been deleted.", "success"); // Success message
       } else {
         console.error("Failed to delete product.");
       }
@@ -115,6 +140,30 @@ function ProductTables() {
     setSortOrder({ field, order: newOrder });
   };
 
+  // Function to toggle description visibility
+  const toggleDescription = (id) => {
+    setExpandedProducts((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  // Function to handle search
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Filter products based on search term
+  const filteredProducts = products.filter((product) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      product.name.toLowerCase().includes(searchLower) ||
+      product.description.toLowerCase().includes(searchLower) ||
+      product.categoryName.toLowerCase().includes(searchLower) ||
+      product.stockQuantity.toString().includes(searchLower)
+    );
+  });
+
   return (
     <div className="content">
       <Row>
@@ -122,12 +171,25 @@ function ProductTables() {
           <Card>
             <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Product Details</CardTitle>
-              {/* +Add Product Button */}
-              <Button color="primary" onClick={() => toggleModal()}>
-                + Add Product
-              </Button>
+              <div className="d-flex align-items-center">
+                {/* Search Input */}
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={handleSearch}
+                  style={{ marginRight: "30px", width: "250px" }} // Adjust width as needed
+                />
+                {/* Icon for adding product */}
+                <FaPlus
+                  size={28}
+                  color="white"
+                  style={{ cursor: "pointer", marginRight: "30px" }}
+                  onClick={() => toggleModal()}
+                />
+              </div>
             </CardHeader>
-            <CardBody>
+            <CardBody style={{ paddingTop: "30px" }}>
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
@@ -165,7 +227,7 @@ function ProductTables() {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((product, index) => (
+                  {filteredProducts.map((product, index) => (
                     <tr key={product.id}>
                       <td>{String(index + 1).padStart(3, "0")}</td> {/* Auto-incrementing ID with padding */}
                       <td>
@@ -180,23 +242,39 @@ function ProductTables() {
                         )}
                       </td>
                       <td>{product.name}</td>
-                      <td>{product.description}</td>
+                      <td>
+                        {expandedProducts[product.id]
+                          ? product.description
+                          : `${product.description.substring(0, 50)}... `}
+                        <Button
+                          color="link"
+                          size="sm"
+                          onClick={() => toggleDescription(product.id)}
+                        >
+                          {expandedProducts[product.id]
+                            ? "See Less"
+                            : "See More"}
+                        </Button>
+                      </td>
+                      <td>{product.categoryName}</td>
                       <td>${product.price.toFixed(2)}</td>
                       <td>{product.stockQuantity}</td>
                       <td>
+                        {/* Edit button with green icon */}
                         <Button
                           color="success"
                           size="sm"
                           onClick={() => toggleModal(product)}
                         >
-                          Edit
+                          <FaEdit />
                         </Button>{" "}
+                        {/* Delete button with red icon */}
                         <Button
                           color="danger"
                           size="sm"
-                          onClick={() => handleDeleteProduct(product.id)}
+                          onClick={() => confirmDeleteProduct(product.id)} // SweetAlert confirmation before deletion
                         >
-                          Delete
+                          <FaTrash />
                         </Button>
                       </td>
                     </tr>

@@ -8,16 +8,17 @@ import {
   Row,
   Col,
   Button,
+  Input,
 } from "reactstrap";
 import { FaSort } from "react-icons/fa"; // Import the sort icon
 import { useParams } from "react-router-dom"; // Import useParams to get category name from URL
-
+import Swal from "sweetalert2";
 function Products() {
   const [products, setProducts] = useState([]);
   const { categoryName } = useParams(); // Get category name from URL parameters
   const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track sorting
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch products by category from the backend API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -67,29 +68,77 @@ function Products() {
     setSortOrder({ field, order: newOrder });
   };
 
-  // Function to handle removing a product
-  const handleRemoveProduct = (productId) => {
-    console.log(`Removing product with ID: ${productId}`);
-    // Add functionality to remove the product (e.g., API call to delete)
+  const handleRemoveProduct = async (id) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:15240/api/product/deleteProduct/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setProducts(products.filter((product) => product.id !== id));
+        Swal.fire({
+          icon: "success",
+          title: "Product Removed",
+          text: "The product has been successfully removed.",
+        });
+      } else {
+        console.error("Failed to delete product.");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
 
-  // Function to notify the vendor about low stock
-  const handleNotifyVendor = (vendorId, productName) => {
-    console.log(
-      `Notifying vendor with ID: ${vendorId} for product: ${productName}`
-    );
-    // Add functionality to notify vendor (e.g., API call or email notification)
+  // SweetAlert confirmation for removing a product
+  const confirmRemoveProduct = (productId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, remove it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleRemoveProduct(productId);
+      }
+    });
   };
+
+  const handleNotifyVendor = async (vendorId, productName) => {
+    Swal.fire({
+      icon: "info",
+      title: "Vendor Notified",
+      text: `Notification sent to the vendor about low stock for ${productName}.`,
+    });
+  };
+
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.vendorId.toString().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="content">
       <Row>
         <Col md="12">
           <Card>
-            <CardHeader>
+            <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Product List - {categoryName}</CardTitle>
+              <Input
+                type="text"
+                placeholder="Search Products"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ width: "250px", marginRight: "30px" }}
+              />
             </CardHeader>
-            <CardBody>
+            <CardBody style={{ paddingTop: "30px" }}>
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
@@ -122,7 +171,7 @@ function Products() {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((product, index) => {
+                  {filteredProducts.map((product, index) => {
                     let stockStatus;
                     if (product.stockQuantity === 0) {
                       stockStatus = (
@@ -144,24 +193,25 @@ function Products() {
                         <td>
                           {product.image ? (
                             <img
-                              src={product.Imgurl} // Display the image from Firebase URL
+                              src={product.Imgurl}
                               alt={product.name}
-                              style={{ width: "50px", height: "50px" }} // Adjust the size as needed
+                              style={{ width: "50px", height: "50px" }}
                             />
                           ) : (
-                            "No Image" // Fallback text if no image is available
+                            "No Image"
                           )}
                         </td>
                         <td>{product.name}</td>
                         <td>${product.price.toFixed(2)}</td>
                         <td>{product.stockQuantity}</td>
-                        <td>{stockStatus}</td> {/* Display Stock Status */}
-                        <td>{product.vendorId}</td> {/* Display Vendor ID */}
+                        <td>{stockStatus}</td>
+                        <td>{product.vendorId}</td>
                         <td>
                           <Button
                             color="danger"
                             size="sm"
-                            onClick={() => handleRemoveProduct(product.id)}
+                            onClick={() => confirmRemoveProduct(product.id)} // Use confirmRemoveProduct for SweetAlert confirmation
+                            style={{ marginRight: "15px" }}
                           >
                             Remove Product
                           </Button>{" "}
