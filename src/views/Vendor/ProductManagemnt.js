@@ -15,7 +15,8 @@ import {
   Input,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-import { FaPlus } from "react-icons/fa"; // Importing an icon for adding products
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; // Importing edit and delete icons
+import Swal from "sweetalert2"; // Import SweetAlert
 import AddEditProduct from "./AddEditProduct"; // Import Add/Edit Product Component
 
 function ProductTables() {
@@ -84,6 +85,23 @@ function ProductTables() {
     }
   };
 
+  // SweetAlert for delete confirmation
+  const confirmDeleteProduct = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDeleteProduct(id); // Call delete function if confirmed
+      }
+    });
+  };
+
   // Function to delete a product
   const handleDeleteProduct = async (id) => {
     try {
@@ -96,6 +114,7 @@ function ProductTables() {
 
       if (response.ok) {
         setProducts(products.filter((product) => product.id !== id));
+        Swal.fire("Deleted!", "Your product has been deleted.", "success"); // Success message
       } else {
         console.error("Failed to delete product.");
       }
@@ -202,19 +221,21 @@ function ProductTables() {
                       <td>${product.price.toFixed(2)}</td>
                       <td>{product.stockQuantity}</td>
                       <td>
+                        {/* Edit button with green icon */}
                         <Button
                           color="success"
                           size="sm"
                           onClick={() => toggleModal(product)}
                         >
-                          Edit
+                          <FaEdit />
                         </Button>{" "}
+                        {/* Delete button with red icon */}
                         <Button
                           color="danger"
                           size="sm"
-                          onClick={() => handleDeleteProduct(product.id)}
+                          onClick={() => confirmDeleteProduct(product.id)} // SweetAlert confirmation before deletion
                         >
-                          Delete
+                          <FaTrash />
                         </Button>
                       </td>
                     </tr>
@@ -226,16 +247,9 @@ function ProductTables() {
         </Col>
       </Row>
 
-      {/* Modal for adding/editing a product */}
-      <Modal isOpen={modal} toggle={() => toggleModal()}>
-        <ModalHeader toggle={() => toggleModal()}>
-          {selectedProduct ? "Edit Product" : "Add Product"}
-        </ModalHeader>
-        <AddEditProduct
-          product={selectedProduct}
-          onSave={handleSaveProduct}
-          onCancel={() => toggleModal()}
-        />
+      <Modal isOpen={modal} toggle={toggleModal}>
+        <ModalHeader toggle={toggleModal}></ModalHeader>
+        <AddEditProduct product={selectedProduct} onSave={handleSaveProduct} />
       </Modal>
     </div>
   );
