@@ -75,6 +75,7 @@ function UserTables() {
                 <thead className="text-primary">
                   <tr>
                     <th>#</th>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Email Address</th>
                     <th>Account Approval Status</th>
@@ -86,11 +87,12 @@ function UserTables() {
                   {filteredUsers.map((user, index) => (
                     <tr key={user.id}>
                       <td>{String(index + 1).padStart(3, "0")}</td>
+                      <td>{"VND" + user.id}</td>
                       <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td>{user.userStatus}</td>
                       <td>{user.isActive ? "Active" : "Inactive"}</td>
-                      <td>{user.rankings}</td>
+                      <td>{4.0}</td>
                     </tr>
                   ))}
                 </tbody>
