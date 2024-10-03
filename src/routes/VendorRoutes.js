@@ -1,10 +1,11 @@
 import Dashboard from "../views/Vendor/VendorDashboard.js";
+import ProductList from "../views/Vendor/ProductManagemnt.js";
 import TableList from "../views/TableList.js";
 // import UserProfile from "../views/UserProfile.js";
 
 var routes = [
   {
-    path: "/dashboard",
+    path: "/dashboard/:vendorId",
     name: "Vendor Dashboard",
     icon: "tim-icons icon-chart-pie-36",
     component: <Dashboard />,
@@ -18,11 +19,26 @@ var routes = [
   //   layout: "/admin",
   // },
   {
-    path: "/products",
-    name: "Product Managemnt",
-    icon: "tim-icons icon-puzzle-10",
+    path: "/products/:vendorId",
+    name: "Product Management",
+    icon: "tim-icons icon-components",
+    component: <ProductList />,
+    layout: "/vendor",
+  },
+  // {
+  //   path: "/products/:vendorId",
+  //   name: "Inventory Management",
+  //   icon: "tim-icons icon-basket-simple",
+  //   component: <TableList />,
+  //   layout: "/vendor",
+  // },
+  {
+    path: "/products/:vendorId",
+    name: "Order Management",
+    icon: "tim-icons icon-delivery-fast",
     component: <TableList />,
     layout: "/vendor",
   },
 ];
+
 export default routes;

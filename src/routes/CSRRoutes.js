@@ -16,5 +16,12 @@ var routes = [
     component: <UserTable />,
     layout: "/csr",
   },
+  {
+    path: "/users",
+    name: "Order Management",
+    icon: "tim-icons icon-delivery-fast",
+    component: <UserTable />,
+    layout: "/csr",
+  },
 ];
 export default routes;

@@ -14,7 +14,6 @@ import AdminDashboard from "./pages/Admin.js";
 import CSRDashboard from "./pages/CSR.js";
 import VendorDashboard from "./pages/Vendor.js";
 import Login from "./pages/Login.js";
-import Register from "./pages/Register.js";
 import "./assets/scss/black-dashboard-react.scss";
 import "./assets/demo/demo.css";
 import "./assets/css/nucleo-icons.css";
@@ -30,7 +29,7 @@ root.render(
     <BackgroundColorWrapper>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Register />} />
+          {/* <Route path="/" element={<Register />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/admin/*" element={<AdminDashboard />} />
           <Route path="/csr/*" element={<CSRDashboard />} />

@@ -20,7 +20,7 @@ import {
 } from "reactstrap";
 import axios from "axios"; // For fetching notifications
 
-function AdminNavbar(props) {
+function VendorNavbar(props) {
   const [collapseOpen, setcollapseOpen] = useState(false);
   const [modalSearch, setmodalSearch] = useState(false);
   const [color, setcolor] = useState("navbar-transparent");
@@ -40,19 +40,12 @@ function AdminNavbar(props) {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:15240/api/admin-notifications/unread"
+        "http://127.0.0.1:15240/api/vendor-notifications/unread"
       );
       setNotifications(response.data);
     } catch (error) {
       console.error("Error fetching notifications", error);
     }
-  };
-
-  // Remove a specific notification
-  const removeNotification = (id) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification._id !== id)
-    );
   };
 
   // Function to update navbar color on resize
@@ -77,6 +70,13 @@ function AdminNavbar(props) {
   // Function to toggle search modal
   const toggleModalSearch = () => {
     setmodalSearch(!modalSearch);
+  };
+
+  // Function to remove a notification by its ID
+  const removeNotification = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((notification) => notification._id !== id)
+    );
   };
 
   return (
@@ -129,15 +129,13 @@ function AdminNavbar(props) {
                   {notifications.length > 0 ? (
                     notifications.map((notification) => (
                       <NavLink key={notification._id} tag="li">
-                        <DropdownItem className="nav-item d-flex justify-content-between">
-                          <span>{notification.message}</span>
-                          {/* Close icon for each notification */}
-                          <button
-                            className="btn btn-link p-0 ml-2"
+                        <DropdownItem className="nav-item">
+                          {notification.message}
+                          <Button
+                            close
+                            className="notification-close"
                             onClick={() => removeNotification(notification._id)}
-                          >
-                            <i className="tim-icons icon-simple-remove" />
-                          </button>
+                          />
                         </DropdownItem>
                       </NavLink>
                     ))
@@ -205,4 +203,4 @@ function AdminNavbar(props) {
   );
 }
 
-export default AdminNavbar;
+export default VendorNavbar;

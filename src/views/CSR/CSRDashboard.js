@@ -47,8 +47,8 @@ function Dashboard(props) {
               <CardHeader>
                 <Row>
                   <Col className="text-left" sm="6">
-                    <h5 className="card-category">Total Shipments</h5>
-                    <CardTitle tag="h2">Performance</CardTitle>
+                    <h5 className="card-category">Total amount of</h5>
+                    <CardTitle tag="h2">Orders</CardTitle>
                   </Col>
                   <Col sm="6">
                     <ButtonGroup

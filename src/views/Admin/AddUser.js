@@ -11,8 +11,10 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 function AddUser() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
@@ -22,6 +24,7 @@ function AddUser() {
     e.preventDefault();
 
     const newUser = {
+      name,
       email,
       password,
       role,
@@ -46,14 +49,19 @@ function AddUser() {
       if (response.status === 201) {
         const createdUser = await response.json();
         console.log("User created successfully:", createdUser);
-        setMessage("User created successfully!"); // Success message
+
+        // Show success alert
+        Swal.fire({
+          title: "Success!",
+          text: "User created successfully!",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
       } else {
-        setMessage("Error creating user. Please try again."); // Error message
         const errorData = await response.json();
         console.error("Error creating user:", errorData);
       }
     } catch (error) {
-      setMessage("Error while creating user. Please try again."); // Error message
       console.error("Error while creating user:", error);
     }
   };
@@ -68,6 +76,20 @@ function AddUser() {
             </CardHeader>
             <CardBody>
               <Form onSubmit={handleSubmit}>
+                <Row>
+                  <Col md="12">
+                    <FormGroup>
+                      <label>Name</label>
+                      <Input
+                        type="name"
+                        placeholder="Enter name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
                 <Row>
                   <Col md="12">
                     <FormGroup>

@@ -1,9 +1,9 @@
-.wrapper{
+.wrapper {
   position: relative;
   top: 0;
   height: 100vh;
 
-  &.wrapper-full-page{
+  &.wrapper-full-page {
     min-height: 100vh;
     height: auto;
   }
@@ -11,14 +11,12 @@
 
 .sidebar-wrapper ul li div.collapse ul li div.collapse ul li a,
 .sidebar-wrapper ul li div.collapse ul li div.collapsing ul li a,
-.sidebar-wrapper ul li div.collapsing ul li div.collapse ul li a{
-
+.sidebar-wrapper ul li div.collapsing ul li div.collapse ul li a {
   margin-left: 25px;
-
 }
 .sidebar,
-.off-canvas-sidebar{
-  @include linear-gradient($primary-states, $primary);
+.off-canvas-sidebar {
+  background-color: $primary;
   height: calc(100vh - 90px);
   width: 230px;
   position: fixed;
@@ -28,12 +26,12 @@
   background-size: cover;
   background-position: center center;
   display: block;
-  box-shadow: 0px 0px 45px 0px rgba(0,0,0,0.6);
+  box-shadow: 0px 0px 45px 0px rgba(0, 0, 0, 0.6);
   margin-top: 80px;
   margin-left: 20px;
   border-radius: 5px;
 
-  .sidebar-wrapper{
+  .sidebar-wrapper {
     width: $full-width;
     min-height: 100%;
     max-height: calc(100vh - 705px);
@@ -41,23 +39,23 @@
     position: relative;
     overflow: auto;
 
-    .dropdown .dropdown-backdrop{
+    .dropdown .dropdown-backdrop {
       display: none !important;
     }
 
-    .navbar-form{
+    .navbar-form {
       border: none;
     }
 
     > .nav,
-    .user .info{
-      [data-toggle="collapse"] ~ div > ul > li > a{
-        span{
+    .user .info {
+      [data-toggle="collapse"] ~ div > ul > li > a {
+        span {
           display: inline-block;
           // @extend .animation-transition-general;
         }
 
-        .sidebar-normal{
+        .sidebar-normal {
           margin: 0;
           position: relative;
           transform: translateX(0px);
@@ -69,7 +67,7 @@
           color: $opacity-8;
         }
 
-        .sidebar-mini-icon{
+        .sidebar-mini-icon {
           text-transform: uppercase;
           width: 34px;
           margin-right: 10px;
@@ -85,7 +83,7 @@
           color: $opacity-8;
         }
 
-        i{
+        i {
           font-size: 17px;
           line-height: 20px;
           width: 26px;
@@ -93,23 +91,19 @@
       }
     }
 
-
-
-    [data-toggle="collapse"] ~ div > ul > li:hover > a{
-      .sidebar-mini-icon, .sidebar-normal{
+    [data-toggle="collapse"] ~ div > ul > li:hover > a {
+      .sidebar-mini-icon,
+      .sidebar-normal {
         color: $white;
       }
-
     }
 
-    .nav [data-toggle="collapse"] ~ div > ul > li > a .sidebar-mini-icon{
+    .nav [data-toggle="collapse"] ~ div > ul > li > a .sidebar-mini-icon {
       opacity: 0;
     }
-
-
   }
 
-  .navbar-minimize{
+  .navbar-minimize {
     position: absolute;
     right: 20px;
     top: 2px;
@@ -117,7 +111,7 @@
 
     // @extend .animation-transition-general;
   }
-  .logo-tim{
+  .logo-tim {
     border-radius: 50%;
     border: 1px solid #333;
     display: block;
@@ -126,32 +120,32 @@
     float: left;
     overflow: hidden;
 
-    img{
+    img {
       width: 60px;
       height: 60px;
     }
   }
 
-  .nav{
+  .nav {
     margin-top: 20px;
     display: block;
 
-    .caret{
+    .caret {
       top: 14px;
       position: absolute;
       right: 10px;
     }
 
-    li{
-      > a + div .nav{
+    li {
+      > a + div .nav {
         margin-top: 5px;
-        li > a{
+        li > a {
           margin-top: 0px;
           padding: 8px 8px;
         }
       }
 
-      > a{
+      > a {
         margin: 10px 15px 0;
         border-radius: $btn-round-radius;
         color: $white;
@@ -165,31 +159,32 @@
         line-height: $line-height-lg;
       }
 
-      &:first-child > a{
+      &:first-child > a {
         margin: 0 15px;
-
       }
 
       &:hover:not(.active) > a,
-      &:focus:not(.active) > a{
-        p,i{
+      &:focus:not(.active) > a {
+        p,
+        i {
           color: $white;
         }
       }
 
       &:hover:not(.active) > a i,
-      &:focus:not(.active) > a i{
+      &:focus:not(.active) > a i {
         color: $white;
       }
 
-      &.active > a:not([data-toggle="collapse"]){
+      &.active > a:not([data-toggle="collapse"]) {
         background: transparent;
 
-        i,p{
+        i,
+        p {
           color: white;
         }
 
-        &:before{
+        &:before {
           content: " ";
           position: absolute;
           height: 6px;
@@ -201,24 +196,24 @@
         }
       }
 
-      &.active > a[data-toggle="collapse"]{
+      &.active > a[data-toggle="collapse"] {
         background: transparent;
         box-shadow: none;
         color: $white;
 
-        i{
+        i {
           color: $white;
         }
 
-        & + div .nav .active a{
-
+        & + div .nav .active a {
           box-shadow: none;
-          .sidebar-mini-icon, .sidebar-normal{
+          .sidebar-mini-icon,
+          .sidebar-normal {
             color: $white;
             font-weight: $font-weight-normal;
           }
 
-          &:before{
+          &:before {
             content: " ";
             position: absolute;
             height: 6px;
@@ -229,20 +224,20 @@
             border-radius: 50%;
           }
         }
-        &:before{
+        &:before {
           content: " ";
           position: absolute;
           height: 6px;
           width: 6px;
           top: 22px;
           left: -4px;
-          background: rgba($white,0.6);
+          background: rgba($white, 0.6);
           border-radius: 50%;
         }
       }
     }
 
-    p{
+    p {
       margin: 0;
       line-height: 30px;
       position: relative;
@@ -252,7 +247,7 @@
       @extend .animation-transition-general;
     }
 
-    i{
+    i {
       font-size: 20px;
       float: left;
       margin-right: 12px;
@@ -264,17 +259,17 @@
     }
   }
 
-  .logo{
+  .logo {
     position: relative;
     padding: $padding-base-vertical $padding-base-horizontal;
     z-index: 4;
 
     a.logo-mini,
-    a.logo-normal{
+    a.logo-normal {
       @extend .animation-transition-general;
     }
 
-    a.logo-mini{
+    a.logo-mini {
       opacity: 1;
       float: left;
       width: 34px;
@@ -287,24 +282,23 @@
       }
     }
 
-    a.logo-normal{
+    a.logo-normal {
       display: block;
       opacity: 1;
       @include transform-translate-x(0px);
     }
 
-    &:after{
-      content: '';
+    &:after {
+      content: "";
       position: absolute;
       bottom: 0;
       right: 15px;
       height: 1px;
       width: calc(100% - 30px);
       background: $opacity-5;
-
     }
 
-    p{
+    p {
       float: left;
       font-size: 20px;
       margin: 10px 10px;
@@ -313,7 +307,7 @@
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
-    .simple-text{
+    .simple-text {
       text-transform: uppercase;
       padding: $padding-base-vertical 0;
       display: block;
@@ -327,7 +321,7 @@
     }
   }
 
-  .logo-tim{
+  .logo-tim {
     border-radius: 50%;
     border: 1px solid #333;
     display: block;
@@ -336,26 +330,26 @@
     float: left;
     overflow: hidden;
 
-    img{
+    img {
       width: 60px;
       height: 60px;
     }
   }
 
-  &[data="blue"]{
-    @include linear-gradient($info-states, $info);
+  &[data="blue"] {
+    background-color: $info;
   }
-  &[data="green"]{
-    @include linear-gradient($success-states, $success);
+  &[data="green"] {
+    background-color: $success;
   }
 
-  .user{
+  .user {
     padding-bottom: 20px;
-    margin:20px auto 0;
+    margin: 20px auto 0;
     position: relative;
 
-    &:after{
-      content: '';
+    &:after {
+      content: "";
       position: absolute;
       bottom: 0;
       right: 15px;
@@ -364,7 +358,7 @@
       background: $opacity-5;
     }
 
-    .photo{
+    .photo {
       width: 34px;
       height: 34px;
       overflow: hidden;
@@ -376,12 +370,12 @@
       box-shadow: $box-shadow-raised;
       @extend .animation-transition-general;
 
-      img{
+      img {
         width: $full-width;
       }
     }
 
-    a{
+    a {
       color: $white;
       text-decoration: none;
       padding: $padding-base-vertical 15px;
@@ -389,12 +383,12 @@
       @extend .animation-transition-general;
     }
 
-    .info{
-      > a{
+    .info {
+      > a {
         display: block;
         line-height: 18px;
 
-        > span{
+        > span {
           @extend .animation-transition-general;
           display: block;
           position: relative;
@@ -402,7 +396,7 @@
         }
       }
 
-      .caret{
+      .caret {
         position: absolute;
         top: 8px;
         right: 18px;
@@ -411,30 +405,27 @@
   }
 
   transition: 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
-
 }
 
-
-.visible-on-sidebar-regular{
+.visible-on-sidebar-regular {
   display: inline-block !important;
 }
-.visible-on-sidebar-mini{
+.visible-on-sidebar-mini {
   display: none !important;
 }
 
-.off-canvas-sidebar{
+.off-canvas-sidebar {
   .nav {
     > li > a,
-    > li > a:hover{
+    > li > a:hover {
       color: $white;
     }
 
-    > li > a:focus{
+    > li > a:focus {
       background: rgba(200, 200, 200, 0.2);
     }
   }
 }
-
 
 .main-panel {
   position: relative;
@@ -444,17 +435,17 @@
   border-top: 2px solid $primary;
   background: linear-gradient($background-black, $background-states-black);
 
-  @include transitions (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+  @include transitions(0.5s, cubic-bezier(0.685, 0.0473, 0.346, 1));
 
-  &[data="blue"]{
+  &[data="blue"] {
     border-top: 2px solid $info;
   }
 
-  &[data="green"]{
+  &[data="green"] {
     border-top: 2px solid $success;
   }
 
-  &[data="primary"]{
+  &[data="primary"] {
     border-top: 2px solid $primary;
   }
 
@@ -467,15 +458,13 @@
     margin-bottom: 0;
   }
 
-
   .header {
     margin-bottom: 50px;
   }
 }
 
-
-.perfect-scrollbar-on{
-  .main-panel{
+.perfect-scrollbar-on {
+  .main-panel {
     height: 100%;
     max-height: 100%;
   }
@@ -483,62 +472,68 @@
 
 .sidebar,
 .main-panel,
-.sidebar-wrapper{
+.sidebar-wrapper {
   -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 991px) {
   .sidebar,
   .main-panel,
-  .sidebar-wrapper{
-    -webkit-transition-property: top,bottom,width;
-    transition-property: top,bottom, width;
-    -webkit-transition-duration: .2s,.2s, .35s;
-    transition-duration: .2s,.2s, .35s;
-    -webkit-transition-timing-function: linear,linear,ease;
-    transition-timing-function: linear,linear,ease;
+  .sidebar-wrapper {
+    -webkit-transition-property: top, bottom, width;
+    transition-property: top, bottom, width;
+    -webkit-transition-duration: 0.2s, 0.2s, 0.35s;
+    transition-duration: 0.2s, 0.2s, 0.35s;
+    -webkit-transition-timing-function: linear, linear, ease;
+    transition-timing-function: linear, linear, ease;
   }
 
-  .sidebar-mini{
-    .visible-on-sidebar-regular{
+  .sidebar-mini {
+    .visible-on-sidebar-regular {
       display: none !important;
     }
-    .visible-on-sidebar-mini{
+    .visible-on-sidebar-mini {
       display: inline-block !important;
     }
 
-    .sidebar{
+    .sidebar {
       width: 80px;
 
-      .sidebar-wrapper{
+      .sidebar-wrapper {
         width: 100% !important;
       }
     }
 
-
-    .sidebar{
+    .sidebar {
       display: block;
       z-index: 1030;
       box-shadow: $sidebar-box-shadow;
 
-      .logo{
-        a.logo-normal{
+      .logo {
+        a.logo-normal {
           opacity: 0;
           @include transform-translate-x(-25px);
         }
       }
 
-      .sidebar-wrapper{
+      .sidebar-wrapper {
         > .nav [data-toggle="collapse"] ~ div > ul > li > a .sidebar-normal,
-        .user .info [data-toggle="collapse"] ~ div > ul > li > a .sidebar-normal,
+        .user
+          .info
+          [data-toggle="collapse"]
+          ~ div
+          > ul
+          > li
+          > a
+          .sidebar-normal,
         .user .info > a > span,
-        > .nav li > a p{
+        > .nav li > a p {
           @include transform-translate-x(-25px);
           opacity: 0;
         }
       }
 
-      .nav [data-toggle="collapse"] ~ div > ul > li > a .sidebar-mini-icon{
+      .nav [data-toggle="collapse"] ~ div > ul > li > a .sidebar-mini-icon {
         opacity: 1;
       }
     }
@@ -551,92 +546,101 @@
           opacity: 1;
           @include transform-translate-x(0);
         }
-
       }
 
-      .navbar-minimize{
+      .navbar-minimize {
         opacity: 1;
       }
-      .sidebar-wrapper{
+      .sidebar-wrapper {
         width: 260px;
 
         > .nav li > a p,
         > .nav [data-toggle="collapse"] ~ div > ul > li > a .sidebar-normal,
-        .user .info [data-toggle="collapse"] ~ div > ul > li > a .sidebar-normal,
-        .user .info > a > span{
+        .user
+          .info
+          [data-toggle="collapse"]
+          ~ div
+          > ul
+          > li
+          > a
+          .sidebar-normal,
+        .user .info > a > span {
           @include transform-translate-x(0px);
           opacity: 1;
         }
       }
 
-      .nav [data-toggle="collapse"] ~ div > ul > li > a .sidebar-mini-icon{
+      .nav [data-toggle="collapse"] ~ div > ul > li > a .sidebar-mini-icon {
         opacity: 0;
       }
-
-
-
     }
 
-    .main-panel{
-      > .content{
+    .main-panel {
+      > .content {
         padding-left: 130px;
       }
     }
 
-    footer{
+    footer {
       padding-left: 130px;
     }
   }
 
-  .navbar-minimize{
+  .navbar-minimize {
     button {
       margin-left: 10px;
-      i{
+      i {
         color: $white;
         font-size: 20px;
       }
     }
   }
-
 }
 
 .panel-header {
   height: 260px;
   padding-top: 80px;
   padding-bottom: 45px;
-  background: #141E30;  /* fallback for old browsers */
-  background: -webkit-gradient(linear, left top, right top, from(#0c2646), color-stop(60%, #204065), to(#2a5788));
+  background: #141e30; /* fallback for old browsers */
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#0c2646),
+    color-stop(60%, #204065),
+    to(#2a5788)
+  );
   background: linear-gradient(to right, #0c2646 0%, #204065 60%, #2a5788 100%);
   position: relative;
   overflow: hidden;
 
-  .header{
-    .title{
+  .header {
+    .title {
       color: $white;
     }
-    .category{
+    .category {
       max-width: 600px;
       color: $opacity-5;
       margin: 0 auto;
       font-size: 13px;
 
-      a{
+      a {
         color: $white;
       }
     }
   }
 }
 
-.panel-header-sm{
+.panel-header-sm {
   height: 135px;
 }
 
-.panel-header-lg{
-  height: 380px
+.panel-header-lg {
+  height: 380px;
 }
 
-@media screen and (max-width: 991px){
-  .sidebar{
+@media screen and (max-width: 991px) {
+  .sidebar {
     position: fixed;
     display: block;
     top: 0;
@@ -654,8 +658,8 @@
     @include transform-translate-x(-260px);
   }
 
-  .wrapper{
-    @include transition (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+  .wrapper {
+    @include transition(0.5s, cubic-bezier(0.685, 0.0473, 0.346, 1));
   }
 
   .main-panel {
@@ -665,38 +669,36 @@
     }
   }
 
-  .nav-open{
-    .main-panel{
+  .nav-open {
+    .main-panel {
       right: 0;
       @include transform-translate-x(260px);
     }
 
-    .sidebar{
-
+    .sidebar {
       @include transition(0.5s cubic-bezier(0.685, 0.0473, 0.346, 1));
       @include transform-translate-x(0px);
-      &:before{
+      &:before {
         content: unset;
       }
     }
 
-    body{
+    body {
       position: relative;
       overflow-x: hidden;
     }
 
-    .menu-on-right{
-
-      .main-panel{
+    .menu-on-right {
+      .main-panel {
         @include transform-translate-x(-260px);
       }
 
       .navbar-collapse,
-      .sidebar{
+      .sidebar {
         @include transform-translate-x(0px);
       }
 
-      #bodyClick{
+      #bodyClick {
         right: 260px;
         left: auto;
       }
@@ -706,15 +708,15 @@
     }
   }
 
-  .menu-on-right{
-    .sidebar{
+  .menu-on-right {
+    .sidebar {
       left: auto;
       right: 0;
       @include transform-translate-x(260px);
     }
   }
 
-  #bodyClick{
+  #bodyClick {
     height: 100%;
     width: 100%;
     position: fixed;
@@ -726,19 +728,16 @@
     z-index: 9999;
     overflow-x: hidden;
     background-color: transparent;
-    @include transition (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+    @include transition(0.5s, cubic-bezier(0.685, 0.0473, 0.346, 1));
   }
-  .navbar .dropdown-menu{
+  .navbar .dropdown-menu {
     position: static !important;
   }
-
 }
 
-@media screen and (max-width: 768px){
-
+@media screen and (max-width: 768px) {
   .main-panel .content {
     padding-left: 15px;
     padding-right: 15px;
   }
-
 }

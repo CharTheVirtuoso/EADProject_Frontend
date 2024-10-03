@@ -4,90 +4,68 @@ import {
   CardHeader,
   CardBody,
   CardTitle,
-  Table,
   Row,
   Col,
   Button,
 } from "reactstrap";
+import { BiCategory } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
-function UserTables() {
-  const [users, setUsers] = useState([]);
+function CategoryCards() {
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate(); // Use navigate for routing
 
-  // Fetch the user data from the backend API
+  // Fetch the category data from the backend API
   useEffect(() => {
-    fetch("http://127.0.0.1:15240/api/user/getAllUsers")
+    fetch(
+      "http://127.0.0.1:15240/api/category/getAllCategoriesWithProductCount"
+    )
       .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error("Error fetching user data:", error));
+      .then((data) => setCategories(data))
+      .catch((error) => console.error("Error fetching category data:", error));
   }, []);
-
-  // Filter only customers
-  const filteredUsers = users.filter((user) => user.role === "Customer");
-
-  // Function to handle approve/reject actions
-  const handleApprove = (id) => {
-    console.log(`User with ID ${id} approved`);
-    // Add logic to call your API to approve the user
-  };
-
-  const handleReject = (id) => {
-    console.log(`User with ID ${id} rejected`);
-    // Add logic to call your API to reject the user
-  };
 
   return (
     <div className="content">
       <Row>
-        <Col md="12">
-          <Card>
-            <CardHeader>
-              <CardTitle tag="h4">Customer Table</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <Table className="tablesorter" responsive>
-                <thead className="text-primary">
-                  <tr>
-                    <th>#</th>
-                    <th>Email Address</th>
-                    <th>Acccount Approval Status</th>
-                    <th>Account Active Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredUsers.map((user, index) => (
-                    <tr key={user.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>{" "}
-                      {/* Auto-incrementing ID with padding */}
-                      <td>{user.email}</td>
-                      <td>{user.userStatus}</td>
-                      <td>{user.isActive ? "Active" : "Inactive"}</td>
-                      <td>
-                        <Button
-                          color="success"
-                          size="sm"
-                          onClick={() => handleApprove(user.id)}
-                        >
-                          Approve
-                        </Button>{" "}
-                        <Button
-                          color="danger"
-                          size="sm"
-                          onClick={() => handleReject(user.id)}
-                        >
-                          Reject
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </CardBody>
-          </Card>
-        </Col>
+        {categories.map((category) => (
+          <Col md="3" key={category.categoryName}>
+            <Card className="mb-3">
+              <CardHeader>
+                <CardTitle tag="h3">
+                  <BiCategory className="me-2" />
+                  {" " + category.categoryName}
+                </CardTitle>
+
+                {/* Display the total product count under the category name */}
+                <h5 className="text-muted">
+                  Total Products: {category.categoryCount}
+                </h5>
+
+                {/* Display the active status of the category */}
+                <h6
+                  className={category.isActive ? "text-success" : "text-danger"}
+                >
+                  Status: {category.isActive ? "Active" : "Inactive"}
+                </h6>
+              </CardHeader>
+              <CardBody>
+                {/* Show only the Manage Stocks button */}
+                <Button
+                  color="primary"
+                  onClick={() =>
+                    navigate(`/admin/stocks/${category.categoryName}`)
+                  }
+                >
+                  Manage Stocks
+                </Button>
+              </CardBody>
+            </Card>
+          </Col>
+        ))}
       </Row>
     </div>
   );
 }
 
-export default UserTables;
+export default CategoryCards;
