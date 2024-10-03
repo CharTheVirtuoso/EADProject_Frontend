@@ -9,11 +9,13 @@ import {
   Col,
   Button,
 } from "reactstrap";
+import { FaSort } from "react-icons/fa"; // Import the sort icon
 import { useParams } from "react-router-dom"; // Import useParams to get category name from URL
 
 function Products() {
   const [products, setProducts] = useState([]);
   const { categoryName } = useParams(); // Get category name from URL parameters
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track sorting
 
   // Fetch products by category from the backend API
   useEffect(() => {
@@ -35,6 +37,35 @@ function Products() {
 
     fetchProducts();
   }, [categoryName]);
+
+  // Function to handle sorting
+  const handleSort = (field) => {
+    const isAsc = sortOrder.field === field && sortOrder.order === "asc";
+    const newOrder = isAsc ? "desc" : "asc";
+
+    const sortedProducts = [...products].sort((a, b) => {
+      if (field === "stockQuantity" || field === "price") {
+        // Numeric sorting for stockQuantity and price
+        return newOrder === "asc" ? a[field] - b[field] : b[field] - a[field];
+      } else if (field === "stockStatus") {
+        // Sorting based on stock status text
+        const getStockStatus = (product) => {
+          if (product.stockQuantity === 0) return "Out of Stock";
+          if (product.stockQuantity < 5) return "Low Stock";
+          return "In Stock";
+        };
+        const statusA = getStockStatus(a);
+        const statusB = getStockStatus(b);
+        return newOrder === "asc" ? statusA.localeCompare(statusB) : statusB.localeCompare(statusA);
+      } else {
+        // Default sorting for other fields (e.g., strings)
+        return newOrder === "asc" ? a[field].localeCompare(b[field]) : b[field].localeCompare(a[field]);
+      }
+    });
+
+    setProducts(sortedProducts);
+    setSortOrder({ field, order: newOrder });
+  };
 
   // Function to handle removing a product
   const handleRemoveProduct = (productId) => {
@@ -62,13 +93,31 @@ function Products() {
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th>#</th>
+                    <th onClick={() => handleSort("id")} style={{ cursor: "pointer" }}>
+                      #
+                      <FaSort />
+                    </th>
                     <th>Image</th>
-                    <th>Product Name</th>
-                    <th>Price</th>
-                    <th>Stock Quantity</th>
-                    <th>Stock Status</th>
-                    <th>Vendor ID</th> {/* New Vendor ID Column */}
+                    <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                      Product Name
+                      <FaSort />
+                    </th>
+                    <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
+                      Price
+                      <FaSort />
+                    </th>
+                    <th onClick={() => handleSort("stockQuantity")} style={{ cursor: "pointer" }}>
+                      Stock Quantity
+                      <FaSort />
+                    </th>
+                    <th onClick={() => handleSort("stockStatus")} style={{ cursor: "pointer" }}>
+                      Stock Status
+                      <FaSort />
+                    </th>
+                    <th onClick={() => handleSort("vendorId")} style={{ cursor: "pointer" }}>
+                      Vendor ID
+                      <FaSort />
+                    </th>
                     <th>Actions</th>
                   </tr>
                 </thead>

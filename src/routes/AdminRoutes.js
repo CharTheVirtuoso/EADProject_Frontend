@@ -18,7 +18,7 @@ var routes = [
   {
     path: "/users",
     name: "User Management",
-    icon: "tim-icons icon-single-02", // A user icon makes sense for user management
+    icon: "tim-icons icon-single-02", // A user icon makes sense for user management 
     component: <UserTable />,
     layout: "/admin",
   },
@@ -50,7 +50,6 @@ var routes = [
     component: <Notificatoions />,
     layout: "/admin",
   },
-
   {
     path: "/products/:categoryName",
     component: <ProductList />,

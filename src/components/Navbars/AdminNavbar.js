@@ -165,14 +165,11 @@ function AdminNavbar(props) {
                   <NavLink tag="li">
                     <DropdownItem className="nav-item">Profile</DropdownItem>
                   </NavLink>
-                  <NavLink tag="li">
-                    <DropdownItem className="nav-item">Settings</DropdownItem>
-                  </NavLink>
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li">
                     <DropdownItem
                       className="nav-item"
-                      onClick={handleLogout} // Attach the logout handler here
+                      onClick={handleLogout}
                     >
                       Log out
                     </DropdownItem>

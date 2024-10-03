@@ -9,11 +9,13 @@ import {
   Col,
   Button,
 } from "reactstrap";
+import { FaSort } from "react-icons/fa"; // Import the sort icon
 import { useParams } from "react-router-dom"; // Import useParams to get category name from URL
 
 function Products() {
   const [products, setProducts] = useState([]);
   const { categoryName } = useParams(); // Get category name from URL parameters
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track sorting
 
   // Fetch products by category from the backend API
   useEffect(() => {
@@ -36,6 +38,25 @@ function Products() {
     fetchProducts();
   }, [categoryName]);
 
+  // Sorting functionality
+  const handleSort = (field) => {
+    const isAsc = sortOrder.field === field && sortOrder.order === "asc";
+    const newOrder = isAsc ? "desc" : "asc";
+
+    const sortedProducts = [...products].sort((a, b) => {
+      if (a[field] < b[field]) {
+        return newOrder === "asc" ? -1 : 1;
+      }
+      if (a[field] > b[field]) {
+        return newOrder === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+
+    setProducts(sortedProducts);
+    setSortOrder({ field, order: newOrder });
+  };
+
   return (
     <div className="content">
       <Row>
@@ -48,12 +69,24 @@ function Products() {
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th>#</th>
+                    <th onClick={() => handleSort("id")} style={{ cursor: "pointer" }}>
+                      #
+                      <FaSort />
+                    </th>
                     <th>Image</th> {/* New Image Column */}
-                    <th>Product Name</th>
+                    <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                      Product Name
+                      <FaSort />
+                    </th>
                     <th>Description</th>
-                    <th>Price</th>
-                    <th>Stock Quantity</th>
+                    <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
+                      Price
+                      <FaSort />
+                    </th>
+                    <th onClick={() => handleSort("stockQuantity")} style={{ cursor: "pointer" }}>
+                      Stock Quantity
+                      <FaSort />
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -76,7 +109,6 @@ function Products() {
                       <td>{product.description}</td>
                       <td>${product.price.toFixed(2)}</td>
                       <td>{product.stockQuantity}</td>
-                      {/* <td>{product.inStock ? "In Stock" : "Out of Stock"}</td> */}
                     </tr>
                   ))}
                 </tbody>
