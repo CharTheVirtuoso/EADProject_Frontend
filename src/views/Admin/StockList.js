@@ -71,7 +71,7 @@ function Products() {
   const handleRemoveProduct = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:15240/api/product/deleteProduct/${id}`,
+        `http://localhost:5069/api/product/deleteProduct/${id}`,
         {
           method: "DELETE",
         }

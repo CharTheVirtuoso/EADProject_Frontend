@@ -12,10 +12,11 @@ import {
   ModalHeader,
   ModalBody,
   Input,
+  Spinner, // Import Spinner for loading indicator
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-import AddUser from "../Admin/AddUser"; // Import the AddUser component
-import { FaUserPlus } from "react-icons/fa";
+import AddUser from "../Admin/AddUser";
+import { FaUserPlus, FaSort } from "react-icons/fa"; // Importing sort icon
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -23,32 +24,41 @@ const MySwal = withReactContent(Swal);
 
 function CSRUserTable() {
   const [users, setUsers] = useState([]);
-  const [modal, setModal] = useState(false); // State to handle modal visibility
-  const [searchTerm, setSearchTerm] = useState(""); // State for the search term
+  const [modal, setModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true); // State to track loading status
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
   const navigate = useNavigate();
 
-  // Fetch the user data from the backend API
+  const MySwal = withReactContent(Swal.mixin({
+    customClass: {
+      popup: 'swal-custom-bg',
+    },
+  }));
+
   useEffect(() => {
     fetch("http://localhost:5069/api/user/getAllUsers")
       .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error("Error fetching user data:", error));
+      .then((data) => {
+        setUsers(data);
+        setLoading(false); // Set loading to false once data is fetched
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setLoading(false); // Stop loading even if there's an error
+      });
   }, []);
 
-  // Toggle modal visibility
   const toggleModal = () => setModal(!modal);
 
-  // Filter users whose account is not activated
   const filteredUsers = users
     .filter((user) => !user.isActive && user.userStatus !== "Pending")
     .filter((user) =>
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-  // Function to handle reactivation of users
   const handleReactivate = async (id) => {
-
     const confirmed = await MySwal.fire({
       title: "Are you sure?",
       text: "Do you want to reactivate this user account?",
@@ -56,12 +66,22 @@ function CSRUserTable() {
       showCancelButton: true,
       confirmButtonText: "Yes, reactivate!",
       cancelButtonText: "No, cancel",
+      customClass: {
+        popup: 'swal-custom-bg',
+      },
+      didOpen: () => {
+        const swalPopup = document.querySelector('.swal-custom-bg');
+        if (swalPopup) {
+          swalPopup.style.backgroundColor = '#2C3E50';
+          swalPopup.style.color = '#ffffff';
+        }
+      },
     });
-      
+
     if (confirmed.isConfirmed) {
       try {
         const response = await fetch(
-          `http://127.0.0.1:15240/api/user/${id}/reactivateUser`,
+          `http://localhost:5069/api/user/${id}/reactivateUser`,
           {
             method: "PUT",
             headers: {
@@ -71,24 +91,97 @@ function CSRUserTable() {
         );
 
         if (response.ok) {
-          MySwal.fire(
-            "Success",
-            "User account has been reactivated.",
-            "success"
-          );
+          MySwal.fire({
+            title: "Success",
+            text: "User account has been reactivated.",
+            icon: "success",
+            customClass: {
+              popup: 'swal-custom-bg',
+            },
+            didOpen: () => {
+              const swalPopup = document.querySelector('.swal-custom-bg');
+              if (swalPopup) {
+                swalPopup.style.backgroundColor = '#2C3E50';
+                swalPopup.style.color = '#ffffff';
+              }
+            },
+          });
           const updatedUsers = users.map((user) =>
             user.id === id ? { ...user, isActive: true } : user
           );
           setUsers(updatedUsers);
         } else if (response.status === 403) {
-          MySwal.fire("Error", "Only CSR can reactivate accounts.", "error");
+          MySwal.fire({
+            title: "Error",
+            text: "Only CSR can reactivate accounts.",
+            icon: "error",
+            customClass: {
+              popup: 'swal-custom-bg',
+            },
+            didOpen: () => {
+              const swalPopup = document.querySelector('.swal-custom-bg');
+              if (swalPopup) {
+                swalPopup.style.backgroundColor = '#2C3E50';
+                swalPopup.style.color = '#ffffff';
+              }
+            },
+          });
         } else {
-          MySwal.fire("Error", "Failed to reactivate the user.", "error");
+          MySwal.fire({
+            title: "Error",
+            text: "Failed to reactivate the user.",
+            icon: "error",
+            customClass: {
+              popup: 'swal-custom-bg',
+            },
+            didOpen: () => {
+              const swalPopup = document.querySelector('.swal-custom-bg');
+              if (swalPopup) {
+                swalPopup.style.backgroundColor = '#2C3E50';
+                swalPopup.style.color = '#ffffff';
+              }
+            },
+          });
         }
       } catch (error) {
-        MySwal.fire("Error", "Error reactivating user.", "error");
+        MySwal.fire({
+          title: "Error",
+          text: "Error reactivating user.",
+          icon: "error",
+          customClass: {
+            popup: 'swal-custom-bg',
+          },
+          didOpen: () => {
+            const swalPopup = document.querySelector('.swal-custom-bg');
+            if (swalPopup) {
+              swalPopup.style.backgroundColor = '#2C3E50';
+              swalPopup.style.color = '#ffffff';
+            }
+          },
+        });
       }
     }
+  };
+
+  // Sorting function
+  const sortData = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
+      if (a[key] < b[key]) {
+        return direction === 'asc' ? -1 : 1;
+      }
+      if (a[key] > b[key]) {
+        return direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+
+    setUsers(sortedUsers);
   };
 
   return (
@@ -114,48 +207,69 @@ function CSRUserTable() {
               </div>
             </CardHeader>
             <CardBody style={{ paddingTop: "30px" }}>
-              <Table className="tablesorter" responsive>
-                <thead className="text-primary">
-                  <tr>
-                    <th>#</th>
-                    <th>ID</th>
-                    <th>Email Address</th>
-                    <th>Account Approval Status</th>
-                    <th>Account Active Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredUsers.map((user, index) => (
-                    <tr key={user.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>
-                      <td>{user.id}</td>
-                      <td>{user.email}</td>
-                      <td>{user.userStatus}</td>
-                      <td>{user.isActive ? "Active" : "Inactive"}</td>
-                      <td>
-                        <Button
-                          color="success"
-                          size="sm"
-                          onClick={() => handleReactivate(user.id)}
-                        >
-                          Reactivate
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
+              {/* Show loading spinner when data is being fetched */}
+              {loading ? (
+                <div className="d-flex justify-content-center align-items-center">
+                  <Spinner color="primary" />
+                </div>
+              ) : (
+                <>
+                  {/* If there are no users, show a message */}
+                  {filteredUsers.length === 0 ? (
+                    <div className="text-center">No inactive users found.</div>
+                  ) : (
+                    <Table className="tablesorter" responsive>
+                      <thead className="text-primary">
+                        <tr>
+                          <th onClick={() => sortData('#')} style={{ cursor: 'pointer' }}>
+                            # <FaSort />
+                          </th>
+                          <th>ID</th>
+                          <th onClick={() => sortData('email')} style={{ cursor: 'pointer' }}>
+                            Email Address <FaSort />
+                          </th>
+                          <th onClick={() => sortData('userStatus')} style={{ cursor: 'pointer' }}>
+                            Account Approval Status <FaSort />
+                          </th>
+                          <th onClick={() => sortData('isActive')} style={{ cursor: 'pointer' }}>
+                            Account Active Status <FaSort />
+                          </th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredUsers.map((user, index) => (
+                          <tr key={user.id}>
+                            <td>{String(index + 1).padStart(3, "0")}</td>
+                            <td>{user.id}</td>
+                            <td>{user.email}</td>
+                            <td>{user.userStatus}</td>
+                            <td>{user.isActive ? "Active" : "Inactive"}</td>
+                            <td>
+                              <Button
+                                color="success"
+                                size="sm"
+                                onClick={() => handleReactivate(user.id)}
+                              >
+                                Reactivate
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  )}
+                </>
+              )}
             </CardBody>
           </Card>
         </Col>
       </Row>
 
-      {/* Modal for adding a user */}
       <Modal isOpen={modal} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}></ModalHeader>
         <ModalBody>
-          <AddUser /> {/* AddUser form inside the modal */}
+          <AddUser />
         </ModalBody>
       </Modal>
     </div>

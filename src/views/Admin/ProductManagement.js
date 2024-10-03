@@ -69,7 +69,7 @@ function CategoryCards() {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://127.0.0.1:15240/api/category/${categoryId}/deactivateCategory`,
+          `http://localhost:5069/api/category/${categoryId}/deactivateCategory`,
           {
             method: "PUT",
           }
