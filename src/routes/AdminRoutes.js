@@ -6,6 +6,8 @@ import ProductCategories from "../views/Admin/ProductManagement.js";
 import ProductList from "../views/Admin/ProductList.js";
 import Stocks from "../views/Admin/StockList.js";
 import Inventory from "../views/Admin/InventoryManagemnt.js";
+import OrderCategories from "../views/Admin/OrderManagement.js";
+import Orders from "../views/Admin/OrderList.js";
 
 var routes = [
   {
@@ -47,7 +49,7 @@ var routes = [
     path: "/order-management",
     name: "Order Management",
     icon: "tim-icons icon-delivery-fast", // Delivery truck icon for order management
-    component: <Notificatoions />,
+    component: <OrderCategories />,
     layout: "/admin",
   },
   {
@@ -58,6 +60,11 @@ var routes = [
   {
     path: "/stocks/:categoryName",
     component: <Stocks />,
+    layout: "/admin",
+  },
+  {
+    path: "/orders/:categoryName",
+    component: <Orders />,
     layout: "/admin",
   },
 ];
