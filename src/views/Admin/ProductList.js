@@ -25,7 +25,7 @@ function Products() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:15240/api/product/getProductByCategory/${categoryName}`
+          `http://127.0.0.1:15240/api/order/getOrdersByStatus/${categoryName}`
         );
         if (response.ok) {
           const data = await response.json();
