@@ -17,7 +17,6 @@ function Orders() {
   const [orders, setOrders] = useState([]);
   const { categoryName } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
-  const [clickedButtons, setClickedButtons] = useState([]); // Track clicked buttons
 
   // Fetch orders by status from the backend API
   useEffect(() => {
@@ -48,10 +47,11 @@ function Orders() {
     fetchOrders();
   }, [categoryName]);
 
-  // Function to set an order as ready
+  // Function to cancel the order
   const ReadyOrder = async (orderId) => {
     try {
       const vendorId = localStorage.getItem("vendorId");
+      console.log(vendorId);
       const response = await fetch(
         `http://127.0.0.1:15240/api/order/updateVendorOrderStatus/${orderId}/${vendorId}`,
         {
@@ -72,11 +72,11 @@ function Orders() {
         });
       }
     } catch (error) {
-      console.error("Error marking order as ready:", error);
+      console.error("Error canceling order:", error);
     }
   };
 
-  // SweetAlert confirmation for marking a product as ready
+  // SweetAlert confirmation for removing a product
   const confirmReadyProduct = (orderId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -89,7 +89,6 @@ function Orders() {
     }).then((result) => {
       if (result.isConfirmed) {
         ReadyOrder(orderId);
-        setClickedButtons((prev) => [...prev, orderId]); // Disable the button for this order
       }
     });
   };
@@ -140,11 +139,12 @@ function Orders() {
                 <thead className="text-primary">
                   <tr>
                     <th>Order ID</th>
-                    <th>Items</th>
+                    <th>Vendor ID</th>
                     <th>Address</th>
                     <th>Date</th>
                     <th>Payment</th>
                     <th>Total</th>
+                    <th>Status</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -152,17 +152,10 @@ function Orders() {
                   {filteredOrders.map((order) => (
                     <tr key={order.id}>
                       <td>{order.id}</td>
-
                       <td>
-                        {/* Loop through order items and display their details */}
-                        <ul>
-                          {order.items.map((item, index) => (
-                            <li key={index}>
-                              <strong>{item.productName}</strong> - Qty:{" "}
-                              {item.quantity}
-                            </li>
-                          ))}
-                        </ul>
+                        {order.items && order.items.length > 0
+                          ? order.items[0].vendorId
+                          : "Unknown Vendor"}
                       </td>
                       <td>{order.shippingAddress}</td>
                       <td>
@@ -170,6 +163,7 @@ function Orders() {
                       </td>
                       <td>{order.paymentMethod}</td>
                       <td>${order.totalAmount.toFixed(2)}</td>
+                      <td>{order.status}</td>
                       <td>
                         {/* Conditionally render buttons based on the category */}
                         {order.status === "Processing" && (
@@ -177,13 +171,16 @@ function Orders() {
                             color="success"
                             size="sm"
                             onClick={() => confirmReadyProduct(order.id)}
-                            disabled={clickedButtons.includes(order.id)} // Disable if clicked
                           >
-                            {clickedButtons.includes(order.id)
-                              ? "Ready"
-                              : "Ready to deliver"}
+                            Ready
                           </Button>
                         )}
+                        {order.status !== "Processing" && (
+                          <Button color="success" size="sm" disabled="true">
+                            Delivered
+                          </Button>
+                        )}
+                        {/* No buttons for "Delivered" or "Canceled" */}
                       </td>
                     </tr>
                   ))}
