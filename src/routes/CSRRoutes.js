@@ -1,5 +1,7 @@
 import Dashboard from "../views/CSR/CSRDashboard.js";
 import UserTable from "../views/CSR/CSRUserTable.js";
+import OrderCategories from "../views/Admin/OrderManagement.js";
+import Orders from "../views/Admin/OrderList.js";
 
 var routes = [
   {
@@ -17,11 +19,16 @@ var routes = [
     layout: "/csr",
   },
   {
-    path: "/users",
+    path: "/order-management",
     name: "Order Management",
-    icon: "tim-icons icon-delivery-fast",
-    component: <UserTable />,
+    icon: "tim-icons icon-delivery-fast", // Delivery truck icon for order management
+    component: <OrderCategories />,
     layout: "/csr",
+  },
+  {
+    path: "/orders/:categoryName",
+    component: <Orders />,
+    layout: "/admin",
   },
 ];
 export default routes;
