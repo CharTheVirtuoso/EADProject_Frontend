@@ -23,7 +23,7 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5069/api/User/login', { email, password });
+      const response = await axios.post('http://127.0.0.1:15240/api/User/login', { email, password });
 
       // Store user details in localStorage
       localStorage.setItem('token', response.data.token);

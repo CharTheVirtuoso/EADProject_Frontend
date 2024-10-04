@@ -51,8 +51,8 @@ function AddProduct({ product, onSave }) {
     try {
       const response = await fetch(
         product
-          ? `http://localhost:5069/api/product/updateProduct/${product.id}`
-          : "http://localhost:5069/api/product/createProduct",
+          ? `http://127.0.0.1:15240/api/product/updateProduct/${product.id}`
+          : "http://127.0.0.1:15240/api/product/createProduct",
         {
           method: product ? "PUT" : "POST",
           headers: {

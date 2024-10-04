@@ -23,7 +23,7 @@ function Products() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5069/api/product/getProductByCategory/${categoryName}`
+          `http://127.0.0.1:15240/api/Product/getProductByCategory/${encodeURIComponent(categoryName)}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -35,6 +35,7 @@ function Products() {
         console.error("Error fetching products:", error);
       }
     };
+    
 
     fetchProducts();
   }, [categoryName]);
@@ -71,7 +72,7 @@ function Products() {
   const handleRemoveProduct = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/product/deleteProduct/${id}`,
+        `http://127.0.0.1:15240/api/product/deleteProduct/${id}`,
         {
           method: "DELETE",
         }

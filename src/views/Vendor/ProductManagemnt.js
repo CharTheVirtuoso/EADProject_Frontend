@@ -43,7 +43,7 @@ function ProductTables() {
   useEffect(() => {
     if (vendorId) {
       fetch(
-        `http://localhost:5069/api/product/getProductsByVendor/${vendorId}`
+        `http://127.0.0.1:15240/api/product/getProductsByVendor/${vendorId}`
       )
         .then((response) => response.json())
         .then((data) => setProducts(data))
@@ -60,8 +60,8 @@ function ProductTables() {
   // Function to handle adding or editing a product
   const handleSaveProduct = async (product) => {
     const url = selectedProduct
-      ? `http://localhost:5069/api/product/updateProduct/${selectedProduct.id}`
-      : "http://localhost:5069/api/product/createProduct";
+      ? `http://127.0.0.1:15240/api/product/updateProduct/${selectedProduct.id}`
+      : "http://127.0.0.1:15240/api/product/createProduct";
 
     const method = selectedProduct ? "PUT" : "POST";
 
@@ -108,7 +108,7 @@ function ProductTables() {
   const handleDeleteProduct = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/product/deleteProduct/${id}`,
+        `http://127.0.0.1:15240/api/product/deleteProduct/${id}`,
         {
           method: "DELETE",
         }

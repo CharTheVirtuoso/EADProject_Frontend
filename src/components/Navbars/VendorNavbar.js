@@ -40,7 +40,7 @@ function VendorNavbar(props) {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5069/api/vendor-notifications/unread"
+        "http://127.0.0.1:15240/api/vendor-notifications/unread"
       );
       setNotifications(response.data);
     } catch (error) {

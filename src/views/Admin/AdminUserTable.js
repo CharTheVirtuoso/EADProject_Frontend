@@ -33,7 +33,7 @@ function UserTables() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5069/api/User/getAllUsers")
+    fetch("http://127.0.0.1:15240/api/User/getAllUsers")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching user data:", error));
@@ -53,7 +53,7 @@ function UserTables() {
   // Handle adding a new user (API call)
   const handleAddUser = async () => {
     try {
-      const response = await fetch("http://localhost:5069/api/User/admin/createUser", {
+      const response = await fetch("http://127.0.0.1:15240/api/User/admin/createUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +88,7 @@ function UserTables() {
   const handleApprove = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/user/admin/approve-user/${id}`,
+        `http://127.0.0.1:15240/api/user/admin/approve-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -115,7 +115,7 @@ function UserTables() {
   const handleReject = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/user/admin/reject-user/${id}`,
+        `http://127.0.0.1:15240/api/user/admin/reject-user/${id}`,
         {
           method: "PUT",
           headers: {
