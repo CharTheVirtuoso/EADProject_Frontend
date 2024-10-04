@@ -18,7 +18,7 @@ function CategoryCards() {
   // Fetch the category data from the backend API
   useEffect(() => {
     fetch(
-      "http://127.0.0.1:15240/api/category/getAllCategoriesWithProductCount"
+      "http://localhost:5069/api/category/getAllCategoriesWithProductCount"
     )
       .then((response) => response.json())
       .then((data) => setCategories(data))

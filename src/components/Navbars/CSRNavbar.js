@@ -40,7 +40,7 @@ function AdminNavbar(props) {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:15240/api/admin-notifications/unread"
+        "http://localhost:5069/api/admin-notifications/unread"
       );
       setNotifications(response.data);
     } catch (error) {

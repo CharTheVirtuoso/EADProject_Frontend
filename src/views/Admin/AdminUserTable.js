@@ -9,8 +9,13 @@ import {
   Col,
   Button,
   Modal,
-  ModalHeader,
+  ModalBody,
+  Form,
+  FormGroup,
+  Label,
   Input,
+  ModalHeader,
+  Alert
 } from "reactstrap";
 import { FaSort, FaUserPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -18,17 +23,17 @@ import AddUser from "./AddUser";
 
 function UserTables() {
   const [users, setUsers] = useState([]);
-  const [modal, setModal] = useState(false);
-  const [sortOrder, setSortOrder] = useState({
-    approvalStatus: null,
-    activeStatus: null,
-  });
+  const [modal, setModal] = useState(false); // State to handle modal visibility
+  const [newUser, setNewUser] = useState({ email: "", password: "", role: "Admin" }); // State for new user details
+  const [sortOrder, setSortOrder] = useState({ approvalStatus: null, activeStatus: null });
+  const [alertMessage, setAlertMessage] = useState(null); // State for success or error message
+  const [alertType, setAlertType] = useState(""); // State for alert type (success or danger)
   const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://127.0.0.1:15240/api/User/getAllUsers")
+    fetch("http://localhost:5069/api/User/getAllUsers")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching user data:", error));
@@ -36,16 +41,54 @@ function UserTables() {
 
   const toggleModal = () => setModal(!modal);
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.role === "Customer" &&
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Handle input changes for new user
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
+  // Handle adding a new user (API call)
+  const handleAddUser = async () => {
+    try {
+      const response = await fetch("http://localhost:5069/api/User/admin/createUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser), // Send the newUser object as the request body
+      });
+
+      if (response.ok) {
+        const createdUser = await response.json();
+        setUsers([...users, createdUser]); // Add new user to the existing users
+        setAlertMessage("User added successfully!"); // Success message
+        setAlertType("success");
+        console.log("User added successfully");
+
+        setNewUser({ email: "", password: "", role: "Admin" }); // Reset form fields after success
+      } else {
+        setAlertMessage("Failed to add the user. Please try again."); // Error message
+        setAlertType("danger");
+        console.error("Failed to add the user.");
+      }
+    } catch (error) {
+      setAlertMessage("An error occurred while adding the user."); // Error message
+      setAlertType("danger");
+      console.error("Error adding user:", error);
+    }
+
+    toggleModal(); // Close modal after adding user
+  };
+
+  // Approve user action
 
   const handleApprove = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:15240/api/user/admin/approve-user/${id}`,
+        `http://localhost:5069/api/user/admin/approve-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -68,10 +111,11 @@ function UserTables() {
     }
   };
 
+  // Reject user action
   const handleReject = async (id) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:15240/api/user/admin/reject-user/${id}`,
+        `http://localhost:5069/api/user/admin/reject-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -94,6 +138,10 @@ function UserTables() {
     }
   };
 
+  // Filter only customers
+  const filteredUsers = users.filter((user) => user.role === "Customer");
+
+  // Sorting functions
   const sortUsersByApprovalStatus = () => {
     const sortedUsers = [...filteredUsers].sort((a, b) => {
       if (sortOrder.approvalStatus === "asc") {
@@ -152,24 +200,23 @@ function UserTables() {
                 </div>
               </div>
             </CardHeader>
-
-            <CardBody style={{ paddingTop: "30px" }}>
+            <CardBody>
+              {/* Display alert for success or error */}
+              {alertMessage && (
+                <Alert color={alertType} toggle={() => setAlertMessage(null)}>
+                  {alertMessage}
+                </Alert>
+              )}
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
                     <th>#</th>
                     <th>ID</th>
                     <th>Email Address</th>
-                    <th
-                      onClick={sortUsersByApprovalStatus}
-                      style={{ cursor: "pointer" }}
-                    >
+                    <th onClick={sortUsersByApprovalStatus} style={{ cursor: "pointer" }}>
                       Account Approval Status <FaSort />
                     </th>
-                    <th
-                      onClick={sortUsersByActiveStatus}
-                      style={{ cursor: "pointer" }}
-                    >
+                    <th onClick={sortUsersByActiveStatus} style={{ cursor: "pointer" }}>
                       Account Active Status <FaSort />
                     </th>
                     <th>Actions</th>
@@ -210,8 +257,81 @@ function UserTables() {
       </Row>
 
       <Modal isOpen={modal} toggle={toggleModal}>
-        <ModalHeader toggle={toggleModal}></ModalHeader>
-        <AddUser />
+        <ModalBody style={{ backgroundColor: '#2C3E50', color: '#ECF0F1' }}> {/* Modal body inline background and text color */}
+          <Form>
+            {/* Increased font size for "Add New User" */}
+            <h5 style={{ color: '#ffffff', textAlign: 'center', fontSize: '20px' }}>
+              Add New User
+            </h5>
+
+            <FormGroup>
+              <Label for="email">Email</Label>
+              <Input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Enter email"
+                value={newUser.email}
+                onChange={handleInputChange}
+                required
+                style={{ backgroundColor: '#34495E', color: '#ECF0F1', borderColor: '#ECF0F1' }} // Input inline background and text color
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="password">Password</Label>
+              <Input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Enter password"
+                value={newUser.password}
+                onChange={handleInputChange}
+                required
+                style={{ backgroundColor: '#34495E', color: '#ECF0F1', borderColor: '#ECF0F1' }} // Input inline background and text color
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="role">Role</Label>
+              <Input
+                type="select"
+                name="role"
+                id="role"
+                value={newUser.role}
+                onChange={handleInputChange}
+                style={{ backgroundColor: '#34495E', color: '#ECF0F1', borderColor: '#ECF0F1' }} // Select inline background and text color
+              >
+                <option value="Admin">Admin</option>
+                <option value="CSR">CSR</option>
+                <option value="Vendor">Vendor</option>
+              </Input>
+            </FormGroup>
+
+            {/* Space between the role dropdown and the buttons */}
+            <div className="d-flex justify-content-end mt-4">
+              {/* Smaller Cancel button */}
+              <Button 
+                color="secondary" 
+                size="m"  // Make button smaller
+                onClick={toggleModal} 
+                style={{ marginRight: '10px' }} // Add space between buttons
+              >
+                Cancel
+              </Button>
+
+              {/* Smaller Add User button */}
+              <Button 
+                color="primary" 
+                size="m"  // Make button smaller
+                onClick={handleAddUser} 
+                style={{ backgroundColor: '#ff6219', borderColor: '#ff6219' }} // Fix background color
+              >
+                Add User
+              </Button>
+            </div>
+          </Form>
+        </ModalBody>
       </Modal>
     </div>
   );
