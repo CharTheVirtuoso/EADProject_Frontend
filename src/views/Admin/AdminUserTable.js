@@ -15,7 +15,7 @@ import {
   Label,
   Input,
   ModalHeader,
-  Alert
+  Alert,
 } from "reactstrap";
 import { FaSort, FaUserPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -24,8 +24,15 @@ import AddUser from "./AddUser";
 function UserTables() {
   const [users, setUsers] = useState([]);
   const [modal, setModal] = useState(false); // State to handle modal visibility
-  const [newUser, setNewUser] = useState({ email: "", password: "", role: "Admin" }); // State for new user details
-  const [sortOrder, setSortOrder] = useState({ approvalStatus: null, activeStatus: null });
+  const [newUser, setNewUser] = useState({
+    email: "",
+    password: "",
+    role: "Admin",
+  }); // State for new user details
+  const [sortOrder, setSortOrder] = useState({
+    approvalStatus: null,
+    activeStatus: null,
+  });
   const [alertMessage, setAlertMessage] = useState(null); // State for success or error message
   const [alertType, setAlertType] = useState(""); // State for alert type (success or danger)
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,7 +40,7 @@ function UserTables() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5069/api/User/getAllUsers")
+    fetch("http://127.0.0.1:15240/api/User/getAllUsers")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching user data:", error));
@@ -53,13 +60,16 @@ function UserTables() {
   // Handle adding a new user (API call)
   const handleAddUser = async () => {
     try {
-      const response = await fetch("http://localhost:5069/api/User/admin/createUser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newUser), // Send the newUser object as the request body
-      });
+      const response = await fetch(
+        "http://127.0.0.1:15240/api/User/admin/createUser",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser), // Send the newUser object as the request body
+        }
+      );
 
       if (response.ok) {
         const createdUser = await response.json();
@@ -88,7 +98,7 @@ function UserTables() {
   const handleApprove = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/user/admin/approve-user/${id}`,
+        `http://127.0.0.1:15240/api/user/admin/approve-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -115,7 +125,7 @@ function UserTables() {
   const handleReject = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5069/api/user/admin/reject-user/${id}`,
+        `http://127.0.0.1:15240/api/user/admin/reject-user/${id}`,
         {
           method: "PUT",
           headers: {
@@ -138,8 +148,19 @@ function UserTables() {
     }
   };
 
-  // Filter only customers
-  const filteredUsers = users.filter((user) => user.role === "Customer");
+  // Add this search filtering logic to filteredUsers array
+  const filteredUsers = users
+    .filter((user) => user.role === "Customer") // Filtering only customers
+    .filter(
+      (user) =>
+        // Filter based on search query matching email, ID, or status
+        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.id.toString().includes(searchQuery) ||
+        user.userStatus.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (user.isActive ? "active" : "inactive").includes(
+          searchQuery.toLowerCase()
+        )
+    );
 
   // Sorting functions
   const sortUsersByApprovalStatus = () => {
@@ -213,10 +234,16 @@ function UserTables() {
                     <th>#</th>
                     <th>ID</th>
                     <th>Email Address</th>
-                    <th onClick={sortUsersByApprovalStatus} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={sortUsersByApprovalStatus}
+                      style={{ cursor: "pointer" }}
+                    >
                       Account Approval Status <FaSort />
                     </th>
-                    <th onClick={sortUsersByActiveStatus} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={sortUsersByActiveStatus}
+                      style={{ cursor: "pointer" }}
+                    >
                       Account Active Status <FaSort />
                     </th>
                     <th>Actions</th>
@@ -257,10 +284,18 @@ function UserTables() {
       </Row>
 
       <Modal isOpen={modal} toggle={toggleModal}>
-        <ModalBody style={{ backgroundColor: '#2C3E50', color: '#ECF0F1' }}> {/* Modal body inline background and text color */}
+        <ModalBody style={{ backgroundColor: "#2C3E50", color: "#ECF0F1" }}>
+          {" "}
+          {/* Modal body inline background and text color */}
           <Form>
             {/* Increased font size for "Add New User" */}
-            <h5 style={{ color: '#ffffff', textAlign: 'center', fontSize: '20px' }}>
+            <h5
+              style={{
+                color: "#ffffff",
+                textAlign: "center",
+                fontSize: "20px",
+              }}
+            >
               Add New User
             </h5>
 
@@ -274,7 +309,11 @@ function UserTables() {
                 value={newUser.email}
                 onChange={handleInputChange}
                 required
-                style={{ backgroundColor: '#34495E', color: '#ECF0F1', borderColor: '#ECF0F1' }} // Input inline background and text color
+                style={{
+                  backgroundColor: "#34495E",
+                  color: "#ECF0F1",
+                  borderColor: "#ECF0F1",
+                }} // Input inline background and text color
               />
             </FormGroup>
 
@@ -288,7 +327,11 @@ function UserTables() {
                 value={newUser.password}
                 onChange={handleInputChange}
                 required
-                style={{ backgroundColor: '#34495E', color: '#ECF0F1', borderColor: '#ECF0F1' }} // Input inline background and text color
+                style={{
+                  backgroundColor: "#34495E",
+                  color: "#ECF0F1",
+                  borderColor: "#ECF0F1",
+                }} // Input inline background and text color
               />
             </FormGroup>
 
@@ -300,7 +343,11 @@ function UserTables() {
                 id="role"
                 value={newUser.role}
                 onChange={handleInputChange}
-                style={{ backgroundColor: '#34495E', color: '#ECF0F1', borderColor: '#ECF0F1' }} // Select inline background and text color
+                style={{
+                  backgroundColor: "#34495E",
+                  color: "#ECF0F1",
+                  borderColor: "#ECF0F1",
+                }} // Select inline background and text color
               >
                 <option value="Admin">Admin</option>
                 <option value="CSR">CSR</option>
@@ -311,21 +358,21 @@ function UserTables() {
             {/* Space between the role dropdown and the buttons */}
             <div className="d-flex justify-content-end mt-4">
               {/* Smaller Cancel button */}
-              <Button 
-                color="secondary" 
-                size="m"  // Make button smaller
-                onClick={toggleModal} 
-                style={{ marginRight: '10px' }} // Add space between buttons
+              <Button
+                color="secondary"
+                size="m" // Make button smaller
+                onClick={toggleModal}
+                style={{ marginRight: "10px" }} // Add space between buttons
               >
                 Cancel
               </Button>
 
               {/* Smaller Add User button */}
-              <Button 
-                color="primary" 
-                size="m"  // Make button smaller
-                onClick={handleAddUser} 
-                style={{ backgroundColor: '#ff6219', borderColor: '#ff6219' }} // Fix background color
+              <Button
+                color="primary"
+                size="m" // Make button smaller
+                onClick={handleAddUser}
+                style={{ backgroundColor: "#ff6219", borderColor: "#ff6219" }} // Fix background color
               >
                 Add User
               </Button>

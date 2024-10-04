@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
 import {
   Button,
   Collapse,
@@ -21,15 +22,15 @@ import {
 import axios from "axios"; // For fetching notifications
 
 function VendorNavbar(props) {
-  const [collapseOpen, setcollapseOpen] = useState(false);
-  const [modalSearch, setmodalSearch] = useState(false);
-  const [color, setcolor] = useState("navbar-transparent");
-  const [notifications, setNotifications] = useState([]); // Holds notifications
+  const [collapseOpen, setcollapseOpen] = React.useState(false);
+  const [modalSearch, setmodalSearch] = React.useState(false);
+  const [color, setcolor] = React.useState("navbar-transparent");
+  const [notifications, setNotifications] = React.useState([]);
+  
+  const navigate = useNavigate(); // Initialize the navigate function from react-router-dom
 
-  // Fetch notifications from API when the component mounts
-  useEffect(() => {
+  React.useEffect(() => {
     fetchNotifications();
-
     window.addEventListener("resize", updateColor);
     return function cleanup() {
       window.removeEventListener("resize", updateColor);
@@ -40,12 +41,19 @@ function VendorNavbar(props) {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5069/api/vendor-notifications/unread"
+        "http://127.0.0.1:15240/api/vendor-notifications/unread"
       );
       setNotifications(response.data);
     } catch (error) {
       console.error("Error fetching notifications", error);
     }
+  };
+
+  // Remove a specific notification
+  const removeNotification = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((notification) => notification._id !== id)
+    );
   };
 
   // Function to update navbar color on resize
@@ -57,7 +65,6 @@ function VendorNavbar(props) {
     }
   };
 
-  // Function to toggle collapse
   const toggleCollapse = () => {
     if (collapseOpen) {
       setcolor("navbar-transparent");
@@ -67,21 +74,26 @@ function VendorNavbar(props) {
     setcollapseOpen(!collapseOpen);
   };
 
-  // Function to toggle search modal
   const toggleModalSearch = () => {
     setmodalSearch(!modalSearch);
   };
 
-  // Function to remove a notification by its ID
-  const removeNotification = (id) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification._id !== id)
-    );
+  // function to handle logout and redirect to login
+  const handleLogout = () => {
+    // Clear any session or authentication data here if necessary
+    // e.g., localStorage.removeItem("authToken");
+    
+    // Navigate to the login page
+    navigate("/login");
   };
 
   return (
     <>
-      <Navbar className={classNames("navbar-absolute", color)} expand="lg">
+      <Navbar
+        className={classNames("navbar-absolute", color)}
+        expand="lg"
+        style={{ position: "fixed", top: 0, width: "100%", zIndex: 1000 }}
+      >
         <Container fluid>
           <div className="navbar-wrapper">
             <div
@@ -169,12 +181,14 @@ function VendorNavbar(props) {
                   <NavLink tag="li">
                     <DropdownItem className="nav-item">Profile</DropdownItem>
                   </NavLink>
-                  <NavLink tag="li">
-                    <DropdownItem className="nav-item">Settings</DropdownItem>
-                  </NavLink>
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item">Log out</DropdownItem>
+                    <DropdownItem
+                      className="nav-item"
+                      onClick={handleLogout}
+                    >
+                      Log out
+                    </DropdownItem>
                   </NavLink>
                 </DropdownMenu>
               </UncontrolledDropdown>

@@ -23,7 +23,7 @@ function UserTables() {
 
   // Fetch the user data from the backend API
   useEffect(() => {
-    fetch("http://localhost:5069/api/user/getAllUsers")
+    fetch("http://127.0.0.1:15240/api/user/getAllUsers")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching user data:", error));
@@ -32,13 +32,14 @@ function UserTables() {
   // Toggle modal visibility
   const toggleModal = () => setModal(!modal);
 
-  // Filter only vendors and apply search filter
-  const filteredUsers = users.filter(
-    (user) =>
-      user.role === "Vendor" &&
-      (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || // Filter by name
-        user.email.toLowerCase().includes(searchQuery.toLowerCase())) // Filter by email
-  );
+  const filteredUsers = users
+    .filter((user) => user.role === "Vendor") // Filtering only customers
+    .filter(
+      (user) =>
+        // Filter based on search query matching email, ID, or status
+        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.id.toString().includes(searchQuery)
+    );
 
   // Function to handle sorting
   const handleSort = (field) => {
@@ -48,9 +49,7 @@ function UserTables() {
     const sortedUsers = [...filteredUsers].sort((a, b) => {
       if (field === "isActive") {
         // Special sorting for boolean field (active status)
-        return newOrder === "asc"
-          ? a[field] - b[field]
-          : b[field] - a[field];
+        return newOrder === "asc" ? a[field] - b[field] : b[field] - a[field];
       } else if (a[field] < b[field]) {
         return newOrder === "asc" ? -1 : 1;
       } else if (a[field] > b[field]) {
@@ -74,7 +73,7 @@ function UserTables() {
               {/* Search input box */}
               <Input
                 type="text"
-                placeholder="Search by name or email"
+                placeholder="Search Vendors"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{ width: "250px", marginRight: "50px" }} // Adjust width as needed
@@ -84,16 +83,25 @@ function UserTables() {
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th onClick={() => handleSort("id")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("id")}
+                      style={{ cursor: "pointer" }}
+                    >
                       #
                       <FaSort />
                     </th>
                     <th>ID</th>
-                    <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("name")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Name
                       <FaSort />
                     </th>
-                    <th onClick={() => handleSort("email")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("email")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Email Address
                       <FaSort />
                     </th>

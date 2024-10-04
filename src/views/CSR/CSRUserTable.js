@@ -38,7 +38,7 @@ function CSRUserTable() {
   }));
 
   useEffect(() => {
-    fetch("http://localhost:5069/api/user/getAllUsers")
+    fetch("http://127.0.0.1:15240/api/user/getAllUsers")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
@@ -81,7 +81,7 @@ function CSRUserTable() {
     if (confirmed.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:5069/api/user/${id}/reactivateUser`,
+          `http://127.0.0.1:15240/api/user/${id}/reactivateUser`,
           {
             method: "PUT",
             headers: {

@@ -173,7 +173,7 @@ function Orders() {
                 <thead className="text-primary">
                   <tr>
                     <th>Order ID</th>
-                    <th>Vendor ID</th>
+                    <th>Vendors Delivering the Orders</th>
                     <th>Address</th>
                     <th>Date</th>
                     <th>Payment</th>
@@ -186,9 +186,11 @@ function Orders() {
                     <tr key={order.id}>
                       <td>{order.id}</td>
                       <td>
-                        {order.items && order.items.length > 0
-                          ? order.items[0].vendorId
-                          : "Unknown Vendor"}
+                        {order.items.map((item, index) => (
+                          <li key={index}>
+                            <strong>{item.vendorId}</strong>
+                          </li>
+                        ))}
                       </td>
                       <td>{order.shippingAddress}</td>
                       <td>

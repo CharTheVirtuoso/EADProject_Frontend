@@ -27,7 +27,7 @@ function Products() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:15240/api/order/getOrdersByStatus/${categoryName}`
+          `http://127.0.0.1:15240/api/Product/getProductByCategory/${categoryName}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -98,21 +98,33 @@ function Products() {
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th onClick={() => handleSort("id")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("id")}
+                      style={{ cursor: "pointer" }}
+                    >
                       #
                       <FaSort />
                     </th>
                     <th>Image</th>
-                    <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("name")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Product Name
                       <FaSort />
                     </th>
                     <th>Description</th>
-                    <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("price")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Price
                       <FaSort />
                     </th>
-                    <th onClick={() => handleSort("stockQuantity")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("stockQuantity")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Stock Quantity
                       <FaSort />
                     </th>
