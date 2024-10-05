@@ -47,7 +47,7 @@ function Orders() {
     fetchOrders();
   }, [categoryName]);
 
-  // Function to cancel the order
+  // Function to mark the order as ready
   const ReadyOrder = async (orderId) => {
     try {
       const vendorId = localStorage.getItem("vendorId");
@@ -59,7 +59,7 @@ function Orders() {
         }
       );
       if (response.ok) {
-        // Update UI to reflect order cancellation
+        // Update UI to reflect order status change
         setOrders((prevOrders) =>
           prevOrders.filter((order) => order.id !== orderId)
         );
@@ -72,11 +72,11 @@ function Orders() {
         });
       }
     } catch (error) {
-      console.error("Error canceling order:", error);
+      console.error("Error updating order:", error);
     }
   };
 
-  // SweetAlert confirmation for removing a product
+  // SweetAlert confirmation for marking a product as ready
   const confirmReadyProduct = (orderId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -98,13 +98,6 @@ function Orders() {
     const searchString = searchQuery.toLowerCase();
     return (
       (order.id && order.id.toString().toLowerCase().includes(searchString)) ||
-      (order.items &&
-        order.items.length > 0 &&
-        order.items[0].vendorId &&
-        order.items[0].vendorId
-          .toString()
-          .toLowerCase()
-          .includes(searchString)) ||
       (order.shippingAddress &&
         order.shippingAddress.toLowerCase().includes(searchString)) ||
       (order.paymentMethod &&
@@ -139,7 +132,8 @@ function Orders() {
                 <thead className="text-primary">
                   <tr>
                     <th>Order ID</th>
-                    <th>Vendor ID</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
                     <th>Address</th>
                     <th>Date</th>
                     <th>Payment</th>
@@ -149,41 +143,49 @@ function Orders() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredOrders.map((order) => (
-                    <tr key={order.id}>
-                      <td>{order.id}</td>
-                      <td>
-                        {order.items && order.items.length > 0
-                          ? order.items[0].vendorId
-                          : "Unknown Vendor"}
-                      </td>
-                      <td>{order.shippingAddress}</td>
-                      <td>
-                        {new Date(order.orderDate).toISOString().split("T")[0]}
-                      </td>
-                      <td>{order.paymentMethod}</td>
-                      <td>${order.totalAmount.toFixed(2)}</td>
-                      <td>{order.status}</td>
-                      <td>
-                        {/* Conditionally render buttons based on the category */}
-                        {order.status === "Processing" && (
-                          <Button
-                            color="success"
-                            size="sm"
-                            onClick={() => confirmReadyProduct(order.id)}
-                          >
-                            Ready
-                          </Button>
-                        )}
-                        {order.status !== "Processing" && (
-                          <Button color="success" size="sm" disabled="true">
-                            Delivered
-                          </Button>
-                        )}
-                        {/* No buttons for "Delivered" or "Canceled" */}
-                      </td>
-                    </tr>
-                  ))}
+                  {filteredOrders.map((order) => {
+                    // Filter items belonging to the current vendor
+                    const vendorId = localStorage.getItem("vendorId");
+                    const vendorItems = order.items.filter(
+                      (item) => item.vendorId === vendorId
+                    );
+
+                    return vendorItems.map((item) => (
+                      <tr key={item.id}>
+                        <td>{order.id}</td>
+                        <td>{item.productName}</td>
+                        <td>{item.quantity}</td>
+                        <td>{order.shippingAddress}</td>
+                        <td>
+                          {
+                            new Date(order.orderDate)
+                              .toISOString()
+                              .split("T")[0]
+                          }
+                        </td>
+                        <td>{order.paymentMethod}</td>
+                        <td>${order.totalAmount.toFixed(2)}</td>
+                        <td>{order.status}</td>
+                        <td>
+                          {/* Conditionally render buttons based on the order status */}
+                          {order.status === "Processing" && (
+                            <Button
+                              color="success"
+                              size="sm"
+                              onClick={() => confirmReadyProduct(order.id)}
+                            >
+                              Ready
+                            </Button>
+                          )}
+                          {order.status !== "Processing" && (
+                            <Button color="success" size="sm" disabled="true">
+                              Delivered
+                            </Button>
+                          )}
+                        </td>
+                      </tr>
+                    ));
+                  })}
                 </tbody>
               </Table>
             </CardBody>

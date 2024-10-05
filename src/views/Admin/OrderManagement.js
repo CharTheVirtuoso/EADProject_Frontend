@@ -1,4 +1,6 @@
 import React from "react";
+// react plugin used to create charts
+import { Line, Bar } from "react-chartjs-2";
 import {
   Card,
   CardHeader,
@@ -16,8 +18,14 @@ import {
   FaSync,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+// core components
+import { chartExample1 } from "../../variables/charts.js";
 
 function OrderCategoryCards() {
+  const [bigChartData, setbigChartData] = React.useState("data1");
+  const setBgChartData = (name) => {
+    setbigChartData(name);
+  };
   const navigate = useNavigate();
 
   // Hardcoded order categories with icons and order counts
@@ -52,6 +60,12 @@ function OrderCategoryCards() {
       orderCount: 5,
       icon: <FaTimesCircle className="me-2" />,
     },
+    {
+      name: "Discarded",
+      dispalyName: "Discarded",
+      orderCount: 0,
+      icon: <FaTimesCircle className="me-2" />,
+    },
   ];
 
   return (
@@ -81,6 +95,24 @@ function OrderCategoryCards() {
           </Col>
         ))}
       </Row>
+      <Card className="card-chart">
+        <CardHeader>
+          <Row>
+            <Col className="text-left" sm="6">
+              <h5 className="card-category">Total amount of</h5>
+              <CardTitle tag="h2">Orders</CardTitle>
+            </Col>
+          </Row>
+        </CardHeader>
+        <CardBody>
+          <div className="chart-area">
+            <Line
+              data={chartExample1[bigChartData]}
+              options={chartExample1.options}
+            />
+          </div>
+        </CardBody>
+      </Card>
     </div>
   );
 }
