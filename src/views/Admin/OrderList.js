@@ -39,8 +39,8 @@ function Orders() {
     fetchOrders();
   }, [categoryName]);
 
-  // Function to cancel the order
-  const cancelOrder = async (orderId) => {
+  // Function to cancel the order with a cancellation note
+  const cancelOrderWithNote = async (orderId, cancellationNote) => {
     try {
       const response = await fetch(
         `http://127.0.0.1:15240/api/order/${orderId}/updateStatus/canceled`,
@@ -49,6 +49,18 @@ function Orders() {
         }
       );
       if (response.ok) {
+        // Send cancellation note to the backend
+        await fetch(
+          `http://127.0.0.1:15240/api/order/${orderId}/updateCancellationNote`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ cancellationNote }),
+          }
+        );
+
         // Update UI to reflect order cancellation
         setOrders((prevOrders) =>
           prevOrders.filter((order) => order.id !== orderId)
@@ -56,7 +68,7 @@ function Orders() {
         // Show success alert
         Swal.fire({
           title: "Success!",
-          text: "Order canceled successfully.",
+          text: "Order canceled and note added successfully.",
           icon: "success",
           confirmButtonText: "OK",
         });
@@ -95,21 +107,35 @@ function Orders() {
     }
   };
 
-  // SweetAlert confirmation for removing a product
+  // SweetAlert confirmation and prompt for the cancellation note
   const confirmRemoveProduct = (orderId) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
+      title: "Cancel Order",
+      input: "textarea",
+      inputLabel: "Cancellation Note",
+      inputPlaceholder: "Enter the reason for cancellation...",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, remove it!",
+      confirmButtonText: "Submit",
+      preConfirm: (note) => {
+        if (!note) {
+          Swal.showValidationMessage("Cancellation note is required");
+        }
+        return note;
+      },
     }).then((result) => {
       if (result.isConfirmed) {
-        cancelOrder(orderId);
+        cancelOrderWithNote(orderId, result.value);
       }
     });
+  };
+
+  // Display cancellation note only when categoryName is "canceled"
+  const displayCancellationNote = (order) => {
+    return categoryName === "canceled" && order.cancellationNote ? (
+      <div>
+        <strong>Cancellation Note:</strong> {order.cancellationNote}
+      </div>
+    ) : null;
   };
 
   const confirmRemoveProduct2 = (orderId) => {
@@ -127,6 +153,7 @@ function Orders() {
       }
     });
   };
+
   // Filter orders based on the search query
   const filteredOrders = orders.filter((order) => {
     const searchString = searchQuery.toLowerCase();
@@ -179,6 +206,8 @@ function Orders() {
                     <th>Payment</th>
                     <th>Total</th>
                     <th></th>
+                    {/* Add a new column for Cancellation Note if categoryName is 'canceled' */}
+                    {categoryName === "Canceled" && <th>Cancellation Note</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -218,12 +247,17 @@ function Orders() {
                             Mark as Delivered
                           </Button>
                         )}
-                        {/* No buttons for "Delivered" or "Canceled" */}
                       </td>
+                      {/* Display the cancellation note only for 'canceled' category */}
+                      {categoryName === "Canceled" && (
+                        <td>{order.cancellationNote || "No note provided"}</td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
               </Table>
+              {/* Display cancellation note for canceled orders */}
+              {filteredOrders.map((order) => displayCancellationNote(order))}
             </CardBody>
           </Card>
         </Col>
