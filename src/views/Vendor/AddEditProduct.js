@@ -12,6 +12,13 @@ import {
   Col,
 } from "reactstrap";
 import Swal from "sweetalert2"; // Import SweetAlert2
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { storage } from "../../config/firebase";
 
 function AddProduct({ product, onSave }) {
   const [productId, setProductId] = useState(product ? product.id : ""); // New state for product ID
@@ -27,28 +34,61 @@ function AddProduct({ product, onSave }) {
     product ? product.stockQuantity : ""
   );
   const [imageUrl, setImageUrl] = useState(product ? product.Imgurl : "");
+  const [imageFile, setImageFile] = useState(null); 
   const [message, setMessage] = useState(""); // For feedback
 
   // Retrieve vendorId from local storage
   const vendorId = localStorage.getItem("vendorId");
 
+    const handleImageUpload = () => {
+      return new Promise((resolve, reject) => {
+        if (!imageFile) {
+          resolve(imageUrl);
+          return;
+        }
+
+        const storageRef = ref(storage, `product-images/${imageFile.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+          },
+          (error) => {
+            console.error("Error during upload:", error);
+            reject(error);
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve(downloadURL);
+          }
+        );
+      });
+    };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newProduct = {
-      id: productId, // Include productId for editing
-      name,
-      description,
-      categoryName,
-      price,
-      stockQuantity,
-      Imgurl: imageUrl, // Image URL
-      vendorId, // Include vendorId in the product object
-    };
-
-    console.log("Submitting new product:", newProduct); // Debugging log
-
     try {
+      const uploadedImageUrl = await handleImageUpload();
+
+      const newProduct = {
+        id: productId, // Include productId for editing
+        name,
+        description,
+        categoryName,
+        price,
+        stockQuantity,
+        Imgurl: uploadedImageUrl,
+        vendorId, // Include vendorId in the product object
+      };
+
+      console.log("Submitting new product:", newProduct); // Debugging log
+
       const response = await fetch(
         product
           ? `http://127.0.0.1:15240/api/product/updateProduct/${product.id}`
@@ -179,6 +219,19 @@ function AddProduct({ product, onSave }) {
                         value={stockQuantity}
                         onChange={(e) => setStockQuantity(e.target.value)}
                         required
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md="12">
+                    <FormGroup>
+                      <label>Upload Image</label>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setImageFile(e.target.files[0])}
+                        required={!product}
                       />
                     </FormGroup>
                   </Col>
