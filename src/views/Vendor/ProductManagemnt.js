@@ -9,11 +9,12 @@ import {
   Col,
   Button,
   Modal,
-  ModalHeader,
   ModalBody,
   ModalFooter,
   Input,
+
 } from "reactstrap";
+import { FaSort } from "react-icons/fa"; // Import the sort icon
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; // Importing edit and delete icons
 import Swal from "sweetalert2"; // Import SweetAlert
@@ -24,6 +25,7 @@ function ProductTables() {
   const [modal, setModal] = useState(false); // State to handle modal visibility
   const [selectedProduct, setSelectedProduct] = useState(null); // Selected product for editing
   const [vendorId, setVendorId] = useState(""); // State to store vendor ID from localStorage
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track the current sort field and order
   const [expandedProducts, setExpandedProducts] = useState({}); // State to track expanded product descriptions
   const [searchTerm, setSearchTerm] = useState(""); // State to handle search input
 
@@ -123,6 +125,21 @@ function ProductTables() {
     }
   };
 
+  // Sorting functionality
+  const handleSort = (field) => {
+    const isAsc = sortOrder.field === field && sortOrder.order === "asc";
+    const newOrder = isAsc ? "desc" : "asc";
+
+    const sortedProducts = [...products].sort((a, b) => {
+      if (a[field] < b[field]) return newOrder === "asc" ? -1 : 1;
+      if (a[field] > b[field]) return newOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setProducts(sortedProducts);
+    setSortOrder({ field, order: newOrder });
+  };
+
   // Function to toggle description visibility
   const toggleDescription = (id) => {
     setExpandedProducts((prev) => ({
@@ -176,21 +193,43 @@ function ProductTables() {
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th>#</th>
+                    <th
+                      onClick={() => handleSort("id")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      #
+                      <FaSort />
+                    </th>
                     <th>Image</th> {/* New Image Column */}
-                    <th>Product</th>
+                    <th
+                      onClick={() => handleSort("name")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Product Name
+                      <FaSort />
+                    </th>
                     <th>Description</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Stock</th>
+                    <th
+                      onClick={() => handleSort("price")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Price
+                      <FaSort />
+                    </th>
+                    <th
+                      onClick={() => handleSort("stockQuantity")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Stock Quantity
+                      <FaSort />
+                    </th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredProducts.map((product, index) => (
                     <tr key={product.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>{" "}
-                      {/* Auto-incrementing ID with padding */}
+                      <td>{String(index + 1).padStart(3, "0")}</td> {/* Auto-incrementing ID with padding */}
                       <td>
                         {product.imgurl ? (
                           <img
@@ -250,9 +289,25 @@ function ProductTables() {
         </Col>
       </Row>
 
-      <Modal isOpen={modal} toggle={toggleModal}>
-        <ModalHeader toggle={toggleModal}></ModalHeader>
-        <AddEditProduct product={selectedProduct} onSave={handleSaveProduct} />
+      {/* Modal for adding/editing a product */}
+      <Modal
+        isOpen={modal}
+        toggle={() => toggleModal()}
+        style={{ maxWidth: "600px", backgroundColor: "#2C3E50" }}
+      >
+        <ModalBody style={{ backgroundColor: "#2C3E50", color: "#ffffff" }}>
+          <h5
+            style={{ color: "#ffffff", textAlign: "center", fontSize: "20px" }}
+          >
+            {selectedProduct ? "Edit Product" : "Add Product"}
+          </h5>
+
+          <AddEditProduct
+            product={selectedProduct}
+            onSave={handleSaveProduct}
+            onCancel={() => toggleModal()}
+          />
+        </ModalBody>
       </Modal>
     </div>
   );

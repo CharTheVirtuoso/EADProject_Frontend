@@ -10,11 +10,13 @@ import {
   Input, // Import Input component for the search box
   Button,
 } from "reactstrap";
+import { FaSort } from "react-icons/fa"; // Import the sort icon
 import { useParams } from "react-router-dom"; // Import useParams to get category name from URL
 
 function Products() {
   const [products, setProducts] = useState([]);
   const { categoryName } = useParams(); // Get category name from URL parameters
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track sorting
   const [searchQuery, setSearchQuery] = useState(""); // State to track search query
 
   // State to keep track of expanded descriptions
@@ -25,7 +27,7 @@ function Products() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:15240/api/product/getProductByCategory/${categoryName}`
+          `http://127.0.0.1:15240/api/Product/getProductByCategory/${categoryName}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -40,6 +42,25 @@ function Products() {
 
     fetchProducts();
   }, [categoryName]);
+
+  // Sorting functionality
+  const handleSort = (field) => {
+    const isAsc = sortOrder.field === field && sortOrder.order === "asc";
+    const newOrder = isAsc ? "desc" : "asc";
+
+    const sortedProducts = [...products].sort((a, b) => {
+      if (a[field] < b[field]) {
+        return newOrder === "asc" ? -1 : 1;
+      }
+      if (a[field] > b[field]) {
+        return newOrder === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+
+    setProducts(sortedProducts);
+    setSortOrder({ field, order: newOrder });
+  };
 
   // Function to toggle the description view
   const toggleDescription = (productId) => {
@@ -77,12 +98,36 @@ function Products() {
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th>#</th>
+                    <th
+                      onClick={() => handleSort("id")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      #
+                      <FaSort />
+                    </th>
                     <th>Image</th>
-                    <th>Product Name</th>
+                    <th
+                      onClick={() => handleSort("name")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Product Name
+                      <FaSort />
+                    </th>
                     <th>Description</th>
-                    <th>Price</th>
-                    <th>Stock Quantity</th>
+                    <th
+                      onClick={() => handleSort("price")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Price
+                      <FaSort />
+                    </th>
+                    <th
+                      onClick={() => handleSort("stockQuantity")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Stock Quantity
+                      <FaSort />
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

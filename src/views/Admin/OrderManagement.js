@@ -1,93 +1,120 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+// react plugin used to create charts
+import { Line, Bar } from "react-chartjs-2";
 import {
   Card,
   CardHeader,
   CardBody,
   CardTitle,
-  Table,
   Row,
   Col,
   Button,
 } from "reactstrap";
+import {
+  FaBoxOpen,
+  FaTruck,
+  FaCheck,
+  FaTimesCircle,
+  FaSync,
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+// core components
+import { chartExample1 } from "../../variables/charts.js";
 
-function UserTables() {
-  const [users, setUsers] = useState([]);
-
-  // Fetch the user data from the backend API
-  useEffect(() => {
-    fetch("http://127.0.0.1:15240/api/user/getAllUsers")
-      .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error("Error fetching user data:", error));
-  }, []);
-
-  // Filter only customers
-  const filteredUsers = users.filter((user) => user.role === "Customer");
-
-  // Function to handle approve/reject actions
-  const handleApprove = (id) => {
-    console.log(`User with ID ${id} approved`);
-    // Add logic to call your API to approve the user
+function OrderCategoryCards() {
+  const [bigChartData, setbigChartData] = React.useState("data1");
+  const setBgChartData = (name) => {
+    setbigChartData(name);
   };
+  const navigate = useNavigate();
 
-  const handleReject = (id) => {
-    console.log(`User with ID ${id} rejected`);
-    // Add logic to call your API to reject the user
-  };
+  // Hardcoded order categories with icons and order counts
+  const orderCategories = [
+    {
+      name: "Processing",
+      dispalyName: "Processing",
+      orderCount: 25,
+      icon: <FaSync className="me-2" />,
+    },
+    {
+      name: "VendorReady",
+      dispalyName: "Vendor Ready",
+      orderCount: 12,
+      icon: <FaTruck className="me-2" />,
+    },
+    {
+      name: "PartiallyDelivered",
+      dispalyName: "Partially Delivered",
+      orderCount: 8,
+      icon: <FaBoxOpen className="me-2" />,
+    },
+    {
+      name: "Delivered",
+      dispalyName: "Delivered",
+      orderCount: 45,
+      icon: <FaCheck className="me-2" />,
+    },
+    {
+      name: "Canceled",
+      dispalyName: "Canceled",
+      orderCount: 5,
+      icon: <FaTimesCircle className="me-2" />,
+    },
+    {
+      name: "Discarded",
+      dispalyName: "Discarded",
+      orderCount: 0,
+      icon: <FaTimesCircle className="me-2" />,
+    },
+  ];
 
   return (
     <div className="content">
       <Row>
-        <Col md="12">
-          <Card>
-            <CardHeader>
-              <CardTitle tag="h4">Customer Table</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <Table className="tablesorter" responsive>
-                <thead className="text-primary">
-                  <tr>
-                    <th>#</th>
-                    <th>Email Address</th>
-                    <th>Acccount Approval Status</th>
-                    <th>Account Active Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredUsers.map((user, index) => (
-                    <tr key={user.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>{" "}
-                      {/* Auto-incrementing ID with padding */}
-                      <td>{user.email}</td>
-                      <td>{user.userStatus}</td>
-                      <td>{user.isActive ? "Active" : "Inactive"}</td>
-                      <td>
-                        <Button
-                          color="success"
-                          size="sm"
-                          onClick={() => handleApprove(user.id)}
-                        >
-                          Approve
-                        </Button>{" "}
-                        <Button
-                          color="danger"
-                          size="sm"
-                          onClick={() => handleReject(user.id)}
-                        >
-                          Reject
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </CardBody>
-          </Card>
-        </Col>
+        {orderCategories.map((category) => (
+          <Col md="4" key={category.name}>
+            <Card className="mb-3">
+              <CardHeader>
+                <CardTitle tag="h3">
+                  {category.icon}
+                  {" " + category.dispalyName}
+                </CardTitle>
+                <h5 className="text-muted">
+                  Total Orders: {category.orderCount}
+                </h5>
+              </CardHeader>
+              <CardBody>
+                <Button
+                  color="primary"
+                  onClick={() => navigate(`/admin/orders/${category.name}`)}
+                >
+                  Manage Orders
+                </Button>
+              </CardBody>
+            </Card>
+          </Col>
+        ))}
       </Row>
+      <Card className="card-chart">
+        <CardHeader>
+          <Row>
+            <Col className="text-left" sm="6">
+              <h5 className="card-category">Total amount of</h5>
+              <CardTitle tag="h2">Orders</CardTitle>
+            </Col>
+          </Row>
+        </CardHeader>
+        <CardBody>
+          <div className="chart-area">
+            <Line
+              data={chartExample1[bigChartData]}
+              options={chartExample1.options}
+            />
+          </div>
+        </CardBody>
+      </Card>
     </div>
   );
 }
 
-export default UserTables;
+export default OrderCategoryCards;
