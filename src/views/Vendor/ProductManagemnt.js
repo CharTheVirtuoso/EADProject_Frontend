@@ -12,7 +12,6 @@ import {
   ModalBody,
   ModalFooter,
   Input,
-
 } from "reactstrap";
 import { FaSort } from "react-icons/fa"; // Import the sort icon
 import { useNavigate } from "react-router-dom";
@@ -210,6 +209,13 @@ function ProductTables() {
                     </th>
                     <th>Description</th>
                     <th
+                      onClick={() => handleSort("categoryName")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Category
+                      <FaSort />
+                    </th>
+                    <th
                       onClick={() => handleSort("price")}
                       style={{ cursor: "pointer" }}
                     >
@@ -220,7 +226,7 @@ function ProductTables() {
                       onClick={() => handleSort("stockQuantity")}
                       style={{ cursor: "pointer" }}
                     >
-                      Stock Quantity
+                      Quantity
                       <FaSort />
                     </th>
                     <th>Actions</th>
@@ -229,7 +235,8 @@ function ProductTables() {
                 <tbody>
                   {filteredProducts.map((product, index) => (
                     <tr key={product.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td> {/* Auto-incrementing ID with padding */}
+                      <td>{String(index + 1).padStart(3, "0")}</td>{" "}
+                      {/* Auto-incrementing ID with padding */}
                       <td>
                         {product.imgurl ? (
                           <img
