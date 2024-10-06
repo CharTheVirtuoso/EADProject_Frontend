@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import image from '../assets/Images/pngegg.png';
+import logo from '../assets/Images/VENDORA (1).png';  // Path to the logo
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -61,7 +62,11 @@ const LoginPage = () => {
           <div className="col-md-6">
             <div className="card-body d-flex flex-column text-white">
               <div className="d-flex flex-row mt-2 align-items-center">
-                <span className="h1 fw-bold mb-0" style={{ color: '#fff' }}>Vendora Login</span>
+                <img 
+                  src={logo} 
+                  alt="Vendora Logo" 
+                  style={{ width: '200px', height: 'auto' }} 
+                />
               </div>
               <h5 className="fw-normal my-4 pb-3" style={{ letterSpacing: '1px', color: '#fff' }}>
                 Sign into your account
