@@ -12,11 +12,11 @@ import {
   ModalHeader,
   ModalBody,
   Input,
-  Spinner, // Import Spinner for loading indicator
+  Spinner, 
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import AddUser from "../Admin/AddUser";
-import { FaUserPlus, FaSort } from "react-icons/fa"; // Importing sort icon
+import { FaUserPlus, FaSort } from "react-icons/fa";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -26,7 +26,7 @@ function CSRUserTable() {
   const [users, setUsers] = useState([]);
   const [modal, setModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true); // State to track loading status
+  const [loading, setLoading] = useState(true);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
   const navigate = useNavigate();
@@ -42,11 +42,11 @@ function CSRUserTable() {
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false); 
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
-        setLoading(false); // Stop loading even if there's an error
+        setLoading(false); 
       });
   }, []);
 
@@ -207,14 +207,12 @@ function CSRUserTable() {
               </div>
             </CardHeader>
             <CardBody style={{ paddingTop: "30px" }}>
-              {/* Show loading spinner when data is being fetched */}
               {loading ? (
                 <div className="d-flex justify-content-center align-items-center">
                   <Spinner color="primary" />
                 </div>
               ) : (
                 <>
-                  {/* If there are no users, show a message */}
                   {filteredUsers.length === 0 ? (
                     <div className="text-center">No inactive users found.</div>
                   ) : (

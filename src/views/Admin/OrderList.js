@@ -11,14 +11,13 @@ import {
   Button,
 } from "reactstrap";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2"; 
 
 function Orders() {
   const [orders, setOrders] = useState([]);
   const { categoryName } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch orders by status from the backend API
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -39,17 +38,15 @@ function Orders() {
     fetchOrders();
   }, [categoryName]);
 
-  // Function to cancel the order with a cancellation note
   const cancelOrderWithNote = async (orderId, cancellationNote) => {
     try {
       const response = await fetch(
         `http://127.0.0.1:15240/api/order/${orderId}/updateStatus/canceled`,
         {
-          method: "PUT", // Use PUT for updating status
+          method: "PUT", 
         }
       );
       if (response.ok) {
-        // Send cancellation note to the backend
         await fetch(
           `http://127.0.0.1:15240/api/order/${orderId}/updateCancellationNote`,
           {
@@ -61,11 +58,9 @@ function Orders() {
           }
         );
 
-        // Update UI to reflect order cancellation
         setOrders((prevOrders) =>
           prevOrders.filter((order) => order.id !== orderId)
         );
-        // Show success alert
         Swal.fire({
           title: "Success!",
           text: "Order canceled and note added successfully.",
@@ -78,23 +73,20 @@ function Orders() {
     }
   };
 
-  // Function to mark the order as delivered
   const markAsDelivered = async (orderId) => {
     try {
       const response = await fetch(
         `http://127.0.0.1:15240/api/order/${orderId}/updateStatus/delivered`,
         {
-          method: "PUT", // Use PUT for updating status
+          method: "PUT",
         }
       );
       if (response.ok) {
-        // Update UI to reflect order delivered status
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
             order.id === orderId ? { ...order, status: "Delivered" } : order
           )
         );
-        // Show success alert
         Swal.fire({
           title: "Success!",
           text: "Order marked as Delivered successfully.",
@@ -107,7 +99,6 @@ function Orders() {
     }
   };
 
-  // SweetAlert confirmation and prompt for the cancellation note
   const confirmRemoveProduct = (orderId) => {
     Swal.fire({
       title: "Cancel Order",
@@ -129,7 +120,6 @@ function Orders() {
     });
   };
 
-  // Display cancellation note only when categoryName is "canceled"
   const displayCancellationNote = (order) => {
     return categoryName === "canceled" && order.cancellationNote ? (
       <div>
@@ -186,7 +176,6 @@ function Orders() {
           <Card>
             <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">{categoryName} Orders List</CardTitle>
-              {/* Search input box on the right */}
               <Input
                 type="text"
                 placeholder="Search Orders"
@@ -206,7 +195,6 @@ function Orders() {
                     <th>Payment</th>
                     <th>Total</th>
                     <th></th>
-                    {/* Add a new column for Cancellation Note if categoryName is 'canceled' */}
                     {categoryName === "Canceled" && <th>Cancellation Note</th>}
                   </tr>
                 </thead>
@@ -228,7 +216,6 @@ function Orders() {
                       <td>{order.paymentMethod}</td>
                       <td>${order.totalAmount.toFixed(2)}</td>
                       <td>
-                        {/* Conditionally render buttons based on the category */}
                         {categoryName === "Processing" && (
                           <Button
                             color="danger"
@@ -248,7 +235,6 @@ function Orders() {
                           </Button>
                         )}
                       </td>
-                      {/* Display the cancellation note only for 'canceled' category */}
                       {categoryName === "Canceled" && (
                         <td>{order.cancellationNote || "No note provided"}</td>
                       )}
@@ -256,7 +242,6 @@ function Orders() {
                   ))}
                 </tbody>
               </Table>
-              {/* Display cancellation note for canceled orders */}
               {filteredOrders.map((order) => displayCancellationNote(order))}
             </CardBody>
           </Card>

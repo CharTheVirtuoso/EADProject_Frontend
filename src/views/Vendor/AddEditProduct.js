@@ -11,7 +11,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2"; 
 import {
   getStorage,
   ref,
@@ -21,7 +21,7 @@ import {
 import { storage } from "../../config/firebase";
 
 function AddProduct({ product, onSave }) {
-  const [productId, setProductId] = useState(product ? product.id : ""); // New state for product ID
+  const [productId, setProductId] = useState(product ? product.id : "");
   const [name, setName] = useState(product ? product.name : "");
   const [description, setDescription] = useState(
     product ? product.description : ""
@@ -35,9 +35,8 @@ function AddProduct({ product, onSave }) {
   );
   const [imageUrl, setImageUrl] = useState(product ? product.Imgurl : "");
   const [imageFile, setImageFile] = useState(null); 
-  const [message, setMessage] = useState(""); // For feedback
+  const [message, setMessage] = useState(""); 
 
-  // Retrieve vendorId from local storage
   const vendorId = localStorage.getItem("vendorId");
 
     const handleImageUpload = () => {
@@ -77,17 +76,17 @@ function AddProduct({ product, onSave }) {
       const uploadedImageUrl = await handleImageUpload();
 
       const newProduct = {
-        id: productId, // Include productId for editing
+        id: productId, 
         name,
         description,
         categoryName,
         price,
         stockQuantity,
         Imgurl: uploadedImageUrl,
-        vendorId, // Include vendorId in the product object
+        vendorId, 
       };
 
-      console.log("Submitting new product:", newProduct); // Debugging log
+      console.log("Submitting new product:", newProduct); 
 
       const response = await fetch(
         product
@@ -102,13 +101,13 @@ function AddProduct({ product, onSave }) {
         }
       );
 
-      console.log("Response status:", response.status); // Debugging log
+      console.log("Response status:", response.status); 
 
       if (response.ok) {
         const createdProduct = await response.json();
         console.log("Product saved successfully:", createdProduct);
 
-        onSave(createdProduct); // Call onSave to update the product list in the parent component
+        onSave(createdProduct); 
         // Show success alert
         Swal.fire({
           title: "Success!",
@@ -149,7 +148,7 @@ function AddProduct({ product, onSave }) {
                           value={productId}
                           onChange={(e) => setProductId(e.target.value)}
                           required
-                          readOnly // Make it read-only when editing
+                          readOnly 
                         />
                       </FormGroup>
                     </Col>
@@ -245,7 +244,6 @@ function AddProduct({ product, onSave }) {
             </CardBody>
           </Card>
           {message && <div className="alert alert-info">{message}</div>}{" "}
-          {/* Feedback message */}
         </Col>
       </Row>
     </div>

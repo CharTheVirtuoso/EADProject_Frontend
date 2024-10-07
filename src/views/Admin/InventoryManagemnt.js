@@ -13,9 +13,8 @@ import { useNavigate } from "react-router-dom";
 
 function CategoryCards() {
   const [categories, setCategories] = useState([]);
-  const navigate = useNavigate(); // Use navigate for routing
+  const navigate = useNavigate(); 
 
-  // Fetch the category data from the backend API
   useEffect(() => {
     fetch(
       "http://127.0.0.1:15240/api/category/getAllCategoriesWithProductCount"

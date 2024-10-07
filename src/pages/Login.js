@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import image from '../assets/Images/pngegg.png';
-import logo from '../assets/Images/VENDORA (1).png';  // Path to the logo
+import logo from '../assets/Images/VENDORA.png';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -26,12 +26,10 @@ const LoginPage = () => {
     try {
       const response = await axios.post('http://127.0.0.1:15240/api/User/login', { email, password });
 
-      // Store user details in localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('role', response.data.role);
       localStorage.setItem('vendorId', response.data.id);
 
-      // Redirect based on user role
       if (response.data.role === 'Admin') {
         navigate('/admin/dashboard');
       } else if (response.data.role === 'CSR') {

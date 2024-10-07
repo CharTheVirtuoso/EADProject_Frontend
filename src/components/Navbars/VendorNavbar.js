@@ -19,7 +19,7 @@ import {
   NavbarToggler,
   ModalHeader,
 } from "reactstrap";
-import axios from "axios"; // For fetching notifications
+import axios from "axios"; 
 
 function VendorNavbar(props) {
   const [collapseOpen, setcollapseOpen] = React.useState(false);
@@ -27,7 +27,7 @@ function VendorNavbar(props) {
   const [color, setcolor] = React.useState("navbar-transparent");
   const [notifications, setNotifications] = React.useState([]);
   
-  const navigate = useNavigate(); // Initialize the navigate function from react-router-dom
+  const navigate = useNavigate(); 
 
   React.useEffect(() => {
     fetchNotifications();
@@ -37,7 +37,6 @@ function VendorNavbar(props) {
     };
   }, []);
 
-  // Fetch unread notifications from the backend
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
@@ -56,7 +55,6 @@ function VendorNavbar(props) {
     );
   };
 
-  // Function to update navbar color on resize
   const updateColor = () => {
     if (window.innerWidth < 993 && collapseOpen) {
       setcolor("bg-white");
