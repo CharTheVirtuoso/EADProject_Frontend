@@ -1,7 +1,6 @@
 import Dashboard from "../views/Admin/AdminDashboard.js";
 import UserTable from "../views/Admin/AdminUserTable.js";
 import Vendors from "../views/Admin/VendorManagement.js";
-import Notificatoions from "../views/Notifications.js";
 import ProductCategories from "../views/Admin/ProductManagement.js";
 import ProductList from "../views/Admin/ProductList.js";
 import Stocks from "../views/Admin/StockList.js";
@@ -20,7 +19,7 @@ var routes = [
   {
     path: "/users",
     name: "User Management",
-    icon: "tim-icons icon-single-02", // A user icon makes sense for user management 
+    icon: "tim-icons icon-single-02", // A user icon makes sense for user management
     component: <UserTable />,
     layout: "/admin",
   },

@@ -43,7 +43,7 @@ function Dashboard(props) {
       <div className="content">
         <Row>
           <Col xs="12">
-            <Card className="card-chart">
+            <Card className="card-chart" style={{ height: "360px" }}>
               <CardHeader>
                 <Row>
                   <Col className="text-left" sm="6">
@@ -123,7 +123,7 @@ function Dashboard(props) {
         </Row>
         <Row>
           <Col lg="4">
-            <Card className="card-chart">
+            <Card className="card-chart" style={{ height: "400px" }}>
               <CardHeader>
                 <h5 className="card-category">Total No Of Users</h5>
                 <CardTitle tag="h3">
@@ -141,7 +141,7 @@ function Dashboard(props) {
             </Card>
           </Col>
           <Col lg="4">
-            <Card className="card-chart">
+            <Card className="card-chart" style={{ height: "400px" }}>
               <CardHeader>
                 <h5 className="card-category">Daily Sales</h5>
                 <CardTitle tag="h3">
@@ -160,7 +160,7 @@ function Dashboard(props) {
             </Card>
           </Col>
           <Col lg="4">
-            <Card className="card-chart">
+            <Card className="card-chart" style={{ height: "400px" }}>
               <CardHeader>
                 <h5 className="card-category">Completed Orders</h5>
                 <CardTitle tag="h3">

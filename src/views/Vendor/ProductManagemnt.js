@@ -13,20 +13,20 @@ import {
   ModalFooter,
   Input,
 } from "reactstrap";
-import { FaSort } from "react-icons/fa"; // Import the sort icon
+import { FaSort } from "react-icons/fa"; 
 import { useNavigate } from "react-router-dom";
-import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; // Importing edit and delete icons
-import Swal from "sweetalert2"; // Import SweetAlert
-import AddEditProduct from "./AddEditProduct"; // Import Add/Edit Product Component
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; 
+import Swal from "sweetalert2"; 
+import AddEditProduct from "./AddEditProduct";
 
 function ProductTables() {
   const [products, setProducts] = useState([]);
-  const [modal, setModal] = useState(false); // State to handle modal visibility
-  const [selectedProduct, setSelectedProduct] = useState(null); // Selected product for editing
-  const [vendorId, setVendorId] = useState(""); // State to store vendor ID from localStorage
-  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track the current sort field and order
-  const [expandedProducts, setExpandedProducts] = useState({}); // State to track expanded product descriptions
-  const [searchTerm, setSearchTerm] = useState(""); // State to handle search input
+  const [modal, setModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null); 
+  const [vendorId, setVendorId] = useState(""); 
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); 
+  const [expandedProducts, setExpandedProducts] = useState({}); 
+  const [searchTerm, setSearchTerm] = useState(""); 
 
   const navigate = useNavigate();
 
@@ -74,10 +74,9 @@ function ProductTables() {
       });
 
       if (response.ok) {
-        // Refetch the product list after saving
         const updatedProducts = await response.json();
         setProducts(updatedProducts);
-        toggleModal(); // Close modal after save
+        toggleModal(); 
       } else {
         console.error("Failed to save product.");
       }
@@ -86,7 +85,6 @@ function ProductTables() {
     }
   };
 
-  // SweetAlert for delete confirmation
   const confirmDeleteProduct = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -98,7 +96,7 @@ function ProductTables() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        handleDeleteProduct(id); // Call delete function if confirmed
+        handleDeleteProduct(id); 
       }
     });
   };
@@ -171,15 +169,13 @@ function ProductTables() {
             <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Product Details</CardTitle>
               <div className="d-flex align-items-center">
-                {/* Search Input */}
                 <Input
                   type="text"
                   placeholder="Search..."
                   value={searchTerm}
                   onChange={handleSearch}
-                  style={{ marginRight: "30px", width: "250px" }} // Adjust width as needed
+                  style={{ marginRight: "30px", width: "250px" }}
                 />
-                {/* Icon for adding product */}
                 <FaPlus
                   size={28}
                   color="white"
@@ -199,7 +195,7 @@ function ProductTables() {
                       #
                       <FaSort />
                     </th>
-                    <th>Image</th> {/* New Image Column */}
+                    <th>Image</th>
                     <th
                       onClick={() => handleSort("name")}
                       style={{ cursor: "pointer" }}
@@ -236,7 +232,6 @@ function ProductTables() {
                   {filteredProducts.map((product, index) => (
                     <tr key={product.id}>
                       <td>{String(index + 1).padStart(3, "0")}</td>{" "}
-                      {/* Auto-incrementing ID with padding */}
                       <td>
                         {product.imgurl ? (
                           <img
@@ -248,7 +243,7 @@ function ProductTables() {
                             }}
                           />
                         ) : (
-                          "No Image" // Fallback text if no image is available
+                          "No Image"
                         )}
                       </td>
                       <td>{product.name}</td>
@@ -270,7 +265,6 @@ function ProductTables() {
                       <td>${product.price.toFixed(2)}</td>
                       <td>{product.stockQuantity}</td>
                       <td>
-                        {/* Edit button with green icon */}
                         <Button
                           color="success"
                           size="sm"
@@ -278,11 +272,10 @@ function ProductTables() {
                         >
                           <FaEdit />
                         </Button>{" "}
-                        {/* Delete button with red icon */}
                         <Button
                           color="danger"
                           size="sm"
-                          onClick={() => confirmDeleteProduct(product.id)} // SweetAlert confirmation before deletion
+                          onClick={() => confirmDeleteProduct(product.id)} 
                         >
                           <FaTrash />
                         </Button>
@@ -296,7 +289,6 @@ function ProductTables() {
         </Col>
       </Row>
 
-      {/* Modal for adding/editing a product */}
       <Modal
         isOpen={modal}
         toggle={() => toggleModal()}

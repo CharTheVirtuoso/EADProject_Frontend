@@ -7,22 +7,20 @@ import {
   Table,
   Row,
   Col,
-  Input, // Import Input component for the search box
+  Input, 
   Button,
 } from "reactstrap";
-import { FaSort } from "react-icons/fa"; // Import the sort icon
-import { useParams } from "react-router-dom"; // Import useParams to get category name from URL
+import { FaSort } from "react-icons/fa"; 
+import { useParams } from "react-router-dom";
 
 function Products() {
   const [products, setProducts] = useState([]);
-  const { categoryName } = useParams(); // Get category name from URL parameters
-  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track sorting
-  const [searchQuery, setSearchQuery] = useState(""); // State to track search query
+  const { categoryName } = useParams(); 
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); 
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // State to keep track of expanded descriptions
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
 
-  // Fetch products by category from the backend API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -70,12 +68,11 @@ function Products() {
     }));
   };
 
-  // Filter products based on the search query
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.price.toString().includes(searchQuery) // Convert price to string for comparison
+      product.price.toString().includes(searchQuery) 
   );
 
   return (
@@ -85,13 +82,12 @@ function Products() {
           <Card>
             <CardHeader className="d-flex justify-content-between align-items-center">
               <CardTitle tag="h4">Product List - {categoryName}</CardTitle>
-              {/* Search input box on the right */}
               <Input
                 type="text"
                 placeholder="Search Products"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ width: "250px", marginRight: "30px" }} // Adjust width as needed
+                style={{ width: "250px", marginRight: "30px" }} 
               />
             </CardHeader>
             <CardBody style={{ paddingTop: "30px" }}>
@@ -137,12 +133,12 @@ function Products() {
                       <td>
                         {product.image ? (
                           <img
-                            src={product.Imgurl} // Display the image from Firebase URL
+                            src={product.Imgurl} 
                             alt={product.name}
-                            style={{ width: "50px", height: "50px" }} // Adjust the size as needed
+                            style={{ width: "50px", height: "50px" }} 
                           />
                         ) : (
-                          "No Image" // Fallback text if no image is available
+                          "No Image" 
                         )}
                       </td>
                       <td>{product.name}</td>
