@@ -49,7 +49,7 @@ const LoginPage = () => {
   return (
     <div
       className="container-fluid d-flex flex-column justify-content-center align-items-center vh-100"
-      style={{ background: "#011b57" }} // Updated to a solid background color
+      style={{ background: "#073980" }} // Updated to a solid background color
     >
       <div
         className="card shadow-lg p-4"
