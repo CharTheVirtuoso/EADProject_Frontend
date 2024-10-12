@@ -10,27 +10,24 @@ import {
   Button,
   Modal,
   ModalBody,
-  ModalFooter,
   Input,
 } from "reactstrap";
-import { FaSort } from "react-icons/fa"; 
-import { useNavigate } from "react-router-dom";
-import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; 
-import Swal from "sweetalert2"; 
+import { FaSort, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2";
 import AddEditProduct from "./AddEditProduct";
+import { useNavigate } from "react-router-dom";
 
 function ProductTables() {
   const [products, setProducts] = useState([]);
   const [modal, setModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null); 
-  const [vendorId, setVendorId] = useState(""); 
-  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); 
-  const [expandedProducts, setExpandedProducts] = useState({}); 
-  const [searchTerm, setSearchTerm] = useState(""); 
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [vendorId, setVendorId] = useState("");
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null });
+  const [expandedProducts, setExpandedProducts] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
 
-  // Fetch vendorId from localStorage
   useEffect(() => {
     const vendorIdFromStorage = localStorage.getItem("vendorId");
     if (vendorIdFromStorage) {
@@ -38,7 +35,6 @@ function ProductTables() {
     }
   }, []);
 
-  // Fetch the product data from the backend API
   useEffect(() => {
     if (vendorId) {
       fetch(
@@ -50,13 +46,11 @@ function ProductTables() {
     }
   }, [vendorId]);
 
-  // Toggle modal visibility and optionally select a product to edit
   const toggleModal = (product = null) => {
     setSelectedProduct(product);
     setModal(!modal);
   };
 
-  // Function to handle adding or editing a product
   const handleSaveProduct = async (product) => {
     const url = selectedProduct
       ? `http://127.0.0.1:15240/api/product/updateProduct/${selectedProduct.id}`
@@ -76,7 +70,7 @@ function ProductTables() {
       if (response.ok) {
         const updatedProducts = await response.json();
         setProducts(updatedProducts);
-        toggleModal(); 
+        toggleModal();
       } else {
         console.error("Failed to save product.");
       }
@@ -96,12 +90,11 @@ function ProductTables() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        handleDeleteProduct(id); 
+        handleDeleteProduct(id);
       }
     });
   };
 
-  // Function to delete a product
   const handleDeleteProduct = async (id) => {
     try {
       const response = await fetch(
@@ -113,7 +106,7 @@ function ProductTables() {
 
       if (response.ok) {
         setProducts(products.filter((product) => product.id !== id));
-        Swal.fire("Deleted!", "Your product has been deleted.", "success"); // Success message
+        Swal.fire("Deleted!", "Your product has been deleted.", "success");
       } else {
         console.error("Failed to delete product.");
       }
@@ -122,7 +115,6 @@ function ProductTables() {
     }
   };
 
-  // Sorting functionality
   const handleSort = (field) => {
     const isAsc = sortOrder.field === field && sortOrder.order === "asc";
     const newOrder = isAsc ? "desc" : "asc";
@@ -137,7 +129,6 @@ function ProductTables() {
     setSortOrder({ field, order: newOrder });
   };
 
-  // Function to toggle description visibility
   const toggleDescription = (id) => {
     setExpandedProducts((prev) => ({
       ...prev,
@@ -145,12 +136,10 @@ function ProductTables() {
     }));
   };
 
-  // Function to handle search
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // Filter products based on search term
   const filteredProducts = products.filter((product) => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -275,7 +264,7 @@ function ProductTables() {
                         <Button
                           color="danger"
                           size="sm"
-                          onClick={() => confirmDeleteProduct(product.id)} 
+                          onClick={() => confirmDeleteProduct(product.id)}
                         >
                           <FaTrash />
                         </Button>
@@ -289,10 +278,20 @@ function ProductTables() {
         </Col>
       </Row>
 
+      {/* Centered Modal */}
       <Modal
         isOpen={modal}
         toggle={() => toggleModal()}
-        style={{ maxWidth: "600px", backgroundColor: "#2C3E50" }}
+        centered
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          marginTop: "0 !important",
+          maxWidth: "600px",
+          zIndex: "1050 !important", // Ensures the modal is above other elements
+        }}
       >
         <ModalBody style={{ backgroundColor: "#2C3E50", color: "#ffffff" }}>
           <h5
