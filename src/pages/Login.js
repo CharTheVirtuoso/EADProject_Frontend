@@ -9,6 +9,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState(null);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -24,14 +25,19 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:15240/api/User/login",
+
+        "http://localhost:15240/api/User/login",
         { email, password }
       );
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role);
-      localStorage.setItem("vendorId", response.data.id);
+      // Clear previous session data
+      sessionStorage.clear();
 
+      sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("role", response.data.role);
+      sessionStorage.setItem("id", response.data.id);
+
+      // Redirect based on user role
       if (response.data.role === "Admin") {
         navigate("/admin/dashboard");
       } else if (response.data.role === "CSR") {

@@ -23,10 +23,10 @@ function Orders() {
     const fetchOrders = async () => {
       try {
         // Get vendor ID from local storage
-        const vendorId = localStorage.getItem("vendorId");
+        const vendorId = sessionStorage.getItem("id");
 
         if (!vendorId) {
-          console.error("Vendor ID not found in local storage.");
+          console.error("Vendor ID not found in session storage.");
           return;
         }
 
