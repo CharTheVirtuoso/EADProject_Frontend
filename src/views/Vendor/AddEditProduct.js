@@ -1,27 +1,19 @@
 import React, { useState } from "react";
 import {
   Button,
-  Card,
-  CardHeader,
   CardBody,
-  CardFooter,
   FormGroup,
   Form,
   Input,
   Row,
   Col,
 } from "reactstrap";
-import Swal from "sweetalert2"; // Import SweetAlert2
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
+import Swal from "sweetalert2";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../config/firebase";
 
 function AddProduct({ product, onSave }) {
-  const [productId, setProductId] = useState(product ? product.id : ""); // New state for product ID
+  const [productId, setProductId] = useState(product ? product.id : "");
   const [name, setName] = useState(product ? product.name : "");
   const [description, setDescription] = useState(
     product ? product.description : ""
@@ -34,41 +26,38 @@ function AddProduct({ product, onSave }) {
     product ? product.stockQuantity : ""
   );
   const [imageUrl, setImageUrl] = useState(product ? product.Imgurl : "");
-  const [imageFile, setImageFile] = useState(null); 
-  const [message, setMessage] = useState(""); // For feedback
+  const [imageFile, setImageFile] = useState(null);
 
-  // Retrieve vendorId from local storage
   const vendorId = localStorage.getItem("vendorId");
 
-    const handleImageUpload = () => {
-      return new Promise((resolve, reject) => {
-        if (!imageFile) {
-          resolve(imageUrl);
-          return;
+  const handleImageUpload = () => {
+    return new Promise((resolve, reject) => {
+      if (!imageFile) {
+        resolve(imageUrl);
+        return;
+      }
+
+      const storageRef = ref(storage, `product-images/${imageFile.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error("Error during upload:", error);
+          reject(error);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(downloadURL);
         }
-
-        const storageRef = ref(storage, `product-images/${imageFile.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, imageFile);
-
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
-          },
-          (error) => {
-            console.error("Error during upload:", error);
-            reject(error);
-          },
-          async () => {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            resolve(downloadURL);
-          }
-        );
-      });
-    };
-
+      );
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,17 +66,17 @@ function AddProduct({ product, onSave }) {
       const uploadedImageUrl = await handleImageUpload();
 
       const newProduct = {
-        id: productId, // Include productId for editing
+        id: productId,
         name,
         description,
         categoryName,
         price,
         stockQuantity,
         Imgurl: uploadedImageUrl,
-        vendorId, // Include vendorId in the product object
+        vendorId,
       };
 
-      console.log("Submitting new product:", newProduct); // Debugging log
+      console.log("Submitting new product:", newProduct);
 
       const response = await fetch(
         product
@@ -102,21 +91,22 @@ function AddProduct({ product, onSave }) {
         }
       );
 
-      console.log("Response status:", response.status); // Debugging log
+      console.log("Response status:", response.status);
 
       if (response.ok) {
         const createdProduct = await response.json();
         console.log("Product saved successfully:", createdProduct);
 
-        onSave(createdProduct); // Call onSave to update the product list in the parent component
-        // Show success alert
+        onSave(createdProduct);
         Swal.fire({
           title: "Success!",
-          text: "Product submitted successfully!",
-          icon: "success",
-          confirmButtonText: "OK",
-        });
-      } else {
+        text: `${product ? "Product updated" : "Product submitted"} successfully!`,
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        window.location.reload(); // Refresh the page after success
+      });
+    } else {
         const errorData = await response.json();
         console.error("Error saving product:", errorData);
       }
@@ -128,124 +118,115 @@ function AddProduct({ product, onSave }) {
   return (
     <div className="content">
       <Row className="justify-content-center">
-        <Col md="6" lg="5">
-          <Card>
-            <CardHeader>
-              <h5 className="title">
-                {product ? "Edit Product" : "Create New Product"}
-              </h5>
-            </CardHeader>
-            <CardBody>
-              <Form onSubmit={handleSubmit}>
-                {/* Product ID Field for Editing */}
-                {product && (
-                  <Row>
-                    <Col md="12">
-                      <FormGroup>
-                        <label>Product ID</label>
-                        <Input
-                          type="text"
-                          placeholder="Enter product ID"
-                          value={productId}
-                          onChange={(e) => setProductId(e.target.value)}
-                          required
-                          readOnly // Make it read-only when editing
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                )}
+        <Col md="12">
+          <CardBody>
+            <Form onSubmit={handleSubmit}>
+              {product && (
                 <Row>
                   <Col md="12">
                     <FormGroup>
-                      <label>Name</label>
+                      <label>Product ID</label>
                       <Input
                         type="text"
-                        placeholder="Enter product name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Enter product ID"
+                        value={productId}
+                        onChange={(e) => setProductId(e.target.value)}
                         required
+                        readOnly
                       />
                     </FormGroup>
                   </Col>
                 </Row>
-                <Row>
-                  <Col md="12">
-                    <FormGroup>
-                      <label>Description</label>
-                      <Input
-                        type="textarea"
-                        placeholder="Enter product description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        required
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md="12">
-                    <FormGroup>
-                      <label>Category</label>
-                      <Input
-                        type="text"
-                        placeholder="Enter product category"
-                        value={categoryName}
-                        onChange={(e) => setCategoryName(e.target.value)}
-                        required
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md="6">
-                    <FormGroup>
-                      <label>Price</label>
-                      <Input
-                        type="number"
-                        placeholder="Enter product price"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                        required
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col md="6">
-                    <FormGroup>
-                      <label>Stock Quantity</label>
-                      <Input
-                        type="number"
-                        placeholder="Enter stock quantity"
-                        value={stockQuantity}
-                        onChange={(e) => setStockQuantity(e.target.value)}
-                        required
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md="12">
-                    <FormGroup>
-                      <label>Upload Image</label>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setImageFile(e.target.files[0])}
-                        required={!product}
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <CardFooter>
-                  <Button className="btn-fill" color="primary" type="submit">
-                    Submit
-                  </Button>
-                </CardFooter>
-              </Form>
-            </CardBody>
-          </Card>
-          {message && <div className="alert alert-info">{message}</div>}{" "}
-          {/* Feedback message */}
+              )}
+              <Row>
+                <Col md="12">
+                  <FormGroup>
+                    <label>Name</label>
+                    <Input
+                      type="text"
+                      placeholder="Enter product name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                  </FormGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col md="12">
+                  <FormGroup>
+                    <label>Description</label>
+                    <Input
+                      type="textarea"
+                      placeholder="Enter product description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                    />
+                  </FormGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col md="12">
+                  <FormGroup>
+                    <label>Category</label>
+                    <Input
+                      type="text"
+                      placeholder="Enter product category"
+                      value={categoryName}
+                      onChange={(e) => setCategoryName(e.target.value)}
+                      required
+                    />
+                  </FormGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col md="6">
+                  <FormGroup>
+                    <label>Price</label>
+                    <Input
+                      type="number"
+                      placeholder="Enter product price"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      required
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="6">
+                  <FormGroup>
+                    <label>Stock Quantity</label>
+                    <Input
+                      type="number"
+                      placeholder="Enter stock quantity"
+                      value={stockQuantity}
+                      onChange={(e) => setStockQuantity(e.target.value)}
+                      required
+                    />
+                  </FormGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col md="12">
+                  <FormGroup>
+                    <label>Upload Image</label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImageFile(e.target.files[0])}
+                      required={!product}
+                    />
+                  </FormGroup>
+                </Col>
+              </Row>
+              {/* <Button color="secondary" onClick={onCancel} style={{ marginRight: "10px" }}>
+  Cancel
+</Button> */}
+              <Button className="btn-fill" color="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </CardBody>
         </Col>
       </Row>
     </div>

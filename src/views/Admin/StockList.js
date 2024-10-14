@@ -10,13 +10,13 @@ import {
   Button,
   Input,
 } from "reactstrap";
-import { FaSort } from "react-icons/fa"; // Import the sort icon
-import { useParams } from "react-router-dom"; // Import useParams to get category name from URL
+import { FaSort } from "react-icons/fa"; 
+import { useParams } from "react-router-dom"; 
 import Swal from "sweetalert2";
 function Products() {
   const [products, setProducts] = useState([]);
-  const { categoryName } = useParams(); // Get category name from URL parameters
-  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); // Track sorting
+  const { categoryName } = useParams(); 
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); 
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -40,17 +40,14 @@ function Products() {
     fetchProducts();
   }, [categoryName]);
 
-  // Function to handle sorting
   const handleSort = (field) => {
     const isAsc = sortOrder.field === field && sortOrder.order === "asc";
     const newOrder = isAsc ? "desc" : "asc";
 
     const sortedProducts = [...products].sort((a, b) => {
       if (field === "stockQuantity" || field === "price") {
-        // Numeric sorting for stockQuantity and price
         return newOrder === "asc" ? a[field] - b[field] : b[field] - a[field];
       } else if (field === "stockStatus") {
-        // Sorting based on stock status text
         const getStockStatus = (product) => {
           if (product.stockQuantity === 0) return "Out of Stock";
           if (product.stockQuantity < 5) return "Low Stock";
@@ -60,7 +57,6 @@ function Products() {
         const statusB = getStockStatus(b);
         return newOrder === "asc" ? statusA.localeCompare(statusB) : statusB.localeCompare(statusA);
       } else {
-        // Default sorting for other fields (e.g., strings)
         return newOrder === "asc" ? a[field].localeCompare(b[field]) : b[field].localeCompare(a[field]);
       }
     });
@@ -93,7 +89,6 @@ function Products() {
     }
   };
 
-  // SweetAlert confirmation for removing a product
   const confirmRemoveProduct = (productId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -211,7 +206,7 @@ function Products() {
                           <Button
                             color="danger"
                             size="sm"
-                            onClick={() => confirmRemoveProduct(product.id)} // Use confirmRemoveProduct for SweetAlert confirmation
+                            onClick={() => confirmRemoveProduct(product.id)}
                             style={{ marginRight: "15px" }}
                           >
                             Remove Product

@@ -53,7 +53,7 @@ function Orders() {
       const vendorId = localStorage.getItem("vendorId");
       console.log(vendorId);
       const response = await fetch(
-        `http://127.0.0.1:15240/api/order/updateVendorOrderStatus/${orderId}/${vendorId}`,
+        `http://127.0.0.1:15240/api/order/${orderId}/vendor/${vendorId}/updateVendorStatus/ready`,
         {
           method: "PUT", // Use PUT for updating status
         }
@@ -138,7 +138,8 @@ function Orders() {
                     <th>Date</th>
                     <th>Payment</th>
                     <th>Total</th>
-                    <th>Status</th>
+                    <th>Vendor Status</th>
+                    <th>Order Status</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -165,10 +166,11 @@ function Orders() {
                         </td>
                         <td>{order.paymentMethod}</td>
                         <td>${order.totalAmount.toFixed(2)}</td>
+                        <td>{item.vendorStatus}</td>
                         <td>{order.status}</td>
                         <td>
                           {/* Conditionally render buttons based on the order status */}
-                          {order.status === "Processing" && (
+                          {item.vendorStatus === "Processing" && (
                             <Button
                               color="success"
                               size="sm"
@@ -177,7 +179,7 @@ function Orders() {
                               Ready
                             </Button>
                           )}
-                          {order.status !== "Processing" && (
+                          {item.vendorStatus !== "Processing" && (
                             <Button color="success" size="sm" disabled="true">
                               Delivered
                             </Button>

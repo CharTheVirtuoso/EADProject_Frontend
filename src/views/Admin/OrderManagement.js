@@ -28,7 +28,6 @@ function OrderCategoryCards() {
   };
   const navigate = useNavigate();
 
-  // Hardcoded order categories with icons and order counts
   const orderCategories = [
     {
       name: "Processing",

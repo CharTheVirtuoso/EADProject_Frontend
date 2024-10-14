@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import image from '../assets/Images/pngegg.png';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import logo from "../assets/Images/Vendora_logo.png";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState(null);
   const navigate = useNavigate();
@@ -25,6 +25,7 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
+
         "http://localhost:15240/api/User/login",
         { email, password }
       );
@@ -52,31 +53,55 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container-fluid d-flex flex-column justify-content-center align-items-center vh-100" style={{ backgroundColor: '#01174c' }}>
-      <div className="card shadow-lg p-4" style={{ maxWidth: '1200px', minWidth: '800px', width: '100%', backgroundColor: '#011b57', border: 'none' }}>
+    <div
+      className="container-fluid d-flex flex-column justify-content-center align-items-center vh-100"
+      style={{ background: "#073980" }} // Updated to a solid background color
+    >
+      <div
+        className="card shadow-lg p-4"
+        style={{
+          maxWidth: "1100px",
+          minWidth: "800px",
+          width: "100%",
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          borderRadius: "10px",
+          border: "none",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+        }}
+      >
         <div className="row g-0">
-          <div className="col-md-6 d-flex justify-content-center align-items-center" style={{ overflow: 'hidden' }}>
+          <div className="col-md-6 d-flex justify-content-center align-items-center">
             <img
-              src={image}
+              src={logo}
               alt="login form"
               className="img-fluid rounded-start"
-              style={{ width: '70%' }}
+              style={{ width: "70%" }}
             />
           </div>
 
           <div className="col-md-6">
             <div className="card-body d-flex flex-column text-white">
-              <div className="d-flex flex-row mt-2 align-items-center">
-                <span className="h1 fw-bold mb-0" style={{ color: '#fff' }}>Vendora Login</span>
-              </div>
-              <h5 className="fw-normal my-4 pb-3" style={{ letterSpacing: '1px', color: '#fff' }}>
-                Sign into your account
-              </h5>
+              <h4
+                className="fw-normal mb-4 text-center"
+                style={{
+                  letterSpacing: "1px",
+                  color: "#fff",
+                  textShadow: "1px 1px 3px rgba(0, 0, 0, 0.7)",
+                }}
+              >
+                Sign In
+              </h4>
 
               <form onSubmit={handleLogin}>
-                {error && <div className="alert alert-danger">{error}</div>}
+                {error && (
+                  <div className="alert alert-danger" role="alert">
+                    {error}
+                  </div>
+                )}
                 <div className="form-group mb-4">
-                  <label htmlFor="email" style={{ color: '#fff' }}>Email address</label>
+                  <label htmlFor="email" style={{ color: "#fff" }}>
+                    Email address
+                  </label>
                   <input
                     type="email"
                     className="form-control"
@@ -85,11 +110,23 @@ const LoginPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     required
-                    style={{ backgroundColor: '#02174c', color: '#fff', border: '1px solid #ff6219' }}
+                    style={{
+                      backgroundColor: "#253366",
+                      color: "#fff",
+                      border: "1px solid #f25c29",
+                      borderRadius: "5px",
+                    }}
+                    onFocus={(e) =>
+                      (e.target.style.boxShadow =
+                        "0 0 5px rgba(242, 92, 41, 0.5)")
+                    }
+                    onBlur={(e) => (e.target.style.boxShadow = "none")}
                   />
                 </div>
                 <div className="form-group mb-4">
-                  <label htmlFor="password" style={{ color: '#fff' }}>Password</label>
+                  <label htmlFor="password" style={{ color: "#fff" }}>
+                    Password
+                  </label>
                   <input
                     type="password"
                     className="form-control"
@@ -98,27 +135,66 @@ const LoginPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     required
-                    style={{ backgroundColor: '#02174c', color: '#fff', border: '1px solid #ff6219' }}
+                    style={{
+                      backgroundColor: "#253366",
+                      color: "#fff",
+                      border: "1px solid #f25c29",
+                      borderRadius: "5px",
+                    }}
+                    onFocus={(e) =>
+                      (e.target.style.boxShadow =
+                        "0 0 5px rgba(242, 92, 41, 0.5)")
+                    }
+                    onBlur={(e) => (e.target.style.boxShadow = "none")}
                   />
+                  <a
+                    className="small text-muted"
+                    href="#!"
+                    style={{ color: "#ccc" }}
+                  >
+                    Forgot password?
+                  </a>
                 </div>
 
-                <button type="submit" className="btn w-100" style={{ backgroundColor: '#ff6219', color: '#fff' }} disabled={isLoading}>
+                <button
+                  type="submit"
+                  className="btn w-100"
+                  style={{
+                    backgroundColor: "#f25c29",
+                    color: "#fff",
+                    transition: "0.3s",
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#e24b1d")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#f25c29")
+                  }
+                  disabled={isLoading}
+                >
                   {isLoading ? (
                     <>
-                      <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                      {' Logging in...'}
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      {" Logging in..."}
                     </>
                   ) : (
-                    'Login'
+                    "Login"
                   )}
                 </button>
               </form>
 
-              <a className="small text-muted mt-3" href="#!" style={{ color: '#fff' }}>Forgot password?</a>
-              <p className="mb-5 pb-lg-2 mt-2" style={{ color: '#fff' }}>
-                Don't have an account? <a href="#!" style={{ color: '#fff' }}>Contact admin</a>
-              </p>
-
+              <div className="d-flex justify-content-between mt-3">
+                <p style={{ color: "#fff" }}>
+                  Don't have an account?{" "}
+                  <a href="#!" style={{ color: "#f25c29" }}>
+                    Contact admin
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
         </div>
