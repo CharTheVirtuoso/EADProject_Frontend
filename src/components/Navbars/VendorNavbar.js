@@ -26,8 +26,9 @@ function VendorNavbar(props) {
   const [modalSearch, setmodalSearch] = React.useState(false);
   const [color, setcolor] = React.useState("navbar-transparent");
   const [notifications, setNotifications] = React.useState([]);
-  
+ 
   const navigate = useNavigate(); 
+
 
   React.useEffect(() => {
     fetchNotifications();
@@ -76,12 +77,13 @@ function VendorNavbar(props) {
     setmodalSearch(!modalSearch);
   };
 
-  // function to handle logout and redirect to login
+  // Function to handle logout and redirect to login
   const handleLogout = () => {
-    // Clear any session or authentication data here if necessary
-    // e.g., localStorage.removeItem("authToken");
     
-    // Navigate to the login page
+    sessionStorage.removeItem("token"); 
+    sessionStorage.removeItem("role"); 
+    sessionStorage.removeItem("id"); 
+
     navigate("/login");
   };
 
@@ -181,10 +183,7 @@ function VendorNavbar(props) {
                   </NavLink>
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li">
-                    <DropdownItem
-                      className="nav-item"
-                      onClick={handleLogout}
-                    >
+                    <DropdownItem className="nav-item" onClick={handleLogout}>
                       Log out
                     </DropdownItem>
                   </NavLink>

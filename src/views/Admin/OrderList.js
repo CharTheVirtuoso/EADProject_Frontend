@@ -11,7 +11,7 @@ import {
   Button,
 } from "reactstrap";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2"; 
+import Swal from "sweetalert2";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -43,7 +43,7 @@ function Orders() {
       const response = await fetch(
         `http://127.0.0.1:15240/api/order/${orderId}/updateStatus/canceled`,
         {
-          method: "PUT", 
+          method: "PUT",
         }
       );
       if (response.ok) {
@@ -201,7 +201,7 @@ function Orders() {
                 <tbody>
                   {filteredOrders.map((order) => (
                     <tr key={order.id}>
-                      <td>{order.id}</td>
+                      <td>{order.orderId}</td>
                       <td>
                         {order.items.map((item, index) => (
                           <li key={index}>
