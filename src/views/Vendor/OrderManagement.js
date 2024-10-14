@@ -50,7 +50,7 @@ function Orders() {
   // Function to mark the order as ready
   const ReadyOrder = async (orderId) => {
     try {
-      const vendorId = localStorage.getItem("vendorId");
+      const vendorId = sessionStorage.getItem("id");
       console.log(vendorId);
       const response = await fetch(
         `http://127.0.0.1:15240/api/order/${orderId}/vendor/${vendorId}/updateVendorStatus/ready`,
@@ -146,14 +146,14 @@ function Orders() {
                 <tbody>
                   {filteredOrders.map((order) => {
                     // Filter items belonging to the current vendor
-                    const vendorId = localStorage.getItem("vendorId");
+                    const vendorId = sessionStorage.getItem("id");
                     const vendorItems = order.items.filter(
                       (item) => item.vendorId === vendorId
                     );
 
                     return vendorItems.map((item) => (
                       <tr key={item.id}>
-                        <td>{order.id}</td>
+                        <td>{order.orderId}</td>
                         <td>{item.productName}</td>
                         <td>{item.quantity}</td>
                         <td>{order.shippingAddress}</td>
