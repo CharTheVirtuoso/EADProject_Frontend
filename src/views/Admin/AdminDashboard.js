@@ -146,7 +146,7 @@ function Dashboard(props) {
                 <h5 className="card-category">Daily Sales</h5>
                 <CardTitle tag="h3">
                   <i className="tim-icons icon-delivery-fast text-primary" />{" "}
-                  3,5000LKR
+                  LKR 35,000
                 </CardTitle>
               </CardHeader>
               <CardBody>
