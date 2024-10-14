@@ -65,7 +65,7 @@ function UserProfile() {
 
       // Fetch user reviews
       axios
-        .get(`http://127.0.0.1:15240/api/review/getReviews/${vendorId}`)
+        .get(`http://127.0.0.1:15240/api/rating/getReviews/${vendorId}`)
         .then((response) => {
           setReviews(response.data);
         })
@@ -260,10 +260,8 @@ function UserProfile() {
                     <Card key={index} className="review-card">
                       <CardBody>
                         <CardText>
-                          <strong>Review:</strong> {review.text}
-                        </CardText>
-                        <CardText>
-                          <strong>Rating:</strong> {review.rating}
+                          <strong></strong> {review.review}{" "}
+                          {/* Updated to review.Review */}
                         </CardText>
                       </CardBody>
                     </Card>
