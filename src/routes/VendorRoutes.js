@@ -1,8 +1,7 @@
 import Dashboard from "../views/Vendor/VendorDashboard.js";
 import ProductList from "../views/Vendor/ProductManagemnt.js";
 import OrderList from "../views/Vendor/OrderManagement.js";
-// import TableList from "../views/TableList.js";
-// import UserProfile from "../views/UserProfile.js";
+import UserProfile from "../views/Vendor/UserProfile.js";
 
 var routes = [
   {
@@ -12,13 +11,13 @@ var routes = [
     component: <Dashboard />,
     layout: "/vendor",
   },
-  // {
-  //   path: "/user-profile",
-  //   name: "User Profile",
-  //   icon: "tim-icons icon-single-02",
-  //   component: <UserProfile />,
-  //   layout: "/admin",
-  // },
+  {
+    path: "/user-profile/:vendorId",
+    name: "User Profile",
+    icon: "tim-icons icon-single-02",
+    component: <UserProfile />,
+    layout: "/vendor",
+  },
   {
     path: "/products/:vendorId",
     name: "Product Management",
