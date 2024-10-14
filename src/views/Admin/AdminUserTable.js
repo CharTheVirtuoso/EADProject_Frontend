@@ -148,7 +148,7 @@ function UserTables() {
   };
 
   const filteredUsers = users
-    .filter((user) => user.role === "Customer") // Filtering only customers
+    .filter((user) => user.role === "Customer") 
     .filter(
       (user) =>
         user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -159,7 +159,6 @@ function UserTables() {
         )
     );
 
-  // Sorting functions
   const sortUsersByApprovalStatus = () => {
     const sortedUsers = [...filteredUsers].sort((a, b) => {
       if (sortOrder.approvalStatus === "asc") {
@@ -190,7 +189,6 @@ function UserTables() {
     setUsers(sortedUsers);
   };
 
-  // Pagination logic
   const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage

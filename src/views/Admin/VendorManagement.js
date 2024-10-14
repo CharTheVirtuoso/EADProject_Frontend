@@ -18,8 +18,8 @@ function UserTables() {
   const [modal, setModal] = useState(false);
   const [sortOrder, setSortOrder] = useState({ field: null, order: null });
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1); // Pagination state
-  const itemsPerPage = 6; // Set items per page
+  const [currentPage, setCurrentPage] = useState(1); 
+  const itemsPerPage = 6; 
 
   const navigate = useNavigate();
 
@@ -60,7 +60,6 @@ function UserTables() {
     setSortOrder({ field, order: newOrder });
   };
 
-  // Pagination logic
   const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -123,7 +122,6 @@ function UserTables() {
                   ))}
                 </tbody>
               </Table>
-              {/* Pagination controls */}
               <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
                 <Button
                   color="secondary"
