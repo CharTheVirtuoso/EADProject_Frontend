@@ -7,20 +7,20 @@ import {
   Table,
   Row,
   Col,
-  Input, 
+  Input,
   Button,
 } from "reactstrap";
-import { FaSort } from "react-icons/fa"; 
+import { FaSort } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 
 function Products() {
   const [products, setProducts] = useState([]);
-  const { categoryName } = useParams(); 
-  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); 
+  const { categoryName } = useParams();
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null });
   const [searchQuery, setSearchQuery] = useState("");
-
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
-
+  const [currentPage, setCurrentPage] = useState(1); 
+  const itemsPerPage = 4; 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -41,7 +41,6 @@ function Products() {
     fetchProducts();
   }, [categoryName]);
 
-  // Sorting functionality
   const handleSort = (field) => {
     const isAsc = sortOrder.field === field && sortOrder.order === "asc";
     const newOrder = isAsc ? "desc" : "asc";
@@ -60,7 +59,6 @@ function Products() {
     setSortOrder({ field, order: newOrder });
   };
 
-  // Function to toggle the description view
   const toggleDescription = (productId) => {
     setExpandedDescriptions((prevState) => ({
       ...prevState,
@@ -72,8 +70,18 @@ function Products() {
     (product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.price.toString().includes(searchQuery) 
+      product.price.toString().includes(searchQuery)
   );
+
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="content">
@@ -87,58 +95,42 @@ function Products() {
                 placeholder="Search Products"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ width: "250px", marginRight: "30px" }} 
+                style={{ width: "250px", marginRight: "30px" }}
               />
             </CardHeader>
             <CardBody style={{ paddingTop: "30px" }}>
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th
-                      onClick={() => handleSort("id")}
-                      style={{ cursor: "pointer" }}
-                    >
-                      #
-                      <FaSort />
+                    <th onClick={() => handleSort("id")} style={{ cursor: "pointer" }}>
+                      # <FaSort />
                     </th>
                     <th>Image</th>
-                    <th
-                      onClick={() => handleSort("name")}
-                      style={{ cursor: "pointer" }}
-                    >
-                      Product Name
-                      <FaSort />
+                    <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                      Product Name <FaSort />
                     </th>
                     <th>Description</th>
-                    <th
-                      onClick={() => handleSort("price")}
-                      style={{ cursor: "pointer" }}
-                    >
-                      Price
-                      <FaSort />
+                    <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
+                      Price <FaSort />
                     </th>
-                    <th
-                      onClick={() => handleSort("stockQuantity")}
-                      style={{ cursor: "pointer" }}
-                    >
-                      Stock Quantity
-                      <FaSort />
+                    <th onClick={() => handleSort("stockQuantity")} style={{ cursor: "pointer" }}>
+                      Stock Quantity <FaSort />
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredProducts.map((product, index) => (
+                  {paginatedProducts.map((product, index) => (
                     <tr key={product.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>
+                      <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
                       <td>
                         {product.image ? (
                           <img
-                            src={product.Imgurl} 
+                            src={product.Imgurl}
                             alt={product.name}
-                            style={{ width: "50px", height: "50px" }} 
+                            style={{ width: "50px", height: "50px" }}
                           />
                         ) : (
-                          "No Image" 
+                          "No Image"
                         )}
                       </td>
                       <td>{product.name}</td>
@@ -146,10 +138,7 @@ function Products() {
                         {expandedDescriptions[product.id] ? (
                           <span>
                             {product.description}{" "}
-                            <Button
-                              color="link"
-                              onClick={() => toggleDescription(product.id)}
-                            >
+                            <Button color="link" onClick={() => toggleDescription(product.id)}>
                               See less
                             </Button>
                           </span>
@@ -158,10 +147,7 @@ function Products() {
                             {product.description.length > 50
                               ? `${product.description.substring(0, 100)}...`
                               : product.description}{" "}
-                            <Button
-                              color="link"
-                              onClick={() => toggleDescription(product.id)}
-                            >
+                            <Button color="link" onClick={() => toggleDescription(product.id)}>
                               See more
                             </Button>
                           </span>
@@ -173,6 +159,27 @@ function Products() {
                   ))}
                 </tbody>
               </Table>
+              {/* Pagination controls */}
+              <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+                <Button
+                  color="secondary"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  style={{ marginRight: "5px" }}
+                >
+                  &lt;
+                </Button>
+                <span style={{ margin: "13px 10px" }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  color="secondary"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  &gt;
+                </Button>
+              </div>
             </CardBody>
           </Card>
         </Col>

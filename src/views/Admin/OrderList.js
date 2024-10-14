@@ -10,6 +10,7 @@ import {
   Input,
   Button,
 } from "reactstrap";
+import { FaSort } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -17,6 +18,9 @@ function Orders() {
   const [orders, setOrders] = useState([]);
   const { categoryName } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null });
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -37,6 +41,31 @@ function Orders() {
 
     fetchOrders();
   }, [categoryName]);
+
+  const handleSort = (field) => {
+    const isAsc = sortOrder.field === field && sortOrder.order === "asc";
+    const newOrder = isAsc ? "desc" : "asc";
+
+    const sortedOrders = [...orders].sort((a, b) => {
+      if (field === "totalAmount") {
+        return newOrder === "asc" ? a[field] - b[field] : b[field] - a[field];
+      } else if (field === "shippingAddress" || field === "orderDate") {
+        return newOrder === "asc"
+          ? a[field].localeCompare(b[field])
+          : b[field].localeCompare(a[field]);
+      } else if (field === "vendors") {
+        const vendorA = a.items[0]?.vendorId || "";
+        const vendorB = b.items[0]?.vendorId || "";
+        return newOrder === "asc"
+          ? vendorA.localeCompare(vendorB)
+          : vendorB.localeCompare(vendorA);
+      }
+      return 0;
+    });
+
+    setOrders(sortedOrders);
+    setSortOrder({ field, order: newOrder });
+  };
 
   const cancelOrderWithNote = async (orderId, cancellationNote) => {
     try {
@@ -144,7 +173,6 @@ function Orders() {
     });
   };
 
-  // Filter orders based on the search query
   const filteredOrders = orders.filter((order) => {
     const searchString = searchQuery.toLowerCase();
     return (
@@ -169,6 +197,16 @@ function Orders() {
     );
   });
 
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="content">
       <Row>
@@ -189,17 +227,25 @@ function Orders() {
                 <thead className="text-primary">
                   <tr>
                     <th>Order ID</th>
-                    <th>Vendors Delivering the Orders</th>
-                    <th>Address</th>
-                    <th>Date</th>
+                    <th onClick={() => handleSort("vendors")} style={{ cursor: "pointer" }}>
+                      Vendors Delivering the Orders <FaSort />
+                    </th>
+                    <th onClick={() => handleSort("shippingAddress")} style={{ cursor: "pointer" }}>
+                      Address <FaSort />
+                    </th>
+                    <th onClick={() => handleSort("orderDate")} style={{ cursor: "pointer" }}>
+                      Date <FaSort />
+                    </th>
                     <th>Payment</th>
-                    <th>Total</th>
+                    <th onClick={() => handleSort("totalAmount")} style={{ cursor: "pointer" }}>
+                      Total <FaSort />
+                    </th>
                     <th></th>
                     {categoryName === "Canceled" && <th>Cancellation Note</th>}
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredOrders.map((order) => (
+                  {paginatedOrders.map((order) => (
                     <tr key={order.id}>
                       <td>{order.orderId}</td>
                       <td>
@@ -210,9 +256,7 @@ function Orders() {
                         ))}
                       </td>
                       <td>{order.shippingAddress}</td>
-                      <td>
-                        {new Date(order.orderDate).toISOString().split("T")[0]}
-                      </td>
+                      <td>{new Date(order.orderDate).toISOString().split("T")[0]}</td>
                       <td>{order.paymentMethod}</td>
                       <td>${order.totalAmount.toFixed(2)}</td>
                       <td>
@@ -243,6 +287,26 @@ function Orders() {
                 </tbody>
               </Table>
               {filteredOrders.map((order) => displayCancellationNote(order))}
+              <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+                <Button
+                  color="secondary"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  style={{ marginRight: "5px" }}
+                >
+                  &lt;
+                </Button>
+                <span style={{ margin: "13px 10px" }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  color="secondary"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  &gt;
+                </Button>
+              </div>
             </CardBody>
           </Card>
         </Col>

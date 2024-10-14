@@ -12,7 +12,7 @@ import {
   ModalHeader,
   ModalBody,
   Input,
-  Spinner, 
+  Spinner,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import AddUser from "../Admin/AddUser";
@@ -28,6 +28,8 @@ function CSRUserTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const navigate = useNavigate();
 
@@ -42,11 +44,11 @@ function CSRUserTable() {
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
-        setLoading(false); 
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
-        setLoading(false); 
+        setLoading(false);
       });
   }, []);
 
@@ -184,6 +186,16 @@ function CSRUserTable() {
     setUsers(sortedUsers);
   };
 
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="content">
       <Row>
@@ -236,9 +248,9 @@ function CSRUserTable() {
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredUsers.map((user, index) => (
+                        {paginatedUsers.map((user, index) => (
                           <tr key={user.id}>
-                            <td>{String(index + 1).padStart(3, "0")}</td>
+                            <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
                             <td>{user.id}</td>
                             <td>{user.email}</td>
                             <td>{user.userStatus}</td>
@@ -257,6 +269,26 @@ function CSRUserTable() {
                       </tbody>
                     </Table>
                   )}
+                  <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+                    <Button
+                      color="secondary"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      style={{ marginRight: "5px" }}
+                    >
+                      &lt;
+                    </Button>
+                    <span style={{ margin: "13px 10px" }}>
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <Button
+                      color="secondary"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      &gt;
+                    </Button>
+                  </div>
                 </>
               )}
             </CardBody>

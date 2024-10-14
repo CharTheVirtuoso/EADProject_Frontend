@@ -36,6 +36,8 @@ function UserTables() {
   const [alertMessage, setAlertMessage] = useState(null); 
   const [alertType, setAlertType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const navigate = useNavigate();
 
@@ -146,7 +148,7 @@ function UserTables() {
   };
 
   const filteredUsers = users
-    .filter((user) => user.role === "Customer") // Filtering only customers
+    .filter((user) => user.role === "Customer") 
     .filter(
       (user) =>
         user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -157,7 +159,6 @@ function UserTables() {
         )
     );
 
-  // Sorting functions
   const sortUsersByApprovalStatus = () => {
     const sortedUsers = [...filteredUsers].sort((a, b) => {
       if (sortOrder.approvalStatus === "asc") {
@@ -188,6 +189,16 @@ function UserTables() {
     setUsers(sortedUsers);
   };
 
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="content">
       <Row>
@@ -196,9 +207,7 @@ function UserTables() {
             <CardHeader>
               <div className="d-flex justify-content-between align-items-center">
                 <CardTitle tag="h4">Customer Details</CardTitle>
-                {/* Container for Add User and Search input */}
                 <div className="d-flex align-items-center">
-
                   <Input
                     type="text"
                     placeholder="Search Users"
@@ -206,7 +215,6 @@ function UserTables() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{ width: "230px", marginRight: "30px" }}
                   />
-                  {/* Add User Icon (Clickable) */}
                   <FaUserPlus
                     size={28}
                     onClick={toggleModal}
@@ -216,61 +224,67 @@ function UserTables() {
               </div>
             </CardHeader>
             <CardBody>
+              <div>
               {alertMessage && (
                 <Alert color={alertType} toggle={() => setAlertMessage(null)}>
                   {alertMessage}
                 </Alert>
               )}
-              <Table className="tablesorter" responsive>
-                <thead className="text-primary">
-                  <tr>
-                    <th>#</th>
-                    <th>ID</th>
-                    <th>Email Address</th>
-                    <th
-                      onClick={sortUsersByApprovalStatus}
-                      style={{ cursor: "pointer" }}
-                    >
-                      Account Approval Status <FaSort />
-                    </th>
-                    <th
-                      onClick={sortUsersByActiveStatus}
-                      style={{ cursor: "pointer" }}
-                    >
-                      Account Active Status <FaSort />
-                    </th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredUsers.map((user, index) => (
-                    <tr key={user.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td>
-                      <td>{"CST" + user.id}</td>
-                      <td>{user.email}</td>
-                      <td>{user.userStatus}</td>
-                      <td>{user.isActive ? "Active" : "Inactive"}</td>
-                      <td>
-                        <Button
-                          color="success"
-                          size="sm"
-                          onClick={() => handleApprove(user.id)}
-                          style={{ marginRight: "15px" }}
-                        >
-                          Approve
-                        </Button>
-                        <Button
-                          color="danger"
-                          size="sm"
-                          onClick={() => handleReject(user.id)}
-                        >
-                          Reject
-                        </Button>
-                      </td>
+                <Table className="tablesorter" responsive>
+                  <thead className="text-primary">
+                    <tr>
+                      <th>#</th>
+                      <th>ID</th>
+                      <th onClick={sortUsersByApprovalStatus} style={{ cursor: "pointer" }}>
+                        Account Approval Status <FaSort />
+                      </th>
+                      <th onClick={sortUsersByActiveStatus} style={{ cursor: "pointer" }}>
+                        Account Active Status <FaSort />
+                      </th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
+                  </thead>
+                  <tbody>
+                    {paginatedUsers.map((user, index) => (
+                      <tr key={user.id}>
+                        <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
+                        <td>{"CST" + user.id}</td>
+                        <td>{user.email}</td>
+                        <td>{user.userStatus}</td>
+                        <td>{user.isActive ? "Active" : "Inactive"}</td>
+                        <td>
+                          <Button color="success" size="sm" onClick={() => handleApprove(user.id)} style={{ marginRight: "15px" }}>
+                            Approve
+                          </Button>
+                          <Button color="danger" size="sm" onClick={() => handleReject(user.id)}>
+                            Reject
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+              <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+                <Button
+                  color="secondary"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  style={{ marginRight: "5px" }}
+                >
+                  &lt; 
+                </Button>
+                <span style={{ margin: "13px 10px" }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  color="secondary"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  &gt;
+                </Button>
+              </div>
             </CardBody>
           </Card>
         </Col>
@@ -278,18 +292,8 @@ function UserTables() {
 
       <Modal isOpen={modal} toggle={toggleModal}>
         <ModalBody style={{ backgroundColor: "#2C3E50", color: "#ECF0F1" }}>
-          {" "}
           <Form>
-            <h5
-              style={{
-                color: "#ffffff",
-                textAlign: "center",
-                fontSize: "20px",
-              }}
-            >
-              Add New User
-            </h5>
-
+            <h5 style={{ color: "#ffffff", textAlign: "center", fontSize: "20px" }}>Add New User</h5>
             <FormGroup>
               <Label for="email">Email</Label>
               <Input
@@ -347,23 +351,8 @@ function UserTables() {
             </FormGroup>
 
             <div className="d-flex justify-content-end mt-4">
-              <Button
-                color="secondary"
-                size="m" 
-                onClick={toggleModal}
-                style={{ marginRight: "10px" }} 
-              >
-                Cancel
-              </Button>
-
-              <Button
-                color="primary"
-                size="m" // Make button smaller
-                onClick={handleAddUser}
-                style={{ backgroundColor: "#ff6219", borderColor: "#ff6219" }} 
-              >
-                Add User
-              </Button>
+              <Button color="secondary" size="m" onClick={toggleModal} style={{ marginRight: "10px" }}>Cancel</Button>
+              <Button color="primary" size="m" onClick={handleAddUser} style={{ backgroundColor: "#ff6219", borderColor: "#ff6219" }}>Add User</Button>
             </div>
           </Form>
         </ModalBody>

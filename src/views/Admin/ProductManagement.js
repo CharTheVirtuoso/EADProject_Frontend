@@ -10,7 +10,7 @@ import {
 } from "reactstrap";
 import { BiCategory } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
 
 function CategoryCards() {
   const [categories, setCategories] = useState([]);
@@ -56,7 +56,6 @@ function CategoryCards() {
       .catch((error) => console.error("Error activating category:", error));
   };
 
-  // Function to deactivate a category with confirmation
   const handleDeactivate = (categoryId) => {
     Swal.fire({
       title: "Are you sure?",
