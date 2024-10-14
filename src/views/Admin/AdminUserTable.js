@@ -225,6 +225,11 @@ function UserTables() {
             </CardHeader>
             <CardBody>
               <div>
+              {alertMessage && (
+                <Alert color={alertType} toggle={() => setAlertMessage(null)}>
+                  {alertMessage}
+                </Alert>
+              )}
                 <Table className="tablesorter" responsive>
                   <thead className="text-primary">
                     <tr>

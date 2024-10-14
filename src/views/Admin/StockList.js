@@ -10,14 +10,17 @@ import {
   Button,
   Input,
 } from "reactstrap";
-import { FaSort } from "react-icons/fa"; 
-import { useParams } from "react-router-dom"; 
+import { FaSort } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+
 function Products() {
   const [products, setProducts] = useState([]);
-  const { categoryName } = useParams(); 
-  const [sortOrder, setSortOrder] = useState({ field: null, order: null }); 
+  const { categoryName } = useParams();
+  const [sortOrder, setSortOrder] = useState({ field: null, order: null });
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -35,7 +38,6 @@ function Products() {
         console.error("Error fetching products:", error);
       }
     };
-    
 
     fetchProducts();
   }, [categoryName]);
@@ -119,6 +121,16 @@ function Products() {
       product.vendorId.toString().includes(searchQuery.toLowerCase())
   );
 
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="content">
       <Row>
@@ -139,35 +151,29 @@ function Products() {
                 <thead className="text-primary">
                   <tr>
                     <th onClick={() => handleSort("id")} style={{ cursor: "pointer" }}>
-                      #
-                      <FaSort />
+                      # <FaSort />
                     </th>
                     <th>Image</th>
                     <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
-                      Product Name
-                      <FaSort />
+                      Product Name <FaSort />
                     </th>
                     <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
-                      Price
-                      <FaSort />
+                      Price <FaSort />
                     </th>
                     <th onClick={() => handleSort("stockQuantity")} style={{ cursor: "pointer" }}>
-                      Stock Quantity
-                      <FaSort />
+                      Stock Quantity <FaSort />
                     </th>
                     <th onClick={() => handleSort("stockStatus")} style={{ cursor: "pointer" }}>
-                      Stock Status
-                      <FaSort />
+                      Stock Status <FaSort />
                     </th>
                     <th onClick={() => handleSort("vendorId")} style={{ cursor: "pointer" }}>
-                      Vendor ID
-                      <FaSort />
+                      Vendor ID <FaSort />
                     </th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredProducts.map((product, index) => {
+                  {paginatedProducts.map((product, index) => {
                     let stockStatus;
                     if (product.stockQuantity === 0) {
                       stockStatus = (
@@ -185,7 +191,7 @@ function Products() {
 
                     return (
                       <tr key={product.id}>
-                        <td>{String(index + 1).padStart(3, "0")}</td>
+                        <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
                         <td>
                           {product.image ? (
                             <img
@@ -226,6 +232,26 @@ function Products() {
                   })}
                 </tbody>
               </Table>
+              <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+                <Button
+                  color="secondary"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  style={{ marginRight: "5px" }}
+                >
+                  &lt;
+                </Button>
+                <span style={{ margin: "13px 10px" }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  color="secondary"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  &gt;
+                </Button>
+              </div>
             </CardBody>
           </Card>
         </Col>
