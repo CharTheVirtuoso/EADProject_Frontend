@@ -31,11 +31,13 @@ function ProductTables() {
 
   const navigate = useNavigate();
 
-  // Fetch vendorId from localStorage
+  // Fetch vendorId from sessionStorage
   useEffect(() => {
-    const vendorIdFromStorage = localStorage.getItem("vendorId");
-    if (vendorIdFromStorage) {
-      setVendorId(vendorIdFromStorage);
+    const idFromStorage = sessionStorage.getItem("id"); 
+    if (idFromStorage) {
+      setVendorId(idFromStorage);
+    } else {
+      console.error("Vendor ID (id) not found in sessionStorage");
     }
   }, []);
 
@@ -229,7 +231,8 @@ function ProductTables() {
                 <tbody>
                   {filteredProducts.map((product, index) => (
                     <tr key={product.id}>
-                      <td>{String(index + 1).padStart(3, "0")}</td> {/* Auto-incrementing ID with padding */}
+                      <td>{String(index + 1).padStart(3, "0")}</td>{" "}
+                      {/* Auto-incrementing ID with padding */}
                       <td>
                         {product.imgurl ? (
                           <img
