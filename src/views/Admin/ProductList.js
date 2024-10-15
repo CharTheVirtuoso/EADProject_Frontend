@@ -19,8 +19,8 @@ function Products() {
   const [sortOrder, setSortOrder] = useState({ field: null, order: null });
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
-  const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 4; 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -102,18 +102,25 @@ function Products() {
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th onClick={() => handleSort("id")} style={{ cursor: "pointer" }}>
-                      # <FaSort />
-                    </th>
+                    <th>#</th>
                     <th>Image</th>
-                    <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("name")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Product Name <FaSort />
                     </th>
                     <th>Description</th>
-                    <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("price")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Price <FaSort />
                     </th>
-                    <th onClick={() => handleSort("stockQuantity")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("stockQuantity")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Stock Quantity <FaSort />
                     </th>
                   </tr>
@@ -121,7 +128,11 @@ function Products() {
                 <tbody>
                   {paginatedProducts.map((product, index) => (
                     <tr key={product.id}>
-                      <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
+                      <td>
+                        {String(
+                          (currentPage - 1) * itemsPerPage + index + 1
+                        ).padStart(3, "0")}
+                      </td>
                       <td>
                         {product.image ? (
                           <img
@@ -138,7 +149,10 @@ function Products() {
                         {expandedDescriptions[product.id] ? (
                           <span>
                             {product.description}{" "}
-                            <Button color="link" onClick={() => toggleDescription(product.id)}>
+                            <Button
+                              color="link"
+                              onClick={() => toggleDescription(product.id)}
+                            >
                               See less
                             </Button>
                           </span>
@@ -147,7 +161,10 @@ function Products() {
                             {product.description.length > 50
                               ? `${product.description.substring(0, 100)}...`
                               : product.description}{" "}
-                            <Button color="link" onClick={() => toggleDescription(product.id)}>
+                            <Button
+                              color="link"
+                              onClick={() => toggleDescription(product.id)}
+                            >
                               See more
                             </Button>
                           </span>
@@ -160,7 +177,14 @@ function Products() {
                 </tbody>
               </Table>
               {/* Pagination controls */}
-              <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+              <div
+                className="pagination-controls"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "15px",
+                }}
+              >
                 <Button
                   color="secondary"
                   onClick={() => handlePageChange(currentPage - 1)}
