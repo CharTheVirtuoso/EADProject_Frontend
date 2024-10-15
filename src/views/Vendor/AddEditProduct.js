@@ -173,12 +173,22 @@ function AddEditProduct({ product, onSave, onCancel }) {
                   <FormGroup>
                     <label>Category</label>
                     <Input
-                      type="text"
-                      placeholder="Enter product category"
+                      type="select"
                       value={categoryName}
                       onChange={(e) => setCategoryName(e.target.value)}
                       required
-                    />
+                    >
+                      <option value="">Enter product category</option>
+                      <option value="Dresses">Dresses</option>
+                      <option value="Shorts">Shorts</option>
+                      <option value="Jackets">Jackets</option>
+                      <option value="Shirts">Shirts</option>
+                      <option value="T-Shirts">T-Shirts</option>
+                      <option value="Skirts">Skirts</option>
+                      <option value="Jeans">Jeans</option>
+                      <option value="Swimsuits">Swimsuits</option>
+                      <option value="Jumpsuits">Jumpsuits</option>
+                    </Input>
                   </FormGroup>
                 </Col>
               </Row>
