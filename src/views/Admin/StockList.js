@@ -193,9 +193,9 @@ function Products() {
                       <tr key={product.id}>
                         <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
                         <td>
-                          {product.image ? (
+                          {product.imgurl ? (
                             <img
-                              src={product.Imgurl}
+                              src={product.imgurl}
                               alt={product.name}
                               style={{ width: "50px", height: "50px" }}
                             />
