@@ -55,7 +55,6 @@ function AddEditProduct({ product, onSave, onCancel }) {
         },
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          setImageUploaded(true);
           resolve(downloadURL);
         }
       );
@@ -101,18 +100,16 @@ function AddEditProduct({ product, onSave, onCancel }) {
         console.log("Product saved successfully:", createdProduct);
 
         onSave(createdProduct);
-        
         Swal.fire({
           title: "Success!",
-          text: product
-            ? "Product edited successfully!"
-            : "Product submitted successfully!",
+          text: `${product ? "Product edited" : "Product submitted"} successfully!`,
           icon: "success",
           confirmButtonText: "OK",
         });
       } else {
-        Swal.fire("Error", product ? "Failed to edit product. Please try again." : "Product submission failed. Please try again.", "error");
-        console.error("Error saving product.");
+        const errorData = await response.json();
+        Swal.fire("Error", "Product submission failed. Please try again.", "error");
+        console.error("Error saving product:", errorData);
       }
     } catch (error) {
       Swal.fire("Error", "An error occurred while saving the product.", "error");
@@ -215,16 +212,18 @@ function AddEditProduct({ product, onSave, onCancel }) {
                 <Col md="12">
                   <FormGroup>
                     <label>Upload Image</label>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        setImageFile(e.target.files[0]);
-                        setImageUploaded(false);
-                      }}
-                      required={!product}
-                    />
-                    {imageUploaded && <FaCheckCircle color="green" style={{ marginLeft: "10px" }} />}
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          setImageFile(e.target.files[0]);
+                          setImageUploaded(true); 
+                        }}
+                        required={!product}
+                      />
+                      {imageUploaded && (
+                        <FaCheckCircle color="green" style={{ marginLeft: "10px" }} />
+                      )}
                   </FormGroup>
                 </Col>
               </Row>
