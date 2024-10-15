@@ -101,16 +101,18 @@ function AddEditProduct({ product, onSave, onCancel }) {
         console.log("Product saved successfully:", createdProduct);
 
         onSave(createdProduct);
+        
         Swal.fire({
           title: "Success!",
-          text: `${product ? "Product updated" : "Product submitted"} successfully!`,
+          text: product
+            ? "Product edited successfully!"
+            : "Product submitted successfully!",
           icon: "success",
           confirmButtonText: "OK",
         });
       } else {
-        const errorData = await response.json();
-        Swal.fire("Error", "Product submission failed. Please try again.", "error");
-        console.error("Error saving product:", errorData);
+        Swal.fire("Error", product ? "Failed to edit product. Please try again." : "Product submission failed. Please try again.", "error");
+        console.error("Error saving product.");
       }
     } catch (error) {
       Swal.fire("Error", "An error occurred while saving the product.", "error");
