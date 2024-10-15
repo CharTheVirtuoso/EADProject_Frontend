@@ -191,21 +191,31 @@ function ProductTables() {
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th onClick={() => handleSort("id")} style={{ cursor: "pointer" }}>
-                      # <FaSort />
-                    </th>
+                    <th>#</th>
                     <th>Image</th>
-                    <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("name")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Product Name <FaSort />
                     </th>
                     <th>Description</th>
-                    <th onClick={() => handleSort("categoryName")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("categoryName")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Category <FaSort />
                     </th>
-                    <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("price")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Price <FaSort />
                     </th>
-                    <th onClick={() => handleSort("stockQuantity")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("stockQuantity")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Quantity <FaSort />
                     </th>
                     <th>Actions</th>
@@ -214,7 +224,11 @@ function ProductTables() {
                 <tbody>
                   {paginatedProducts.map((product, index) => (
                     <tr key={product.id}>
-                      <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
+                      <td>
+                        {String(
+                          (currentPage - 1) * itemsPerPage + index + 1
+                        ).padStart(3, "0")}
+                      </td>
                       <td>
                         {product.imgurl ? (
                           <img
@@ -245,10 +259,18 @@ function ProductTables() {
                       <td>${product.price.toFixed(2)}</td>
                       <td>{product.stockQuantity}</td>
                       <td>
-                        <Button color="success" size="sm" onClick={() => toggleModal(product)}>
+                        <Button
+                          color="success"
+                          size="sm"
+                          onClick={() => toggleModal(product)}
+                        >
                           <FaEdit />
                         </Button>{" "}
-                        <Button color="danger" size="sm" onClick={() => confirmDeleteProduct(product.id)}>
+                        <Button
+                          color="danger"
+                          size="sm"
+                          onClick={() => confirmDeleteProduct(product.id)}
+                        >
                           <FaTrash />
                         </Button>
                       </td>
@@ -256,7 +278,14 @@ function ProductTables() {
                   ))}
                 </tbody>
               </Table>
-              <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+              <div
+                className="pagination-controls"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "15px",
+                }}
+              >
                 <Button
                   color="secondary"
                   onClick={() => handlePageChange(currentPage - 1)}
@@ -296,7 +325,9 @@ function ProductTables() {
         }}
       >
         <ModalBody style={{ backgroundColor: "#2C3E50", color: "#ffffff" }}>
-          <h5 style={{ color: "#ffffff", textAlign: "center", fontSize: "20px" }}>
+          <h5
+            style={{ color: "#ffffff", textAlign: "center", fontSize: "20px" }}
+          >
             {selectedProduct ? "Edit Product" : "Add Product"}
           </h5>
           <AddEditProduct

@@ -87,8 +87,8 @@ function UserProfile() {
         alert(response.data); // Show success message
       })
       .catch((error) => {
-        console.error("Error updating user:", error);
-        alert("Failed to update user account.");
+        // console.error("Error updating user:", error);
+        // alert("Failed to update user account.");
       });
   };
 

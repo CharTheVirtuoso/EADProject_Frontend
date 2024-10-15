@@ -33,11 +33,13 @@ function CSRUserTable() {
 
   const navigate = useNavigate();
 
-  const MySwal = withReactContent(Swal.mixin({
-    customClass: {
-      popup: 'swal-custom-bg',
-    },
-  }));
+  const MySwal = withReactContent(
+    Swal.mixin({
+      customClass: {
+        popup: "swal-custom-bg",
+      },
+    })
+  );
 
   useEffect(() => {
     fetch("http://127.0.0.1:15240/api/user/getAllUsers")
@@ -69,13 +71,13 @@ function CSRUserTable() {
       confirmButtonText: "Yes, reactivate!",
       cancelButtonText: "No, cancel",
       customClass: {
-        popup: 'swal-custom-bg',
+        popup: "swal-custom-bg",
       },
       didOpen: () => {
-        const swalPopup = document.querySelector('.swal-custom-bg');
+        const swalPopup = document.querySelector(".swal-custom-bg");
         if (swalPopup) {
-          swalPopup.style.backgroundColor = '#2C3E50';
-          swalPopup.style.color = '#ffffff';
+          swalPopup.style.backgroundColor = "#2C3E50";
+          swalPopup.style.color = "#ffffff";
         }
       },
     });
@@ -98,13 +100,13 @@ function CSRUserTable() {
             text: "User account has been reactivated.",
             icon: "success",
             customClass: {
-              popup: 'swal-custom-bg',
+              popup: "swal-custom-bg",
             },
             didOpen: () => {
-              const swalPopup = document.querySelector('.swal-custom-bg');
+              const swalPopup = document.querySelector(".swal-custom-bg");
               if (swalPopup) {
-                swalPopup.style.backgroundColor = '#2C3E50';
-                swalPopup.style.color = '#ffffff';
+                swalPopup.style.backgroundColor = "#2C3E50";
+                swalPopup.style.color = "#ffffff";
               }
             },
           });
@@ -118,13 +120,13 @@ function CSRUserTable() {
             text: "Only CSR can reactivate accounts.",
             icon: "error",
             customClass: {
-              popup: 'swal-custom-bg',
+              popup: "swal-custom-bg",
             },
             didOpen: () => {
-              const swalPopup = document.querySelector('.swal-custom-bg');
+              const swalPopup = document.querySelector(".swal-custom-bg");
               if (swalPopup) {
-                swalPopup.style.backgroundColor = '#2C3E50';
-                swalPopup.style.color = '#ffffff';
+                swalPopup.style.backgroundColor = "#2C3E50";
+                swalPopup.style.color = "#ffffff";
               }
             },
           });
@@ -134,13 +136,13 @@ function CSRUserTable() {
             text: "Failed to reactivate the user.",
             icon: "error",
             customClass: {
-              popup: 'swal-custom-bg',
+              popup: "swal-custom-bg",
             },
             didOpen: () => {
-              const swalPopup = document.querySelector('.swal-custom-bg');
+              const swalPopup = document.querySelector(".swal-custom-bg");
               if (swalPopup) {
-                swalPopup.style.backgroundColor = '#2C3E50';
-                swalPopup.style.color = '#ffffff';
+                swalPopup.style.backgroundColor = "#2C3E50";
+                swalPopup.style.color = "#ffffff";
               }
             },
           });
@@ -151,13 +153,13 @@ function CSRUserTable() {
           text: "Error reactivating user.",
           icon: "error",
           customClass: {
-            popup: 'swal-custom-bg',
+            popup: "swal-custom-bg",
           },
           didOpen: () => {
-            const swalPopup = document.querySelector('.swal-custom-bg');
+            const swalPopup = document.querySelector(".swal-custom-bg");
             if (swalPopup) {
-              swalPopup.style.backgroundColor = '#2C3E50';
-              swalPopup.style.color = '#ffffff';
+              swalPopup.style.backgroundColor = "#2C3E50";
+              swalPopup.style.color = "#ffffff";
             }
           },
         });
@@ -167,18 +169,18 @@ function CSRUserTable() {
 
   // Sorting function
   const sortData = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
     }
     setSortConfig({ key, direction });
 
     const sortedUsers = [...filteredUsers].sort((a, b) => {
       if (a[key] < b[key]) {
-        return direction === 'asc' ? -1 : 1;
+        return direction === "asc" ? -1 : 1;
       }
       if (a[key] > b[key]) {
-        return direction === 'asc' ? 1 : -1;
+        return direction === "asc" ? 1 : -1;
       }
       return 0;
     });
@@ -220,9 +222,7 @@ function CSRUserTable() {
             </CardHeader>
             <CardBody style={{ paddingTop: "30px" }}>
               {loading ? (
-                <div className="d-flex justify-content-center align-items-center">
-                  <Spinner color="primary" />
-                </div>
+                <div className="d-flex justify-content-center align-items-center"></div>
               ) : (
                 <>
                   {filteredUsers.length === 0 ? (
@@ -231,17 +231,24 @@ function CSRUserTable() {
                     <Table className="tablesorter" responsive>
                       <thead className="text-primary">
                         <tr>
-                          <th onClick={() => sortData('#')} style={{ cursor: 'pointer' }}>
-                            # <FaSort />
-                          </th>
+                          <th>#</th>
                           <th>ID</th>
-                          <th onClick={() => sortData('email')} style={{ cursor: 'pointer' }}>
+                          <th
+                            onClick={() => sortData("email")}
+                            style={{ cursor: "pointer" }}
+                          >
                             Email Address <FaSort />
                           </th>
-                          <th onClick={() => sortData('userStatus')} style={{ cursor: 'pointer' }}>
+                          <th
+                            onClick={() => sortData("userStatus")}
+                            style={{ cursor: "pointer" }}
+                          >
                             Account Approval Status <FaSort />
                           </th>
-                          <th onClick={() => sortData('isActive')} style={{ cursor: 'pointer' }}>
+                          <th
+                            onClick={() => sortData("isActive")}
+                            style={{ cursor: "pointer" }}
+                          >
                             Account Active Status <FaSort />
                           </th>
                           <th>Actions</th>
@@ -250,7 +257,11 @@ function CSRUserTable() {
                       <tbody>
                         {paginatedUsers.map((user, index) => (
                           <tr key={user.id}>
-                            <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
+                            <td>
+                              {String(
+                                (currentPage - 1) * itemsPerPage + index + 1
+                              ).padStart(3, "0")}
+                            </td>
                             <td>{user.id}</td>
                             <td>{user.email}</td>
                             <td>{user.userStatus}</td>
@@ -269,7 +280,14 @@ function CSRUserTable() {
                       </tbody>
                     </Table>
                   )}
-                  <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+                  <div
+                    className="pagination-controls"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "15px",
+                    }}
+                  >
                     <Button
                       color="secondary"
                       onClick={() => handlePageChange(currentPage - 1)}

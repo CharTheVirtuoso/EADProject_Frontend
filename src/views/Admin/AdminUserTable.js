@@ -28,12 +28,12 @@ function UserTables() {
     email: "",
     password: "",
     role: "Admin",
-  }); 
+  });
   const [sortOrder, setSortOrder] = useState({
     approvalStatus: null,
     activeStatus: null,
   });
-  const [alertMessage, setAlertMessage] = useState(null); 
+  const [alertMessage, setAlertMessage] = useState(null);
   const [alertType, setAlertType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,20 +67,20 @@ function UserTables() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(newUser), 
+          body: JSON.stringify(newUser),
         }
       );
 
       if (response.ok) {
         const createdUser = await response.json();
-        setUsers([...users, createdUser]); 
-        setAlertMessage("User added successfully!"); 
+        setUsers([...users, createdUser]);
+        setAlertMessage("User added successfully!");
         setAlertType("success");
         console.log("User added successfully");
 
-        setNewUser({ email: "", password: "", role: "Admin" }); 
+        setNewUser({ email: "", password: "", role: "Admin" });
       } else {
-        setAlertMessage("Failed to add the user. Please try again."); 
+        setAlertMessage("Failed to add the user. Please try again.");
         setAlertType("danger");
         console.error("Failed to add the user.");
       }
@@ -92,7 +92,6 @@ function UserTables() {
 
     toggleModal();
   };
-
 
   const handleApprove = async (id) => {
     try {
@@ -148,7 +147,7 @@ function UserTables() {
   };
 
   const filteredUsers = users
-    .filter((user) => user.role === "Customer") 
+    .filter((user) => user.role === "Customer")
     .filter(
       (user) =>
         user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -225,20 +224,27 @@ function UserTables() {
             </CardHeader>
             <CardBody>
               <div>
-              {alertMessage && (
-                <Alert color={alertType} toggle={() => setAlertMessage(null)}>
-                  {alertMessage}
-                </Alert>
-              )}
+                {alertMessage && (
+                  <Alert color={alertType} toggle={() => setAlertMessage(null)}>
+                    {alertMessage}
+                  </Alert>
+                )}
                 <Table className="tablesorter" responsive>
                   <thead className="text-primary">
                     <tr>
                       <th>#</th>
                       <th>ID</th>
-                      <th onClick={sortUsersByApprovalStatus} style={{ cursor: "pointer" }}>
-                        Account Approval Status <FaSort />
+                      <th>Email</th>
+                      <th
+                        onClick={sortUsersByApprovalStatus}
+                        style={{ cursor: "pointer" }}
+                      >
+                        Account Approval <FaSort />
                       </th>
-                      <th onClick={sortUsersByActiveStatus} style={{ cursor: "pointer" }}>
+                      <th
+                        onClick={sortUsersByActiveStatus}
+                        style={{ cursor: "pointer" }}
+                      >
                         Account Active Status <FaSort />
                       </th>
                       <th>Actions</th>
@@ -247,16 +253,29 @@ function UserTables() {
                   <tbody>
                     {paginatedUsers.map((user, index) => (
                       <tr key={user.id}>
-                        <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
+                        <td>
+                          {String(
+                            (currentPage - 1) * itemsPerPage + index + 1
+                          ).padStart(3, "0")}
+                        </td>
                         <td>{"CST" + user.id}</td>
                         <td>{user.email}</td>
                         <td>{user.userStatus}</td>
                         <td>{user.isActive ? "Active" : "Inactive"}</td>
                         <td>
-                          <Button color="success" size="sm" onClick={() => handleApprove(user.id)} style={{ marginRight: "15px" }}>
+                          <Button
+                            color="success"
+                            size="sm"
+                            onClick={() => handleApprove(user.id)}
+                            style={{ marginRight: "15px" }}
+                          >
                             Approve
                           </Button>
-                          <Button color="danger" size="sm" onClick={() => handleReject(user.id)}>
+                          <Button
+                            color="danger"
+                            size="sm"
+                            onClick={() => handleReject(user.id)}
+                          >
                             Reject
                           </Button>
                         </td>
@@ -265,14 +284,21 @@ function UserTables() {
                   </tbody>
                 </Table>
               </div>
-              <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+              <div
+                className="pagination-controls"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "15px",
+                }}
+              >
                 <Button
                   color="secondary"
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   style={{ marginRight: "5px" }}
                 >
-                  &lt; 
+                  &lt;
                 </Button>
                 <span style={{ margin: "13px 10px" }}>
                   Page {currentPage} of {totalPages}
@@ -293,7 +319,15 @@ function UserTables() {
       <Modal isOpen={modal} toggle={toggleModal}>
         <ModalBody style={{ backgroundColor: "#2C3E50", color: "#ECF0F1" }}>
           <Form>
-            <h5 style={{ color: "#ffffff", textAlign: "center", fontSize: "20px" }}>Add New User</h5>
+            <h5
+              style={{
+                color: "#ffffff",
+                textAlign: "center",
+                fontSize: "20px",
+              }}
+            >
+              Add New User
+            </h5>
             <FormGroup>
               <Label for="email">Email</Label>
               <Input
@@ -342,7 +376,7 @@ function UserTables() {
                   backgroundColor: "#34495E",
                   color: "#ECF0F1",
                   borderColor: "#ECF0F1",
-                }} 
+                }}
               >
                 <option value="Admin">Admin</option>
                 <option value="CSR">CSR</option>
@@ -351,8 +385,22 @@ function UserTables() {
             </FormGroup>
 
             <div className="d-flex justify-content-end mt-4">
-              <Button color="secondary" size="m" onClick={toggleModal} style={{ marginRight: "10px" }}>Cancel</Button>
-              <Button color="primary" size="m" onClick={handleAddUser} style={{ backgroundColor: "#ff6219", borderColor: "#ff6219" }}>Add User</Button>
+              <Button
+                color="secondary"
+                size="m"
+                onClick={toggleModal}
+                style={{ marginRight: "10px" }}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="primary"
+                size="m"
+                onClick={handleAddUser}
+                style={{ backgroundColor: "#ff6219", borderColor: "#ff6219" }}
+              >
+                Add User
+              </Button>
             </div>
           </Form>
         </ModalBody>
