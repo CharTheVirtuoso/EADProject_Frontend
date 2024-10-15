@@ -18,8 +18,8 @@ function UserTables() {
   const [modal, setModal] = useState(false);
   const [sortOrder, setSortOrder] = useState({ field: null, order: null });
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 6; 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const navigate = useNavigate();
 
@@ -89,40 +89,64 @@ function UserTables() {
               <Table className="tablesorter" responsive>
                 <thead className="text-primary">
                   <tr>
-                    <th onClick={() => handleSort("id")} style={{ cursor: "pointer" }}>
-                      # <FaSort />
+                    <th>#</th>
+                    <th
+                      onClick={() => handleSort("id")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      ID <FaSort />
                     </th>
-                    <th>ID</th>
-                    <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("name")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Name <FaSort />
                     </th>
-                    <th onClick={() => handleSort("email")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("email")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Email Address <FaSort />
                     </th>
-                    <th onClick={() => handleSort("userStatus")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("userStatus")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Account Approval Status <FaSort />
                     </th>
-                    <th onClick={() => handleSort("isActive")} style={{ cursor: "pointer" }}>
+                    <th
+                      onClick={() => handleSort("isActive")}
+                      style={{ cursor: "pointer" }}
+                    >
                       Account Active Status <FaSort />
                     </th>
-                    <th>Rankings</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedUsers.map((user, index) => (
                     <tr key={user.id}>
-                      <td>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</td>
+                      <td>
+                        {String(
+                          (currentPage - 1) * itemsPerPage + index + 1
+                        ).padStart(3, "0")}
+                      </td>
                       <td>{"VND" + user.id}</td>
                       <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td>{user.userStatus}</td>
                       <td>{user.isActive ? "Active" : "Inactive"}</td>
-                      <td>{4.0}</td>
                     </tr>
                   ))}
                 </tbody>
               </Table>
-              <div className="pagination-controls" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+              <div
+                className="pagination-controls"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "15px",
+                }}
+              >
                 <Button
                   color="secondary"
                   onClick={() => handlePageChange(currentPage - 1)}
