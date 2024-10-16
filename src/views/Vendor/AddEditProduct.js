@@ -11,8 +11,9 @@ import {
 import Swal from "sweetalert2";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../config/firebase";
+import { FaCheckCircle } from "react-icons/fa";
 
-function AddProduct({ product, onSave }) {
+function AddEditProduct({ product, onSave, onCancel }) {
   const [productId, setProductId] = useState(product ? product.id : "");
   const [name, setName] = useState(product ? product.name : "");
   const [description, setDescription] = useState(
@@ -27,6 +28,7 @@ function AddProduct({ product, onSave }) {
   );
   const [imageUrl, setImageUrl] = useState(product ? product.Imgurl : "");
   const [imageFile, setImageFile] = useState(null);
+  const [imageUploaded, setImageUploaded] = useState(false);
 
   const vendorId = localStorage.getItem("vendorId");
 
@@ -100,17 +102,17 @@ function AddProduct({ product, onSave }) {
         onSave(createdProduct);
         Swal.fire({
           title: "Success!",
-        text: `${product ? "Product updated" : "Product submitted"} successfully!`,
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then(() => {
-        window.location.reload(); // Refresh the page after success
-      });
-    } else {
+          text: `${product ? "Product edited" : "Product submitted"} successfully!`,
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      } else {
         const errorData = await response.json();
+        Swal.fire("Error", "Product submission failed. Please try again.", "error");
         console.error("Error saving product:", errorData);
       }
     } catch (error) {
+      Swal.fire("Error", "An error occurred while saving the product.", "error");
       console.error("Error while saving product:", error);
     }
   };
@@ -171,12 +173,22 @@ function AddProduct({ product, onSave }) {
                   <FormGroup>
                     <label>Category</label>
                     <Input
-                      type="text"
-                      placeholder="Enter product category"
+                      type="select"
                       value={categoryName}
                       onChange={(e) => setCategoryName(e.target.value)}
                       required
-                    />
+                    >
+                      <option value="">Enter product category</option>
+                      <option value="Dresses">Dresses</option>
+                      <option value="Shorts">Shorts</option>
+                      <option value="Jackets">Jackets</option>
+                      <option value="Shirts">Shirts</option>
+                      <option value="T-Shirts">T-Shirts</option>
+                      <option value="Skirts">Skirts</option>
+                      <option value="Jeans">Jeans</option>
+                      <option value="Swimsuits">Swimsuits</option>
+                      <option value="Jumpsuits">Jumpsuits</option>
+                    </Input>
                   </FormGroup>
                 </Col>
               </Row>
@@ -210,18 +222,24 @@ function AddProduct({ product, onSave }) {
                 <Col md="12">
                   <FormGroup>
                     <label>Upload Image</label>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setImageFile(e.target.files[0])}
-                      required={!product}
-                    />
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          setImageFile(e.target.files[0]);
+                          setImageUploaded(true); 
+                        }}
+                        required={!product}
+                      />
+                      {imageUploaded && (
+                        <FaCheckCircle color="green" style={{ marginLeft: "10px" }} />
+                      )}
                   </FormGroup>
                 </Col>
               </Row>
-              {/* <Button color="secondary" onClick={onCancel} style={{ marginRight: "10px" }}>
-  Cancel
-</Button> */}
+              <Button color="secondary" onClick={onCancel} style={{ marginRight: "10px" }}>
+                Cancel
+              </Button>
               <Button className="btn-fill" color="primary" type="submit">
                 Submit
               </Button>
@@ -233,4 +251,4 @@ function AddProduct({ product, onSave }) {
   );
 }
 
-export default AddProduct;
+export default AddEditProduct;
