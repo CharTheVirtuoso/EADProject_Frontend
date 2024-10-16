@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  Row,
-  Col,
-} from "reactstrap";
+import { Button, CardBody, FormGroup, Form, Input, Row, Col } from "reactstrap";
 import Swal from "sweetalert2";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../config/firebase";
@@ -30,7 +22,7 @@ function AddEditProduct({ product, onSave, onCancel }) {
   const [imageFile, setImageFile] = useState(null);
   const [imageUploaded, setImageUploaded] = useState(false);
 
-  const vendorId = localStorage.getItem("vendorId");
+  const vendorId = sessionStorage.getItem("id");
 
   const handleImageUpload = () => {
     return new Promise((resolve, reject) => {
@@ -102,17 +94,27 @@ function AddEditProduct({ product, onSave, onCancel }) {
         onSave(createdProduct);
         Swal.fire({
           title: "Success!",
-          text: `${product ? "Product edited" : "Product submitted"} successfully!`,
+          text: `${
+            product ? "Product edited" : "Product submitted"
+          } successfully!`,
           icon: "success",
           confirmButtonText: "OK",
         });
       } else {
         const errorData = await response.json();
-        Swal.fire("Error", "Product submission failed. Please try again.", "error");
+        Swal.fire(
+          "Error",
+          "Product submission failed. Please try again.",
+          "error"
+        );
         console.error("Error saving product:", errorData);
       }
     } catch (error) {
-      Swal.fire("Error", "An error occurred while saving the product.", "error");
+      Swal.fire(
+        "Error",
+        "An error occurred while saving the product.",
+        "error"
+      );
       console.error("Error while saving product:", error);
     }
   };
@@ -222,22 +224,29 @@ function AddEditProduct({ product, onSave, onCancel }) {
                 <Col md="12">
                   <FormGroup>
                     <label>Upload Image</label>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          setImageFile(e.target.files[0]);
-                          setImageUploaded(true); 
-                        }}
-                        required={!product}
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        setImageFile(e.target.files[0]);
+                        setImageUploaded(true);
+                      }}
+                      required={!product}
+                    />
+                    {imageUploaded && (
+                      <FaCheckCircle
+                        color="green"
+                        style={{ marginLeft: "10px" }}
                       />
-                      {imageUploaded && (
-                        <FaCheckCircle color="green" style={{ marginLeft: "10px" }} />
-                      )}
+                    )}
                   </FormGroup>
                 </Col>
               </Row>
-              <Button color="secondary" onClick={onCancel} style={{ marginRight: "10px" }}>
+              <Button
+                color="secondary"
+                onClick={onCancel}
+                style={{ marginRight: "10px" }}
+              >
                 Cancel
               </Button>
               <Button className="btn-fill" color="primary" type="submit">
